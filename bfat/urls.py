@@ -5,5 +5,5 @@ from . import views
 app_name = 'bfat'
 
 urlpatterns = [
-    url(r'^$', views.bfat_view, name='view'),
+    url(r'^$', views.bfat_view, name='bfat_view'),
 ]
