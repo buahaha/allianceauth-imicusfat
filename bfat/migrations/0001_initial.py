@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 ('fattime', models.DateTimeField(default=django.utils.timezone.now)),
                 ('fleet', models.CharField(max_length=254)),
                 ('hash', models.CharField(max_length=254)),
-                ('creator', models.ForeignKey(on_delete=models.SET(allianceauth.bfat.models.get_sentinel_user), to=settings.AUTH_USER_MODEL)),
+                ('creator', models.ForeignKey(on_delete=models.SET(bfat.models.get_sentinel_user), to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
