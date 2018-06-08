@@ -4,4 +4,4 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 @login_required()
 def bfat_view(request):
-    pass
+    return render(request, 'bfatview.html')
