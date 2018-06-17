@@ -3,7 +3,28 @@
 {% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
 
 {% block content %}
+    <div class="col-lg-12">
+        <br>
+        {% include "menu.html" %}
+        <h2>{% trans "Recent" %}</h2>
+        <ul class="nav nav-tabs">
+             <li class="active"><a data-toggle="tab" href="#fats">{% trans "FATs" %}</a></li>
+            <li><a data-toggle="tab" href="#fatlinks">{% trans "FatLinks" %}</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="fats" class="tab-pane fade in active panel panel-default">
+                <div class="panel-body">
+                    <h4> PLACE HOLDER </h4>
+                </div>
+            </div>
+            <div id="fatlinks" class="tab-panel fade active panel-default">
+                <div class="panel-body">
+                    <h4> PLACE HOLDER </h4>
+                </div>
+            </div>
+        </div>
 
+    </div>
 
 
 {% endblock %}
