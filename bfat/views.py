@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 import allianceauth.eveonline
 import os
 
-SWAGGER_SPEC_PATH = os.path.join(allianceauth.eveonline.__path__, 'swagger.json')
+# SWAGGER_SPEC_PATH = os.path.join(allianceauth.eveonline.__path__, 'swagger.json')
 """
 Swagger Operations:
 

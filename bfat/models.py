@@ -39,10 +39,11 @@ class Fat(models.Model):
 
 # Log Model for Manual FAT creation
 class ManualFat(models.Model):
-    creator = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user()))
+    creator = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
     fatlink = models.ForeignKey(FatLink, on_delete=models.CASCADE)
     character = models.ForeignKey(EveCharacter, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    # Add property for getting the user for a character.
 
     def __str__(self):
         return "{} - {} ({})".format(self.fatlink, self.character, self.creator)
