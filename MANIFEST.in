@@ -3,5 +3,7 @@ include README.md
 include MANIFEST.in
 graft bbs
 
+recursive-include bfat/templates *
+
 global-exclude __pycache__
 global-exclude *.py[co]
