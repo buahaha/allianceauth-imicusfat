@@ -33,5 +33,9 @@ def bfat_view(request):
 
 
 @login_required()
-def bfat_stats(request):
+def stats(request):
+    pass
+
+@login_required()
+def links(request):
     pass
