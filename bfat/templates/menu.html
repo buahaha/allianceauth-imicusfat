@@ -18,7 +18,7 @@
             <li class="{% navactive request 'bfat_stats bfat_corp_stats bfat_char_stats bfat_ally_stats' %}">
                 <a href="{% url 'bfat:stats' %}">{% trans "Statistics" %}</a>
             </li>
-            <li class="{% navactive request 'auth_group_membership auth_group_membership_list' %}">
+            <li class="{% navactive request 'bfat_links bfat_link_create bfat_link_edit' %}">
                 <a href="{% url 'bfat:links' %}">{% trans "FAT Links" %}</a>
             </li>
         </ul>
