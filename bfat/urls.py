@@ -6,6 +6,6 @@ app_name = 'bfat'
 
 urlpatterns = [
     url(r'^$', views.bfat_view, name='bfat_view'),
-    url(r'^stats', views.stats, name='bfat_stats'),
-    url(r'^links', views.links, name='bfat_links'),
+    url(r'^stats', views.stats, name='stats'),
+    url(r'^links', views.links, name='links'),
 ]
