@@ -30,3 +30,8 @@ get_universe_types_type_id
 def bfat_view(request):
     ctx = {'term': term}
     return render(request, 'bfat/bfatview.html', ctx)
+
+
+@login_required()
+def bfat_stats(request):
+    pass
