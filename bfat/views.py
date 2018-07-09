@@ -25,9 +25,8 @@ get_universe_types_type_id
 """
 
 
-
 # Create your views here.
 @login_required()
 def bfat_view(request):
     ctx = {'term': term}
-    return render(request, 'bfatview.html', ctx)
+    return render(request, 'bfat/bfatview.html', ctx)
