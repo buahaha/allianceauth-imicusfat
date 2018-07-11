@@ -5,7 +5,7 @@ import os
 from django.conf import settings
 
 
-if hasattr(settings, 'fat_as_pap'):
+if hasattr(settings, 'FAT_AS_PAP'):
     term = 'PAP'
 else:
     term = 'FAT'
