@@ -71,7 +71,7 @@ def link_add(request, token):
                 sol_id = char['solar_system_id']
                 ship_id = char['ship_type_id']
 
-                solar_system = c.Universe.get_universe_systems_system_id(solar_system_id=sol_id).result()
+                solar_system = c.Universe.get_universe_systems_system_id(system_id=sol_id).result()
                 ship = c.Universe.get_universe_types_type_id(type_id=ship_id).result()
 
                 sol_name = solar_system['name']
