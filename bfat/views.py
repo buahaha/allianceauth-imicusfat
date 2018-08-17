@@ -18,7 +18,7 @@ if hasattr(settings, 'FAT_AS_PAP'):
 else:
     term = 'FAT'
 
-SWAGGER_SPEC_PATH = os.path.join(allianceauth.eveonline.__path__[0], 'swagger.json')
+SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.json')
 """
 Swagger Operations:
 
