@@ -55,12 +55,20 @@ def links(request):
 @token_required(
     scopes=['esi-fleets.read_fleet.v1'])
 def link_add(request, token):
-    if request.method == "POST":
-        ctx = {'form': FatLinkForm, 'term': term}
-    elif request.method == "PUT":
-        pass
-    else:
-        pass
+    # "error": "The fleet does not exist or you don't have access to it!"
+    character = EveCharacter.objects.get_character_by_id(token.character_id)
+
+    if character:
+        # Check if there is a fleet
+        c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
+        f = c.Fleet.get_characters_character_id_fleet(character_id=character)
+        if not f['error']:
+            fleet = c.Fleet.get_fleet_fleet_id(fleet_id=f['fleet_id'])
+            if not fleet['error']:
+                m = c.Fleet.get_fleet_fleet_id_members(fleet_id=f['fleet_id'])
+
+                ctx = {'form': FatLinkForm, 'term': term, 'debug': m}
+
     return render(request, 'bfat/fleet_add.html', ctx)
 
 
