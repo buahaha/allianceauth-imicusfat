@@ -61,7 +61,7 @@ def add_link(request, token):
         pass
     else:
         pass
-    return render(request, 'bfat/add_link.html', ctx)
+    return render(request, 'bfat/fleet_add.html', ctx)
 
 
 @login_required()
