@@ -79,7 +79,7 @@ def link_add(request, token):
 
                 character, created = EveCharacter.objects.get_or_create(character_id=char_id)
 
-                fat = Fat(character=character, fatlink=link, system=sol_name, shiptype=ship_name).save()
+                fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
 
             ctx = {'form': FatLinkForm, 'term': term, 'hash': hash, 'debug': m}
 
