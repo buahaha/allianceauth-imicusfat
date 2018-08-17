@@ -60,19 +60,17 @@ def link_add(request, token):
     hash = get_random_string(length=30)
     link = FatLink(fleet=" ", creator=request.user, hash=hash)
 
-    if character:
-        # Check if there is a fleet
-        c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
-        f = c.Fleets.get_characters_character_id_fleet(character_id=token.character_id).result()
-        if 'error' not in f:
-            fleet = c.Fleets.get_fleets_fleet_id(fleet_id=f['fleet_id']).result()
-            if 'error' not in fleet:
-                m = c.Fleets.get_fleets_fleet_id_members(fleet_id=f['fleet_id']).result()
-                for char in m:
-                    char_id = char['character_id']
+    # Check if there is a fleet
+    c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
+    f = c.Fleets.get_characters_character_id_fleet(character_id=token.character_id).result()
+    if 'error' not in f:
+        fleet = c.Fleets.get_fleets_fleet_id(fleet_id=f['fleet_id']).result()
+        if 'error' not in fleet:
+            m = c.Fleets.get_fleets_fleet_id_members(fleet_id=f['fleet_id']).result()
+            for char in m:
+                char_id = char['character_id']
 
-
-                ctx = {'form': FatLinkForm, 'term': term, 'hash': hash, 'debug': m}
+            ctx = {'form': FatLinkForm, 'term': term, 'hash': hash, 'debug': m}
 
     return render(request, 'bfat/fleet_add.html', ctx)
 
