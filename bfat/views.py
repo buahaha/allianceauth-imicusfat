@@ -67,6 +67,7 @@ def link_add(request, token):
         fleet = c.Fleets.get_fleets_fleet_id(fleet_id=f['fleet_id']).result()
         if 'error' not in fleet:
             m = c.Fleets.get_fleets_fleet_id_members(fleet_id=f['fleet_id']).result()
+            ch = []
             for char in m:
                 char_id = char['character_id']
                 sol_id = char['solar_system_id']
@@ -79,10 +80,11 @@ def link_add(request, token):
                 ship_name = ship['name']
 
                 character, created = EveCharacter.objects.get_or_create(character_id=char_id)
+                ch.append((character, created))
                 link = FatLink.objects.get(hash=hash)
                 fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
 
-            ctx = {'form': FatLinkForm, 'term': term, 'hash': hash, 'debug': m}
+            ctx = {'form': FatLinkForm, 'term': term, 'hash': hash, 'debug': ch}
 
     return render(request, 'bfat/fleet_add.html', ctx)
 
