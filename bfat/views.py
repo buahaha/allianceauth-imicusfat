@@ -84,6 +84,16 @@ def link_add(request, token):
                     # Create Character
                     character = EveCharacter.objects.create_character(char_id)
                     character = EveCharacter.objects.get(pk=character.pk)
+                    # Make corp and alliance info objects for future sane
+                    if character.alliance_id is not None:
+                        test = EveAllianceInfo.objects.filter(alliance_id=character.alliance_id)
+                        if len(test) == 0:
+                            EveAllianceInfo.objects.create_alliance(character.alliance_id)
+                    else:
+                        test = EveCorporationInfo.objects.filter(corporation_id=character.corporation_id)
+                        if len(test) == 0:
+                            EveCorporationInfo.objects.create_corporation(character.corporation_id)
+
                 else:
                     character = character[0]
                 link = FatLink.objects.get(hash=hash)
