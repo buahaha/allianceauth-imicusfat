@@ -1,8 +1,16 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from allianceauth.authentication.decorators import permissions_required
 import allianceauth.eveonline
 import os
 from django.conf import settings
+from esi.decorators import token_required
+from .models import Fat, FatLink, ManualFat
+from allianceauth.eveonline.models import EveAllianceInfo
+from allianceauth.eveonline.models import EveCharacter
+from allianceauth.eveonline.models import EveCorporationInfo
+from allianceauth.eveonline.providers import provider
+from .forms import FatLinkForm
 
 
 if hasattr(settings, 'FAT_AS_PAP'):
@@ -36,6 +44,32 @@ def bfat_view(request):
 def stats(request):
     pass
 
+
 @login_required()
 def links(request):
+    pass
+
+
+@login_required()
+@permissions_required(('bfat.manage_bfat', 'bfat.addfatlink'))
+@token_required(
+    scopes=['esi-fleets.read_fleet.v1'])
+def add_link(request, token):
+    if request.method == 'POST':
+        # This is where we will actually process making the fat link.
+        pass
+    else:
+        # This is for GET requests.
+        ctx = {'form': FatLinkForm, 'term': term}
+        pass
+    return render(request, 'bfat/add_link.html', ctx)
+
+
+@login_required()
+def edit_link(request):
+    pass
+
+
+@login_required()
+def del_link(request):
     pass

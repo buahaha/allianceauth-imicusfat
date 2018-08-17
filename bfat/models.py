@@ -20,6 +20,9 @@ class FatLink(models.Model):
     def __str__(self):
         return self.hash[6:]
 
+    class Meta:
+        permissions = (('manage_bfat', 'Can manage the bFAT module'),)
+
 
 # PAP/FAT Model
 class Fat(models.Model):
