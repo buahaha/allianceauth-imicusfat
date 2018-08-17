@@ -61,7 +61,7 @@ def link_add(request, token):
     if character:
         # Check if there is a fleet
         c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
-        f = c.Fleets.get_characters_character_id_fleet(character_id=character)
+        f = c.Fleets.get_characters_character_id_fleet(character_id=token.character_id)
         if not f['error']:
             fleet = c.Fleets.get_fleet_fleet_id(fleet_id=f['fleet_id'])
             if not fleet['error']:
