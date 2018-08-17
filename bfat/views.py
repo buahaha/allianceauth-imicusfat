@@ -30,8 +30,9 @@ get_characters_character_id
 get_universe_systems_system_id
 get_universe_types_type_id
 get_search
+get_corporation_corporation_id
+get_alliance_alliance_id
 """
-
 
 # Create your views here.
 @login_required()
@@ -67,7 +68,6 @@ def link_add(request, token):
         fleet = c.Fleets.get_fleets_fleet_id(fleet_id=f['fleet_id']).result()
         if 'error' not in fleet:
             m = c.Fleets.get_fleets_fleet_id_members(fleet_id=f['fleet_id']).result()
-            ch = []
             for char in m:
                 char_id = char['character_id']
                 sol_id = char['solar_system_id']
@@ -79,12 +79,33 @@ def link_add(request, token):
                 sol_name = solar_system['name']
                 ship_name = ship['name']
 
-                character, created = EveCharacter.objects.get_or_create(character_id=char_id)
-                ch.append((character, created))
+                character = EveCharacter.objects.filter(character_id=char_id)
+                if len(character) == 0:
+                    # Create Character
+                    char = c.Character.get_character_character_id(character_id=char_id).result()
+                    corp = c.Corporation.get_corporation_corporation_id(corporation_id=char['corporation_id']).result()
+                    if 'alliance' in corp:
+                        ally = c.Alliance.get_alliance_alliance_id(alliance_id=corp['alliance_id'])
+                        character = EveCharacter(character_id=char_id,
+                                                 character_name=char['name'],
+                                                 corporation_id=char['corporation_id'],
+                                                 corporation_name=corp['name'],
+                                                 corporation_ticker=corp['ticker'],
+                                                 alliance_id=corp['alliance_id'],
+                                                 alliance_name=ally['name'],
+                                                 alliance_ticker=ally['ticker'])
+                    else:
+                        character = EveCharacter(character_id=char_id,
+                                                 character_name=char['name'],
+                                                 corporation_id=char['corporation_id'],
+                                                 corporation_name=corp['name'],
+                                                 corporation_ticker=corp['ticker'])
+                else:
+                    character = character[0]
                 link = FatLink.objects.get(hash=hash)
                 fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
 
-            ctx = {'form': FatLinkForm, 'term': term, 'hash': hash, 'debug': ch}
+            ctx = {'form': FatLinkForm, 'term': term, 'hash': hash, 'debug': m}
 
     return render(request, 'bfat/fleet_add.html', ctx)
 
