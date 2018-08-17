@@ -61,11 +61,11 @@ def link_add(request, token):
     if character:
         # Check if there is a fleet
         c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
-        f = c.Character.get_characters_character_id_fleet(character_id=character)
+        f = c.Fleet.get_characters_character_id_fleet(character_id=character)
         if not f['error']:
-            fleet = c.Character.get_fleet_fleet_id(fleet_id=f['fleet_id'])
+            fleet = c.Fleet.get_fleet_fleet_id(fleet_id=f['fleet_id'])
             if not fleet['error']:
-                m = c.Character.get_fleet_fleet_id_members(fleet_id=f['fleet_id'])
+                m = c.Fleet.get_fleet_fleet_id_members(fleet_id=f['fleet_id'])
 
                 ctx = {'form': FatLinkForm, 'term': term, 'debug': m}
 
