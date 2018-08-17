@@ -28,9 +28,8 @@ get_fleets_fleet_id
 get_fleets_fleet_id_members
 get_characters_character_id
 get_universe_systems_system_id
-get_universe_stations_station_id
-get_universe_structures_structure_id
 get_universe_types_type_id
+get_search
 """
 
 
@@ -54,11 +53,11 @@ def links(request):
 @login_required()
 @permissions_required(('bfat.manage_bfat', 'bfat.addfatlink'))
 @token_required(
-    scopes=['esi-fleets.read_fleet.v1', 'esi-universe.read_structures.v1'])
+    scopes=['esi-fleets.read_fleet.v1'])
 def link_add(request, token):
     # "error": "The fleet does not exist or you don't have access to it!"
     hash = get_random_string(length=30)
-    link = FatLink(fleet=" ", creator=request.user, hash=hash)
+    link = FatLink(fleet=" ", creator=request.user, hash=hash).save()
 
     # Check if there is a fleet
     c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
@@ -69,6 +68,18 @@ def link_add(request, token):
             m = c.Fleets.get_fleets_fleet_id_members(fleet_id=f['fleet_id']).result()
             for char in m:
                 char_id = char['character_id']
+                sol_id = char['solar_system_id']
+                ship_id = char['ship_type_id']
+
+                solar_system = c.Universe.get_universe_systems_system_id(solar_system_id=sol_id).result()
+                ship = c.Universe.get_universe_types_type_id(type_id=ship_id).result()
+
+                sol_name = solar_system['name']
+                ship_name = ship['name']
+
+                character, created = EveCharacter.objects.get_or_create(character_id=char_id)
+
+                fat = Fat(character=character, fatlink=link, system=sol_name, shiptype=ship_name).save()
 
             ctx = {'form': FatLinkForm, 'term': term, 'hash': hash, 'debug': m}
 

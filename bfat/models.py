@@ -28,8 +28,8 @@ class FatLink(models.Model):
 class Fat(models.Model):
     character = models.ForeignKey(EveCharacter, on_delete=models.CASCADE)
     fatlink = models.ForeignKey(FatLink, on_delete=models.CASCADE)
-    system = models.CharField(max_length=30)
-    shiptype = models.CharField(max_length=30)
+    system = models.CharField(max_length=100, null=True)
+    shiptype = models.CharField(max_length=100, null=True)
 
     class Meta:
         unique_together = (('character', 'fatlink'),)
