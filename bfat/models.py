@@ -30,7 +30,6 @@ class Fat(models.Model):
     fatlink = models.ForeignKey(FatLink, on_delete=models.CASCADE)
     system = models.CharField(max_length=30)
     shiptype = models.CharField(max_length=30)
-    station = models.CharField(max_length=125)
 
     class Meta:
         unique_together = (('character', 'fatlink'),)
