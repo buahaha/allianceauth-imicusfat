@@ -7,7 +7,7 @@
         <br>
         {% include "bfat/menu.html" %}
         <h2>{% trans "Create" %} {{ term }}{% trans "Link" %}</h2>
-            <form ation="{% url 'bfat_link_add' %}" method="POST">
+            <form ation="{% url 'bfat_link_add' %}" method="PUT">
                 {% csrf_token %}
                 {{ form }}
             </form>

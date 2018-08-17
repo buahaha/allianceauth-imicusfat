@@ -55,12 +55,11 @@ def links(request):
 @token_required(
     scopes=['esi-fleets.read_fleet.v1'])
 def add_link(request, token):
-    if request.method == 'POST':
-        # This is where we will actually process making the fat link.
+    if request.method == "POST":
+        ctx = {'form': FatLinkForm, 'term': term}
+    elif request.method == "PUT":
         pass
     else:
-        # This is for GET requests.
-        ctx = {'form': FatLinkForm, 'term': term}
         pass
     return render(request, 'bfat/add_link.html', ctx)
 
