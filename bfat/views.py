@@ -94,12 +94,14 @@ def link_add(request, token):
                                                  alliance_id=corp['alliance_id'],
                                                  alliance_name=ally['name'],
                                                  alliance_ticker=ally['ticker'])
+                        character.save()
                     else:
                         character = EveCharacter(character_id=char_id,
                                                  character_name=char['name'],
                                                  corporation_id=char['corporation_id'],
                                                  corporation_name=corp['name'],
                                                  corporation_ticker=corp['ticker'])
+                        character.save()
                 else:
                     character = character[0]
                 link = FatLink.objects.get(hash=hash)
