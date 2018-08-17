@@ -82,7 +82,7 @@ def link_add(request, token):
                 character = EveCharacter.objects.filter(character_id=char_id)
                 if len(character) == 0:
                     # Create Character
-                    char = c.Character.get_character_character_id(character_id=char_id).result()
+                    char = c.Character.get_characters_character_id(character_id=char_id).result()
                     corp = c.Corporation.get_corporation_corporation_id(corporation_id=char['corporation_id']).result()
                     if 'alliance' in corp:
                         ally = c.Alliance.get_alliance_alliance_id(alliance_id=corp['alliance_id'])
