@@ -82,26 +82,8 @@ def link_add(request, token):
                 character = EveCharacter.objects.filter(character_id=char_id)
                 if len(character) == 0:
                     # Create Character
-                    char = c.Character.get_characters_character_id(character_id=char_id).result()
-                    corp = c.Corporation.get_corporations_corporation_id(corporation_id=char['corporation_id']).result()
-                    if 'alliance' in corp:
-                        ally = c.Alliance.get_alliances_alliance_id(alliance_id=corp['alliance_id'])
-                        character = EveCharacter(character_id=char_id,
-                                                 character_name=char['name'],
-                                                 corporation_id=char['corporation_id'],
-                                                 corporation_name=corp['name'],
-                                                 corporation_ticker=corp['ticker'],
-                                                 alliance_id=corp['alliance_id'],
-                                                 alliance_name=ally['name'],
-                                                 alliance_ticker=ally['ticker'])
-                        character.save()
-                    else:
-                        character = EveCharacter(character_id=char_id,
-                                                 character_name=char['name'],
-                                                 corporation_id=char['corporation_id'],
-                                                 corporation_name=corp['name'],
-                                                 corporation_ticker=corp['ticker'])
-                        character.save()
+                    character = EveCharacter.objects.create_character(char_id)
+                    character = EveCharacter.objects.get(pk=character.pk)
                 else:
                     character = character[0]
                 link = FatLink.objects.get(hash=hash)
