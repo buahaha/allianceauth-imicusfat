@@ -11,6 +11,7 @@ from allianceauth.eveonline.models import EveCharacter
 from allianceauth.eveonline.models import EveCorporationInfo
 from allianceauth.eveonline.providers import provider
 from .forms import FatLinkForm
+from django.utils.crypto import get_random_string
 
 
 if hasattr(settings, 'FAT_AS_PAP'):
@@ -53,21 +54,25 @@ def links(request):
 @login_required()
 @permissions_required(('bfat.manage_bfat', 'bfat.addfatlink'))
 @token_required(
-    scopes=['esi-fleets.read_fleet.v1'])
+    scopes=['esi-fleets.read_fleet.v1', 'esi-universe.read_structures.v1'])
 def link_add(request, token):
     # "error": "The fleet does not exist or you don't have access to it!"
-    character = EveCharacter.objects.get_character_by_id(token.character_id)
+    hash = get_random_string(length=30)
+    link = FatLink(fleet=" ", creator=request.user, hash=hash)
 
     if character:
         # Check if there is a fleet
         c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
         f = c.Fleets.get_characters_character_id_fleet(character_id=token.character_id).result()
-        if not 'error' in f:
+        if 'error' not in f:
             fleet = c.Fleets.get_fleets_fleet_id(fleet_id=f['fleet_id']).result()
-            if not 'error' in fleet:
+            if 'error' not in fleet:
                 m = c.Fleets.get_fleets_fleet_id_members(fleet_id=f['fleet_id']).result()
+                for char in m:
+                    char_id = char['character_id']
 
-                ctx = {'form': FatLinkForm, 'term': term, 'debug': m}
+
+                ctx = {'form': FatLinkForm, 'term': term, 'hash': hash, 'debug': m}
 
     return render(request, 'bfat/fleet_add.html', ctx)
 
