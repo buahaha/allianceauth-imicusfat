@@ -57,7 +57,8 @@ def links(request):
 def link_add(request, token):
     # "error": "The fleet does not exist or you don't have access to it!"
     hash = get_random_string(length=30)
-    link = FatLink(fleet=" ", creator=request.user, hash=hash).save()
+    link = FatLink(fleet=" ", creator=request.user, hash=hash)
+    link.save()
 
     # Check if there is a fleet
     c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
@@ -78,7 +79,7 @@ def link_add(request, token):
                 ship_name = ship['name']
 
                 character, created = EveCharacter.objects.get_or_create(character_id=char_id)
-
+                link = FatLink.objects.get(hash=hash)
                 fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
 
             ctx = {'form': FatLinkForm, 'term': term, 'hash': hash, 'debug': m}
