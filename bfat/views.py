@@ -113,7 +113,7 @@ def link_add(request, token):
 def edit_link(request, hash=None):
     link = FatLink.objects.get(hash=hash)
     msg = None
-    if request.session['{}-creation-code'.format(hash)] in request.session:
+    if '{}-creation-code'.format(hash) in request.session:
         msg = request.session.pop('{}-creation-code'.format(hash))
     ctx = {'form': FatLinkForm, 'msg': msg}
     return render(request, 'bfat/fleet_edit.html', ctx)
