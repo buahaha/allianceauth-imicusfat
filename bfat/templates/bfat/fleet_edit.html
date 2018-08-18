@@ -109,9 +109,13 @@
                         <form class="form" role="form" action="" method="POST">
                             {% csrf_token %}
                             <input type="text" class="form-control" id="character_name" placeholder="Character Name">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="location" placeholder="System">
-                                <input type="text" class="form-control" id="ship" placeholder="Ship Type">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" id="location" placeholder="System">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" id="shiptype" placeholder="Ship Type">
+                                </div>
                             </div>
                             <button class="btn btn-primary btn-block" type="submit" name="manual_fat">Add Manual {{ term }}</button>
                         </form>
