@@ -99,11 +99,11 @@ def link_add(request, token):
                 link = FatLink.objects.get(hash=hash)
                 fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
 
-            return redirect('edit_link', hash=hash, msg=200)
+            return redirect('bfat:link_edit', hash=hash, msg=200)
         except:
-            return redirect('edit_link', hash=hash, msg=403)
+            return redirect('bfat:link_edit', hash=hash, msg=403)
     except:
-        return redirect('edit_link', hash=hash, msg=404)
+        return redirect('bfat:link_edit', hash=hash, msg=404)
 
 
 @login_required()
