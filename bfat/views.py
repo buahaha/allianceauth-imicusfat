@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from allianceauth.authentication.decorators import permissions_required
 import allianceauth.eveonline
@@ -98,15 +98,19 @@ def link_add(request, token):
                     character = character[0]
                 link = FatLink.objects.get(hash=hash)
                 fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
-
-            ctx = {'form': FatLinkForm, 'term': term, 'hash': hash, 'debug': m}
-
-    return render(request, 'bfat/fleet_add.html', ctx)
+            return redirect('link_edit', hash=hash, msg=200)
+        else:
+            return redirect('link_edit', hash=hash, msg=403)
+    else:
+        return redirect('link_edit', hash=hash, msg=404)
 
 
 @login_required()
-def edit_link(request):
-    pass
+def edit_link(request, hash, msg=None):
+    link = FatLink.objects.get(hash=hash)
+
+    ctx = {'msg': msg}
+    return render(request, 'bfat/fleet_edit.html', ctx)
 
 
 @login_required()
