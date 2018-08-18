@@ -55,13 +55,13 @@
                             </div>
                         </form>
                         <div class="col-md-2">Creator: {{ link.creator.main_character.character_name }}</div>
-                        <div class="col-md-2 col-md-offset-8">Time: {{ link.fattime }}</div>
+                        <div class="col-md-2 col-md-offset-9">Time: {{ link.fattime }}</div>
                     </div>
                 </div>
             <ul class="nav nav-tabs">
-                <li class="active"><a class="tab" href="#{{ term }}s">{{ term }}s</a></li>
-                <li><a class="tab" href="#flatlist">Flat List</a></li>
-                <li><a class="tab" href="#manualfat">Manual {{ term }}</a></li>
+                <li class="active"><a data-toggle="tab" class="tab" href="#{{ term }}s">{{ term }}s</a></li>
+                <li><a data-toggle="tab" class="tab" href="#flatlist">Flat List</a></li>
+                <li><a data-toggle="tab" class="tab" href="#manualfat">Manual {{ term }}</a></li>
             </ul>
             <div class="tab-content">
                 <div id="{{ term }}s" class="tab-pane fade in active panel-default">
