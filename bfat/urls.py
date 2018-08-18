@@ -9,5 +9,5 @@ urlpatterns = [
     url(r'^stats/$', views.stats, name='stats'),
     url(r'^links/$', views.links, name='links'),
     url(r'^links/add/$', views.link_add, name='link_add'),
-    url(r'^links/edit/(?P<hash>[a-zA-Z0-9]+)/$', views.edit_link, name="link_edit"),
+    url(r'^links/(?P<hash>[a-zA-Z0-9]+)/edit/$', views.edit_link, name="link_edit"),
 ]

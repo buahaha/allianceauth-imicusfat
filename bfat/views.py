@@ -99,17 +99,22 @@ def link_add(request, token):
                 link = FatLink.objects.get(hash=hash)
                 fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
 
-            return redirect('bfat:link_edit', hash=hash, msg=200)
+            request.session['{}-creation-code'.format(hash)] = 200
+            return redirect('bfat:link_edit', hash=hash)
         except:
-            return redirect('bfat:link_edit', hash=hash, msg=403)
+            request.session['{}-creation-code'.format(hash)] = 403
+            return redirect('bfat:link_edit', hash=hash)
     except:
-        return redirect('bfat:link_edit', hash=hash, msg=404)
+        request.session['{}-creation-code'.format(hash)] = 404
+        return redirect('bfat:link_edit', hash=hash)
 
 
 @login_required()
-def edit_link(request, hash, msg=None):
+def edit_link(request, hash=None):
     link = FatLink.objects.get(hash=hash)
-
+    msg = None
+    if request.session['{}-creation-code'.format(hash)] in request.session:
+        msg = request.session.pop('{}-creation-code'.format(hash))
     ctx = {'msg': msg}
     return render(request, 'bfat/fleet_edit.html', ctx)
 
