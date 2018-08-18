@@ -18,18 +18,18 @@
                     <ul class="nav nav-pills">
                         {% for char in fats %}
                             {% if forloop.first %}
-                                <li class="active"><a data-toggle="tab" href="#{{ char.0 }}">{{ char.0 }}</a></li>
+                                <li class="active"><a data-toggle="tab" href="#{{ char.0|cut:" " }}">{{ char.0 }}</a></li>
                             {% else %}
-                                <li><a data-toggle="tab" href="#{{ char.0 }}">{{ char.0 }}</a></li>
+                                <li><a data-toggle="tab" href="#{{ char.0|cut:" " }}">{{ char.0 }}</a></li>
                             {% endif %}
                         {% endfor %}
                     </ul>
                     <div class="tab-content">
                         {% for char in fats %}
                             {% if forloop.first %}
-                                <div id="{{ char.0 }}" class="tab-pane fade in active panel-default">
+                                <div id="{{ char.0|cut:" " }}" class="tab-pane fade in active panel-default">
                             {% else %}
-                                <div id="{{ char.0 }}" class="tab-pane fade active panel-default">
+                                <div id="{{ char.0|cut:" " }}" class="tab-pane fade active panel-default">
                             {% endif %}
                             <div class="panel-body">
                                 <h4>{{ char.0 }}</h4>
