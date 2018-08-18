@@ -33,15 +33,20 @@
                 </div>
             {% endif %}
             <h2>{% trans "Edit" %} {{ term }}{% trans "Link" %}</h2>
-                <div class="col-md-4 col-md-offset-4">
+                <div class="col-md-12">
                     <div class="row">
-                        <form class="form-inline" role="form" action="" method="POST">
+                        <form class="form" role="form" action="" method="POST">
                             {% csrf_token %}
-                            <div class="form-group">
-                                <label class="sr-only" for="fatlinkname">Name</label>
-                                <input type="text" class="form-control" id="fatlinkname" placeholder="Name">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Name">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="submit" name="set_name">Set Name</button>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                            <button type="submit" class="btn btn-md btn-primary btn-block" name="set_name">Set Name</button>
                         </form>
                     </div>
                 </div>
