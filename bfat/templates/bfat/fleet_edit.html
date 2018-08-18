@@ -54,8 +54,8 @@
                                 </div>
                             </div>
                         </form>
-                        <div class="col-md-2">Creator: {{ link.creator.main_character.character_name }}</div>
-                        <div class="col-md-2 col-md-offset-9">Time: {{ link.fattime }}</div>
+                        <div class="col-md-2">Creator: {{ link.creator.profile.main_charactor.character_name }}</div>
+                        <div class="col-md-2 col-md-offset-8">Time: {{ link.fattime }}</div>
                     </div>
                 </div>
             <ul class="nav nav-tabs">
@@ -92,7 +92,10 @@
                         <h4>Flat List Input</h4>
                         <form class="form-signin" role="form" action="" method="POST">
                             {% csrf_token %}
-                            <textarea rows="40"></textarea>
+                            <div class="form-group">
+                                <label for="flatlist">FlatList:</label>
+                                <textarea class="form-control" rows="10" id="flatlist"></textarea>
+                            </div>
                             <br />
                             <button class="btn btn-primary btn-block" type="submit" name="submit_flatlist">Submit Flat List</button>
                         </form>
