@@ -63,10 +63,10 @@ def link_add(request, token):
 
     # Check if there is a fleet
     c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
-    f = c.Fleets.get_characters_character_id_fleet(character_id=token.character_id).result()
-    if 'error' not in f:
-        fleet = c.Fleets.get_fleets_fleet_id(fleet_id=f['fleet_id']).result()
-        if 'error' not in fleet:
+    try:
+        f = c.Fleets.get_characters_character_id_fleet(character_id=token.character_id).result()
+        try:
+            fleet = c.Fleets.get_fleets_fleet_id(fleet_id=f['fleet_id']).result()
             m = c.Fleets.get_fleets_fleet_id_members(fleet_id=f['fleet_id']).result()
             for char in m:
                 char_id = char['character_id']
@@ -98,10 +98,11 @@ def link_add(request, token):
                     character = character[0]
                 link = FatLink.objects.get(hash=hash)
                 fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
+
             return redirect('link_edit', hash=hash, msg=200)
-        else:
+        except:
             return redirect('link_edit', hash=hash, msg=403)
-    else:
+    except:
         return redirect('link_edit', hash=hash, msg=404)
 
 
