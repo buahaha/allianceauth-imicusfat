@@ -93,7 +93,6 @@
                         <form class="form-signin" role="form" action="" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
-                                <label for="flatlist">FlatList:</label>
                                 <textarea class="form-control" rows="10" id="flatlist"></textarea>
                             </div>
                             <br />
@@ -107,6 +106,15 @@
                         <p> Is someone missing from the list of {{ term }}s? Use this form to add them.
                         <br />
                         <strong>Note:</strong> This action is logged!</p>
+                        <form class="form" role="form" action="" method="POST">
+                            {% csrf_token %}
+                            <input type="text" class="form-control" id="character_name" placeholder="Character Name">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="location" placeholder="System">
+                                <input type="text" class="form-control" id="ship" placeholder="Ship Type">
+                            </div>
+                            <button class="btn btn-primary btn-block" type="submit" name="manual_fat">Add Manual {{ term }}</button>
+                        </form>
                     </div>
                 </div>
             </div>
