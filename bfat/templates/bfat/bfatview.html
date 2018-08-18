@@ -38,6 +38,7 @@
                                         <th>Fleet Name</th>
                                         <th>Location</th>
                                         <th>Ship</th>
+                                        <th>EVE Time</th>
                                     </thead>
                                     <tbody>
                                         {% for fat in char|slice:"1:" %}
@@ -45,6 +46,7 @@
                                                 <td>{% if fat.fatlink.fleet %}{{ fat.fatlink.fleet }}{% else %}{{ fat.fatlink.hash }}{% endif %}</td>
                                                 <td>{{ fat.system }}</td>
                                                 <td>{{ fat.shiptype }}</td>
+                                                <td>{{ fat.fatlink.fattime }}</td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>

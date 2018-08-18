@@ -41,7 +41,7 @@ def bfat_view(request):
     chars = CharacterOwnership.objects.filter(user=request.user)
     fats = []
     for char in chars:
-        fat = Fat.objects.filter(character=char.character).order_by('fatlink__fattime').reverse()
+        fat = Fat.objects.filter(character=char.character).order_by('fatlink__fattime').reverse()[:30]
         char_1 = [char.character.character_name]
         for f in fat:
             char_1.append(f)
