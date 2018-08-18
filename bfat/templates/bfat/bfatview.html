@@ -65,6 +65,24 @@
             <div id="fatlinks" class="tab-panel fade active panel-default">
                 <div class="panel-body">
                     <h4> Most Recent {{ term }} Links (limit 10)</h4>
+                    <table>
+                        <thead>
+                            <th>Fleet Name</th>
+                            <th>Creator</th>
+                            <th>EVE Time</th>
+                            <th>Utils</th>
+                        </thead>
+                        <tbody>
+                            {% for link in links %}
+                                <tr>
+                                    <td>{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}</td>
+                                    <td>{{ link.creator }}</td>
+                                    <td>{{ link.fattime }}</td>
+                                    <td><a class="btn btn-info" href="{% url 'bfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
