@@ -68,7 +68,7 @@ def links(request):
 def link_add(request, token):
     # "error": "The fleet does not exist or you don't have access to it!"
     hash = get_random_string(length=30)
-    link = FatLink(fleet=" ", creator=request.user, hash=hash)
+    link = FatLink(fleet=None, creator=request.user, hash=hash)
     link.save()
 
     # Check if there is a fleet

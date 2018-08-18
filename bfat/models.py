@@ -13,7 +13,7 @@ def get_sentinel_user():
 # FatLink Model
 class FatLink(models.Model):
     fattime = models.DateTimeField(default=timezone.now)
-    fleet = models.CharField(max_length=254)
+    fleet = models.CharField(max_length=254, null=True)
     hash = models.CharField(max_length=254)
     creator = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
 

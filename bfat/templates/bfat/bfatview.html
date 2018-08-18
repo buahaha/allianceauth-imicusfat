@@ -36,15 +36,13 @@
                                 <table class="table">
                                     <thead>
                                         <th>Fleet Name</th>
-                                        <th>Hash</th>
                                         <th>Location</th>
                                         <th>Ship</th>
                                     </thead>
                                     <tbody>
                                         {% for fat in char|slice:"1:" %}
                                             <tr>
-                                                <td>{{ fat.fatlink.fleet }}</td>
-                                                <td>{{ fat.fatlink.hash }}</td>
+                                                <td>{% if fat.fatlink.fleet %}{{ fat.fatlink.fleet }}{% else %}{{ fat.fatlink.hash }}{% endif %}</td>
                                                 <td>{{ fat.system }}</td>
                                                 <td>{{ fat.shiptype }}</td>
                                             </tr>
