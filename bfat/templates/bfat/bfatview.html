@@ -17,12 +17,24 @@
                     <h4> Your Most Recent {{ term }}s </h4>
                     <ul class="nav nav-pills">
                         {% for char in fats %}
-                        <li><a data-toggle="tab" href="#{{ char.0 }}">{{ char.0 }}</a></li>
+                            {% if forloop.first %}
+                                <li class="active"><a data-toggle="tab" href="#{{ char.0 }}">{{ char.0 }}</a></li>
+                            {% else %}
+                                <li><a data-toggle="tab" href="#{{ char.0 }}">{{ char.0 }}</a></li>
+                            {% endif %}
                         {% endfor %}
                     </ul>
-                    {% for char in fats %}
-
-                    {% endfor %}
+                    <div class="tab-content">
+                        {% for char in fats %}
+                            {% if forloop.first %}
+                                <div id="{{ char.0 }}" class="tab-pane fade in active panel-default">
+                            {% else %}
+                                <div id="{{ char.0 }}" class="tab-pane fade active panel-default">
+                            {% endif %}
+                            <h4>{{ char.0 }}</h4>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             <div id="fatlinks" class="tab-panel fade active panel-default">
