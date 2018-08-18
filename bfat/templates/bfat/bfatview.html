@@ -32,7 +32,30 @@
                                 <div id="{{ char.0|cut:" " }}" class="tab-pane fade active panel-default">
                             {% endif %}
                             <div class="panel-body">
-                                <h4>{{ char.0 }}</h4>
+                            {% if char|slice:"1:"|length > 0 %}
+                                <table class="table">
+                                    <thead>
+                                        <th>Fleet Name</th>
+                                        <th>Hash</th>
+                                        <th>Location</th>
+                                        <th>Ship</th>
+                                    </thead>
+                                    <tbody>
+                                        {% for fat in char|slice:"1:" %}
+                                            <tr>
+                                                <td>{{ fat.FatLink.fleet }}</td>
+                                                <td>{{ fat.FatLink.hash }}</td>
+                                                <td>{{ fat.system }}</td>
+                                                <td>{{ fat.shiptype }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <div class="alert alert-warning" role="alert">
+                                    <p>No {{ term }}s for {{ char.0 }}</p>
+                                </div>
+                            {% endif %}
                             </div>
                         </div>
                         {% endfor %}
