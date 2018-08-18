@@ -10,6 +10,7 @@ from allianceauth.eveonline.models import EveAllianceInfo
 from allianceauth.eveonline.models import EveCharacter
 from allianceauth.eveonline.models import EveCorporationInfo
 from allianceauth.eveonline.providers import provider
+from allianceauth.authentication.models import CharacterOwnership
 from .forms import FatLinkForm
 from django.utils.crypto import get_random_string
 
@@ -37,7 +38,16 @@ get_alliance_alliance_id
 # Create your views here.
 @login_required()
 def bfat_view(request):
-    ctx = {'term': term}
+    chars = CharacterOwnership.objects.filter(user=request.user)
+    fats = []
+    for char in chars:
+        fat = Fat.objects.filter(character=char.character).order_by('fatlink__fattime').reverse()
+        char_1 = [char.character.character_name]
+        for f in fat:
+            char_1.append(f)
+        fats.append(char_1)
+    links = FatLink.objects.order_by('fattime').reverse()[:10]
+    ctx = {'term': term, 'fats': fats, 'links': links}
     return render(request, 'bfat/bfatview.html', ctx)
 
 
