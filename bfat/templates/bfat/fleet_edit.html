@@ -13,11 +13,9 @@
                         <span aria-hidden="true">&times</span>
                     </button>
                     <h4>Success!</h4>
-                    <p>{{ term }}Link Created!
-                        <br />
-                        {{ term }}s have been queued, they may take a few mins to show up.
-                        <br />
-                        Make sure to set the fleet name!</p>
+                    <p>&#9642; {{ term }}Link Created!</p>
+                    <p>&#9642; {{ term }}s have been queued, they may take a few mins to show up.</p>
+                    <p>&#9642; Make sure to set the fleet name!</p>
                 </div>
             {% elif msg == 403 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
@@ -25,9 +23,8 @@
                         <span aria-hidden="true">&times</span>
                     </button>
                     <h4>Not Fleet Boss!</h4>
-                    <p>{{ term }}Link created. Please upload a flatlist using the flatlist tab to generate {{ term }}s for fleet members.
-                    <br />
-                    Make sure to set the fleet name!</p>
+                    <p>&#9642; {{ term }}Link created. Please upload a flatlist using the flatlist tab to generate {{ term }}s for fleet members.</p>
+                    <p>&#9642; Make sure to set the fleet name!</p>
                 </div>
             {% elif msg == 404 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
@@ -35,9 +32,8 @@
                         <span aria-hidden="true">&times</span>
                     </button>
                     <h4>Not in Fleet!</h4>
-                    <p>{{ term }}Link created. The character used to create this {{ term }}Link is not in a fleet. In order to generate {{ term }}s for fleet members, please upload a flatlist using the flatlist tab.
-                    <br />
-                    Make sure to set the fleet name!</p>
+                    <p>&#9642; {{ term }}Link created. The character used to create this {{ term }}Link is not in a fleet. In order to generate {{ term }}s for fleet members, please upload a flatlist using the flatlist tab.</p>
+                    <p>&#9642; Make sure to set the fleet name!</p>
                 </div>
             {% elif msg == 0 %}
             <div class="alert alert-danger alert-dismissible" role="alert">
@@ -61,7 +57,8 @@
                     <span aria-hidden="true">&times</span>
                 </button>
                 <h4>Success!</h4>
-                <p>{{ term }}s successfully queued from flatlist. <br /> {{ term }}s may take a few mins to show up.</p>
+                <p>&#9642; {{ term }}s successfully queued from flatlist.</p>
+                <p>&#9642; {{ term }}s may take a few mins to show up.</p>
             </div>
             {% elif msg == 3 %}
                 <div class="alert alert-success alert-dismissible" role="alert">
@@ -140,6 +137,7 @@
                 <div id="flatlist" class="tab-pane fade in panel-default">
                     <div class="panel-body">
                         <h4>Flat List Input</h4>
+                        <p> Please keep in mind that processing flat lists may take a few minutes.</p>
                         <form class="form-signin" role="form" action="" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
