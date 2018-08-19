@@ -112,7 +112,7 @@ def edit_link(request, hash=None):
             system = form['system']
             shiptype = form['shiptype']
             creator = request.user
-            character = get_or_create_char(character_name)
+            character = get_or_create_char(name=character_name)
             if character is not None:
                 fat = Fat(fatlink_id=link.pk, character=character, system=system, shiptype=shiptype).save()
                 ManualFat(fatlink_id=link.pk, creator=creator, character=character).save()

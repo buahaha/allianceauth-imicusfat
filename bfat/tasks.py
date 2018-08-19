@@ -3,6 +3,9 @@ from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorp
 import os
 from .models import Fat, FatLink
 from celery import shared_task
+import logging
+
+logger = logging.getLogger(__name__)
 
 SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.json')
 
@@ -69,7 +72,7 @@ def process_fats(list, type, hash):
             # Came from fleet comp
             for line in list:
                 data = line.split("\t")
-                character = get_or_create_char(data[0].strip(" "))
+                character = get_or_create_char(name=data[0].strip(" "))
                 system = data[1].strip(" (Docked)")
                 shiptype = data[2]
                 if character is not None:
@@ -77,7 +80,7 @@ def process_fats(list, type, hash):
         else:
             # Came from chat window
             for char in list:
-                character = get_or_create_char(char.strip(" "))
+                character = get_or_create_char(name=char.strip(" "))
                 if character is not None:
                     fat = Fat(fatlink_id=link.pk, character=character).save()
     elif type == 'eve':
@@ -91,6 +94,6 @@ def process_fats(list, type, hash):
 
             sol_name = solar_system['name']
             ship_name = ship['name']
-            character = get_or_create_char(char_id)
+            character = get_or_create_char(id=char_id)
             link = FatLink.objects.get(hash=hash)
             fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
