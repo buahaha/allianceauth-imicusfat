@@ -134,6 +134,7 @@ def edit_link(request, hash=None):
             request.session['{}-task-code'.format(hash)] = 1
         elif f2.is_valid():
             # Process flat list here.
+            debug = request.POST
             pass
         elif f3.is_valid():
             form = request.POST
@@ -144,27 +145,30 @@ def edit_link(request, hash=None):
             c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
             results = c.Search.get_search(categories=['character'], search=character_name, strict=True).result()
             character_id = results['character'][0]
-            character = EveCharacter.objects.filter(character_id=character_id)
-            if len(character) == 0:
-                # Create Character
-                character = EveCharacter.objects.create_character(char_id)
-                character = EveCharacter.objects.get(pk=character.pk)
-                # Make corp and alliance info objects for future sane
-                if character.alliance_id is not None:
-                    test = EveAllianceInfo.objects.filter(alliance_id=character.alliance_id)
-                    if len(test) == 0:
-                        EveAllianceInfo.objects.create_alliance(character.alliance_id)
+            if 'character' in results:
+                character = EveCharacter.objects.filter(character_id=character_id)
+                if len(character) == 0:
+                    # Create Character
+                    character = EveCharacter.objects.create_character(char_id)
+                    character = EveCharacter.objects.get(pk=character.pk)
+                    # Make corp and alliance info objects for future sane
+                    if character.alliance_id is not None:
+                        test = EveAllianceInfo.objects.filter(alliance_id=character.alliance_id)
+                        if len(test) == 0:
+                            EveAllianceInfo.objects.create_alliance(character.alliance_id)
+                    else:
+                        test = EveCorporationInfo.objects.filter(corporation_id=character.corporation_id)
+                        if len(test) == 0:
+                            EveCorporationInfo.objects.create_corporation(character.corporation_id)
+
                 else:
-                    test = EveCorporationInfo.objects.filter(corporation_id=character.corporation_id)
-                    if len(test) == 0:
-                        EveCorporationInfo.objects.create_corporation(character.corporation_id)
+                    character = character[0]
 
+                fat = Fat(fatlink_id=link.pk, character=character, system=system, shiptype=shiptype).save()
+                ManualFat(fatlink_id=link.pk, creator=creator, character=character).save()
+                request.session['{}-task-code'.format(hash)] = 3
             else:
-                character = character[0]
-
-            fat = Fat(fatlink_id=link.pk, character=character, system=system, shiptype=shiptype).save()
-            ManualFat(fatlink_id=link.pk, creator=creator, character=character).save()
-            request.session['{}-task-code'.format(hash)] = 3
+                request.session['{}-task-code'.format(hash)] = 4
         else:
             request.session['{}-task-code'.format(hash)] = 0
     msg = None
