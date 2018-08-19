@@ -1,19 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from allianceauth.authentication.decorators import permissions_required
-import allianceauth.eveonline
 import os
 from django.conf import settings
 from esi.decorators import token_required
-from esi.clients import esi_client_factory
 from .models import Fat, FatLink, ManualFat
-from allianceauth.eveonline.models import EveAllianceInfo
-from allianceauth.eveonline.models import EveCharacter
-from allianceauth.eveonline.models import EveCorporationInfo
-from allianceauth.eveonline.providers import provider
+from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
 from allianceauth.authentication.models import CharacterOwnership
 from .forms import FatLinkForm, ManualFatForm, FlatListForm
 from django.utils.crypto import get_random_string
+from .tasks import get_or_create_char, NoDataError
 
 
 if hasattr(settings, 'FAT_AS_PAP'):
@@ -89,24 +85,7 @@ def link_add(request, token):
 
                 sol_name = solar_system['name']
                 ship_name = ship['name']
-
-                character = EveCharacter.objects.filter(character_id=char_id)
-                if len(character) == 0:
-                    # Create Character
-                    character = EveCharacter.objects.create_character(char_id)
-                    character = EveCharacter.objects.get(pk=character.pk)
-                    # Make corp and alliance info objects for future sane
-                    if character.alliance_id is not None:
-                        test = EveAllianceInfo.objects.filter(alliance_id=character.alliance_id)
-                        if len(test) == 0:
-                            EveAllianceInfo.objects.create_alliance(character.alliance_id)
-                    else:
-                        test = EveCorporationInfo.objects.filter(corporation_id=character.corporation_id)
-                        if len(test) == 0:
-                            EveCorporationInfo.objects.create_corporation(character.corporation_id)
-
-                else:
-                    character = character[0]
+                character = get_or_create_char(char_id)
                 link = FatLink.objects.get(hash=hash)
                 fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
 
@@ -135,37 +114,38 @@ def edit_link(request, hash=None):
         elif f2.is_valid():
             # Process flat list here.
             flatlist = request.POST['flatlist']
-            formatted = flatlist.split("\r\n")
-            debug = formatted
-            pass
+            formatted = flatlist.replace("\r", "").split("\n")
+            task_code = None
+            if len(formatted[0]) > 40:
+                # Came from fleet comp
+                for line in formatted:
+                    data = line.split("\t")
+                    character = get_or_create_char(data[0].strip(" "))
+                    system = data[1].strip(" (Docked)")
+                    shiptype = data[2]
+                    if character is not None:
+                        fat = Fat(fatlink_id=link.pk, character=character, system=system, shiptype=shiptype)
+                    else:
+                        task_code = 21
+            else:
+                # Came from chat window
+                for char in formatted:
+                    character = get_or_create_char(char.strip(" "))
+                    if character is not None:
+                        fat = Fat(fatlink_id=link.pk, character=character).save()
+                    else:
+                        task_code = 21
+            if task_code is None:
+                task_code = 2
+            request.session['{}-task-code'.format(hash)] = task_code
         elif f3.is_valid():
             form = request.POST
             character_name = form['character']
             system = form['system']
             shiptype = form['shiptype']
             creator = request.user
-            c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
-            results = c.Search.get_search(categories=['character'], search=character_name, strict=True).result()
-            character_id = results['character'][0]
-            if 'character' in results:
-                character = EveCharacter.objects.filter(character_id=character_id)
-                if len(character) == 0:
-                    # Create Character
-                    character = EveCharacter.objects.create_character(char_id)
-                    character = EveCharacter.objects.get(pk=character.pk)
-                    # Make corp and alliance info objects for future sane
-                    if character.alliance_id is not None:
-                        test = EveAllianceInfo.objects.filter(alliance_id=character.alliance_id)
-                        if len(test) == 0:
-                            EveAllianceInfo.objects.create_alliance(character.alliance_id)
-                    else:
-                        test = EveCorporationInfo.objects.filter(corporation_id=character.corporation_id)
-                        if len(test) == 0:
-                            EveCorporationInfo.objects.create_corporation(character.corporation_id)
-
-                else:
-                    character = character[0]
-
+            character = get_or_create_char(character_name)
+            if character is not None:
                 fat = Fat(fatlink_id=link.pk, character=character, system=system, shiptype=shiptype).save()
                 ManualFat(fatlink_id=link.pk, creator=creator, character=character).save()
                 request.session['{}-task-code'.format(hash)] = 3
