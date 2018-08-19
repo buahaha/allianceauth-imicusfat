@@ -11,7 +11,7 @@ from allianceauth.eveonline.models import EveCharacter
 from allianceauth.eveonline.models import EveCorporationInfo
 from allianceauth.eveonline.providers import provider
 from allianceauth.authentication.models import CharacterOwnership
-from .forms import FatLinkForm
+from .forms import FatLinkForm, ManualFatForm, FlatListForm
 from django.utils.crypto import get_random_string
 
 
@@ -121,10 +121,19 @@ def link_add(request, token):
 
 @login_required()
 def edit_link(request, hash=None):
+    link = FatLink.objects.get(hash=hash)
     debug = None
     if request.method == "POST":
-        debug = request.POST
-    link = FatLink.objects.get(hash=hash)
+        f1 = FatLinkForm(request.POST)
+        f2 = FlatListForm(request.POST)
+        f3 = ManualFatForm(request.POST)
+        if f1.is_valid():
+            link.fleet = f1.fleet
+            link.save()
+        elif f2.is_valid():
+            pass
+        elif f3.is_valid():
+            pass
     msg = None
     if '{}-creation-code'.format(hash) in request.session:
         msg = request.session.pop('{}-creation-code'.format(hash))
