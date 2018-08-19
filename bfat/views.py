@@ -91,6 +91,7 @@ def link_add(request, token):
 @login_required()
 def edit_link(request, hash=None):
     link = FatLink.objects.get(hash=hash)
+    debug = None
     if request.method == "POST":
         f1 = FatLinkForm(request.POST)
         f2 = FlatListForm(request.POST)
