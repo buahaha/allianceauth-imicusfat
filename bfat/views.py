@@ -128,7 +128,7 @@ def edit_link(request, hash=None):
         f2 = FlatListForm(request.POST)
         f3 = ManualFatForm(request.POST)
         if f1.is_valid():
-            link.fleet = f1.fleet
+            link.fleet = request.POST['fleet']
             link.save()
         elif f2.is_valid():
             pass
