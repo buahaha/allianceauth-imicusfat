@@ -121,6 +121,7 @@ def link_add(request, token):
 
 @login_required()
 def edit_link(request, hash=None):
+    debug = None
     if request.method == "POST":
         debug = request.POST
     link = FatLink.objects.get(hash=hash)
