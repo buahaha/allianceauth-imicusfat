@@ -1,0 +1,31 @@
+{% extends 'allianceauth/base.html' %}
+{% load i18n %}
+{% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <br>
+        {% include "bfat/menu.html" %}
+        <h2>{% trans "Recent" %}</h2>
+        <table class="table">
+            <thead>
+                <th>Fleet Name</th>
+                <th>Creator</th>
+                <th>EVE Time</th>
+                <th>Utils</th>
+            </thead>
+            <tbody>
+                {% for link in links %}
+                    <tr>
+                        <td>{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}</td>
+                        <td>{{ link.creator.profile.main_character.character_name }}</td>
+                        <td>{{ link.fattime }}</td>
+                        <td>{% if perms.bfat.edit_fatlink %}<a class="btn btn-info" href="{% url 'bfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}

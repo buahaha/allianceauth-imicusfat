@@ -56,7 +56,9 @@ def stats(request):
 
 @login_required()
 def links(request):
-    pass
+    links = FatLink.objects.order_by('fattime').reverse()
+    ctx = {'term': term, 'links': links}
+    return render(request, 'bfat/fat_list.html', ctx)
 
 
 @login_required()
@@ -89,7 +91,7 @@ def link_add(request, token):
 
 
 @login_required()
-@permissions_required(('bfat.manage_bfat',))
+@permissions_required(('bfat.manage_bfat', 'bfat.add_fatlink', 'bfat.edit_fatlink'))
 def edit_link(request, hash=None):
     link = FatLink.objects.get(hash=hash)
     debug = None
