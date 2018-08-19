@@ -89,6 +89,7 @@ def link_add(request, token):
 
 
 @login_required()
+@permissions_required(('bfat.manage_bfat',))
 def edit_link(request, hash=None):
     link = FatLink.objects.get(hash=hash)
     debug = None
