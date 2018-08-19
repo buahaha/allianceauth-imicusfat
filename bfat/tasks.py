@@ -1,6 +1,8 @@
 from esi.clients import esi_client_factory
 from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
 import os
+from .models import Fat, FatLink
+from celery import shared_task
 
 SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.json')
 
@@ -50,3 +52,45 @@ def get_or_create_char(name: str=None, id: int=None):
         character = qs[0]
 
     return character
+
+@shared_task
+def process_fats(list, type, hash):
+    """
+    Due to the large possible size of fatlists, this process will be scheduled in order to process flat_lists.
+    :param list: the list of character info to be processed.
+    :param type: flatlist or eve
+    :param hash: the hash from the fat link.
+    :return:
+    """
+    link = FatLink.objects.get(hash=hash)
+    c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
+    if type == 'flatlist':
+        if len(list[0]) > 40:
+            # Came from fleet comp
+            for line in list:
+                data = line.split("\t")
+                character = get_or_create_char(data[0].strip(" "))
+                system = data[1].strip(" (Docked)")
+                shiptype = data[2]
+                if character is not None:
+                    fat = Fat(fatlink_id=link.pk, character=character, system=system, shiptype=shiptype)
+        else:
+            # Came from chat window
+            for char in list:
+                character = get_or_create_char(char.strip(" "))
+                if character is not None:
+                    fat = Fat(fatlink_id=link.pk, character=character).save()
+    elif type == 'eve':
+        for char in list:
+            char_id = char['character_id']
+            sol_id = char['solar_system_id']
+            ship_id = char['ship_type_id']
+
+            solar_system = c.Universe.get_universe_systems_system_id(system_id=sol_id).result()
+            ship = c.Universe.get_universe_types_type_id(type_id=ship_id).result()
+
+            sol_name = solar_system['name']
+            ship_name = ship['name']
+            character = get_or_create_char(char_id)
+            link = FatLink.objects.get(hash=hash)
+            fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()

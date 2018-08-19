@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from allianceauth.authentication.decorators import permissions_required
 import os
+from django.http import Http404
 from django.conf import settings
 from esi.decorators import token_required
 from .models import Fat, FatLink, ManualFat
@@ -9,7 +10,7 @@ from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorp
 from allianceauth.authentication.models import CharacterOwnership
 from .forms import FatLinkForm, ManualFatForm, FlatListForm
 from django.utils.crypto import get_random_string
-from .tasks import get_or_create_char, NoDataError
+from .tasks import get_or_create_char, process_fats
 
 
 if hasattr(settings, 'FAT_AS_PAP'):
@@ -75,19 +76,7 @@ def link_add(request, token):
         try:
             fleet = c.Fleets.get_fleets_fleet_id(fleet_id=f['fleet_id']).result()
             m = c.Fleets.get_fleets_fleet_id_members(fleet_id=f['fleet_id']).result()
-            for char in m:
-                char_id = char['character_id']
-                sol_id = char['solar_system_id']
-                ship_id = char['ship_type_id']
-
-                solar_system = c.Universe.get_universe_systems_system_id(system_id=sol_id).result()
-                ship = c.Universe.get_universe_types_type_id(type_id=ship_id).result()
-
-                sol_name = solar_system['name']
-                ship_name = ship['name']
-                character = get_or_create_char(char_id)
-                link = FatLink.objects.get(hash=hash)
-                fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
+            process_fats.delay(m, 'eve', hash)
 
             request.session['{}-creation-code'.format(hash)] = 200
             return redirect('bfat:link_edit', hash=hash)
@@ -102,7 +91,6 @@ def link_add(request, token):
 @login_required()
 def edit_link(request, hash=None):
     link = FatLink.objects.get(hash=hash)
-    debug = None
     if request.method == "POST":
         f1 = FatLinkForm(request.POST)
         f2 = FlatListForm(request.POST)
@@ -112,32 +100,10 @@ def edit_link(request, hash=None):
             link.save()
             request.session['{}-task-code'.format(hash)] = 1
         elif f2.is_valid():
-            # Process flat list here.
             flatlist = request.POST['flatlist']
             formatted = flatlist.replace("\r", "").split("\n")
-            task_code = None
-            if len(formatted[0]) > 40:
-                # Came from fleet comp
-                for line in formatted:
-                    data = line.split("\t")
-                    character = get_or_create_char(data[0].strip(" "))
-                    system = data[1].strip(" (Docked)")
-                    shiptype = data[2]
-                    if character is not None:
-                        fat = Fat(fatlink_id=link.pk, character=character, system=system, shiptype=shiptype)
-                    else:
-                        task_code = 21
-            else:
-                # Came from chat window
-                for char in formatted:
-                    character = get_or_create_char(char.strip(" "))
-                    if character is not None:
-                        fat = Fat(fatlink_id=link.pk, character=character).save()
-                    else:
-                        task_code = 21
-            if task_code is None:
-                task_code = 2
-            request.session['{}-task-code'.format(hash)] = task_code
+            process_fats.delay(formatted, 'flatlist', hash)
+            request.session['{}-task-code'.format(hash)] = 2
         elif f3.is_valid():
             form = request.POST
             character_name = form['character']
