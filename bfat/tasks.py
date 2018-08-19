@@ -1,7 +1,8 @@
 from esi.clients import esi_client_factory
 from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
-from .views import SWAGGER_SPEC_PATH
+import os
 
+SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.json')
 
 class NoDataError(Exception):
     def __init__(self, msg):
