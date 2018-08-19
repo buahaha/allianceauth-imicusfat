@@ -37,6 +37,38 @@
 
                     Make sure to set the fleet name!</p>
                 </div>
+            {% elif msg == 0 %}
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                    <span aria-hidden="true">&times</span>
+                </button>
+                <h4>Oh No!</h4>
+                <p>Something went wrong!</p>
+            </div>
+            {% elif msg == 1 %}
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                    <span aria-hidden="true">&times</span>
+                </button>
+                <h4>Success!</h4>
+                <p>Fleet name successfully changed.</p>
+            </div>
+            {% elif msg == 2 %}
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                    <span aria-hidden="true">&times</span>
+                </button>
+                <h4>Success!</h4>
+                <p>{{ term }}s successfully created from flatlist.</p>
+            </div>
+            {% elif msg == 3 %}
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                        <span aria-hidden="true">&times</span>
+                    </button>
+                    <h4>Success!</h4>
+                    <p>Manual {{ term }} processed.</p>
+                </div>
             {% endif %}
             {% if debug %}
                 <div class="alert alert-success alert-dismissible" role="alert">
@@ -101,7 +133,7 @@
                         <form class="form-signin" role="form" action="" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
-                                <textarea class="form-control" name="flatlist" rows="10" id="flatlist"></textarea>
+                                <textarea class="form-control" name="flatlist" rows="10" id="flatlist" required></textarea>
                             </div>
                             <br />
                             <button class="btn btn-primary btn-block" type="submit" name="submit_flatlist">Submit Flat List</button>
@@ -119,7 +151,7 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <input type="text" class="form-control" id="character_name" name="character_name" placeholder="Character Name">
+                                        <input type="text" class="form-control" id="character_name" name="character" placeholder="Character Name" required>
                                     </div>
                                 </div>
                             </div>
