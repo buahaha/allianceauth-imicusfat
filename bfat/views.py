@@ -134,7 +134,9 @@ def edit_link(request, hash=None):
             request.session['{}-task-code'.format(hash)] = 1
         elif f2.is_valid():
             # Process flat list here.
-            debug = request.POST
+            flatlist = request.POST['flatlist']
+            formatted = flatlist.split("\r\n")
+            debug = formatted
             pass
         elif f3.is_valid():
             form = request.POST
