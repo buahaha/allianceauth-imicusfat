@@ -76,7 +76,7 @@ def process_fats(list, type, hash):
                 system = data[1].strip(" (Docked)")
                 shiptype = data[2]
                 if character is not None:
-                    fat = Fat(fatlink_id=link.pk, character=character, system=system, shiptype=shiptype)
+                    fat = Fat(fatlink_id=link.pk, character=character, system=system, shiptype=shiptype).save()
         else:
             # Came from chat window
             for char in list:
