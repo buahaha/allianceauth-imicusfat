@@ -15,7 +15,7 @@
                     {% else %}
                         <li class="disabled"><span>&laquo;</span></li>
                     {% endif %}
-                    {% for i in links.page_range %}
+                    {% for i in links.paginator.page_range %}
                         {% if links.number == i %}
                             <li class="active"><span>{{ i }} <span class="sr-only">(Current)</span></span></li>
                         {%  else %}
