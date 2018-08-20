@@ -7,6 +7,15 @@
         <br>
         {% include "bfat/menu.html" %}
         <h2>{% trans "Recent" %}</h2>
+        {% if msg %}
+            <div class="alert {{ msg.0 }} alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                        <span aria-hidden="true">&times</span>
+                    </button>
+                    {% if msg.0 != 'warning' %}<h4>{% if msg.0 == 'danger' %}Oh No!{% elif msg.0 == 'success' %}Success!{% endif %}</h4>{% endif %}
+                    <p>{{ msg.1 }}</p>
+                </div>
+        {% endif %}
         <ul class="nav nav-tabs">
              <li class="active"><a data-toggle="tab" href="#fats">{{ term }}s</a></li>
             <li><a data-toggle="tab" href="#fatlinks">{{ term }}{% trans "Links" %}</a></li>

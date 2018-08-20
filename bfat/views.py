@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from allianceauth.authentication.decorators import permissions_required
 import os
-from django.http import Http404
+from django.core.paginator import Paginator
 from django.conf import settings
 from esi.decorators import token_required
 from .models import Fat, FatLink, ManualFat
@@ -36,6 +36,9 @@ get_alliance_alliance_id
 # Create your views here.
 @login_required()
 def bfat_view(request):
+    msg = None
+    if 'msg' in request.session:
+        msg = request.session.pop('msg')
     chars = CharacterOwnership.objects.filter(user=request.user)
     fats = []
     for char in chars:
@@ -45,7 +48,7 @@ def bfat_view(request):
             char_1.append(f)
         fats.append(char_1)
     links = FatLink.objects.order_by('fattime').reverse()[:10]
-    ctx = {'term': term, 'fats': fats, 'links': links}
+    ctx = {'term': term, 'fats': fats, 'links': links, 'msg': msg}
     return render(request, 'bfat/bfatview.html', ctx)
 
 
@@ -55,8 +58,10 @@ def stats(request):
 
 
 @login_required()
-def links(request):
-    links = FatLink.objects.order_by('fattime').reverse()
+def links(request, page=1):
+    links = FatLink.objects.all().order_by('fattime').reverse()
+    pages = Paginator(links, 15)
+    links = pages.page(page)
     ctx = {'term': term, 'links': links}
     return render(request, 'bfat/fat_list.html', ctx)
 
@@ -93,6 +98,9 @@ def link_add(request, token):
 @login_required()
 @permissions_required(('bfat.manage_bfat', 'bfat.add_fatlink', 'bfat.edit_fatlink'))
 def edit_link(request, hash=None):
+    if hash is None:
+        request.session['msg'] = ['warning', 'No %slink hash provided.'% term]
+        return redirect('bfat:bfat_view')
     link = FatLink.objects.get(hash=hash)
     debug = None
     if request.method == "POST":

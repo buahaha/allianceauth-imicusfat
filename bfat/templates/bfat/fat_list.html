@@ -7,6 +7,29 @@
         <br>
         {% include "bfat/menu.html" %}
         <h2>{% trans "All" %} {{ term }}{% trans "Links" %}</h2>
+        {% if links.has_other_pages %}
+            <nav>
+                <ul class="pagination">
+                    {% if links.has_previous %}
+                        <li><a href="{% url 'bfat:links' links.previous_page_number %}">&laquo;</a></li>
+                    {% else %}
+                        <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for i in links.page_range %}
+                        {% if links.number == i %}
+                            <li class="active"><span>{{ i }} <span class="sr-only">(Current)</span></span></li>
+                        {%  else %}
+                            <li><a href="{% url 'bfat:links' i %}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if links.has_next %}
+                        <li><a href="{% url 'bfat:links' links.next_page_number %}">&raquo;</a></li>
+                    {% else %}
+                        <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
         <table class="table">
             <thead>
                 <th>Fleet Name</th>
