@@ -5,7 +5,7 @@ import os
 from django.core.paginator import Paginator
 from django.conf import settings
 from esi.decorators import token_required
-from .models import Fat, FatLink, ManualFat
+from .models import Fat, FatLink, ManualFat, DelLog
 from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
 from allianceauth.authentication.models import CharacterOwnership
 from .forms import FatLinkForm, ManualFatForm, FlatListForm
@@ -157,6 +157,7 @@ def del_link(request, hash=None):
         request.session['msg'] = ['danger', 'The hash provided is either invalid or has been deleted.']
         return redirect('bfat:bfat_view')
     link.delete()
+    DelLog(remover=request.user, deltype=0, string=link.__str__).save()
     request.session['msg'] = ['success', 'The {0}Link ({1}) and all associated {0}s have been successfully deleted.'.format(term, hash)]
     return redirect('bfat:bfat_view')
 
@@ -175,5 +176,6 @@ def del_fat(request, hash, fat):
         request.session['msg'] = ['danger', 'The hash and {} ID do not match.'.format(term)]
         return redirect('bfat:bfat_view')
     fat.delete()
+    DelLog(remover=request.user, deltype=1, string=fat.__str__)
     request.session['msg'] = ['success', 'The {0} for {0} from link {1} has been successfully deleted.'.format(term, hash)]
     return redirect('bfat:bfat_view')

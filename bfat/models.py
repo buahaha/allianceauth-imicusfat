@@ -48,3 +48,20 @@ class ManualFat(models.Model):
 
     def __str__(self):
         return "{} - {} ({})".format(self.fatlink, self.character, self.creator)
+
+
+# Log Model for Deletion of Fats and FatLinks
+class DelLog(models.Model):
+    # 0 for FatLink, 1 for Fat
+    deltype = models.BooleanField(default=0)
+    remover = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
+    string = models.CharField(max_length=100)
+
+    def delt_to_str(self):
+        if self.deltype == 0:
+            return 'FatLink'
+        else:
+            return 'Fat'
+
+    def __str__(self):
+        return '{}/{} - {}'.format(self.delt_to_str(), self.string, self.remover)
