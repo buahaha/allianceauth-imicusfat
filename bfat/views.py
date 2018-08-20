@@ -99,9 +99,13 @@ def link_add(request, token):
 @permissions_required(('bfat.manage_bfat', 'bfat.add_fatlink', 'bfat.edit_fatlink'))
 def edit_link(request, hash=None):
     if hash is None:
-        request.session['msg'] = ['warning', 'No %slink hash provided.'% term]
+        request.session['msg'] = ['warning', 'No {}link hash provided.'.format(term)]
         return redirect('bfat:bfat_view')
-    link = FatLink.objects.get(hash=hash)
+    try:
+        link = FatLink.objects.get(hash=hash)
+    except:
+        request.session['msg'] =['warning', 'The hash provided is not valid.']
+        return redirect('bfat:bfat_view')
     debug = None
     if request.method == "POST":
         f1 = FatLinkForm(request.POST)
@@ -142,5 +146,34 @@ def edit_link(request, hash=None):
 
 
 @login_required()
-def del_link(request):
-    pass
+@permissions_required(('bfat.manage_bfat', 'bfat.delete_fatlink'))
+def del_link(request, hash=None):
+    if hash is None:
+        request.session['msg'] = ['warning', 'No {}link hash provided.'.format(term)]
+        return redirect('bfat:bfat_view')
+    try:
+        link = FatLink.objects.get(hash=hash)
+    except:
+        request.session['msg'] = ['danger', 'The hash provided is either invalid or has been deleted.']
+        return redirect('bfat:bfat_view')
+    link.delete()
+    request.session['msg'] = ['success', 'The {0}Link ({1}) and all associated {0}s have been successfully deleted.'.format(term, hash)]
+    return redirect('bfat:bfat_view')
+
+
+@login_required()
+@permissions_required(('bfat.manage_bfat', 'bfat.delete_fat', 'bfat.delete_fatlink'))
+def del_fat(request, hash, fat):
+    try:
+        link = FatLink.objects.get(hash=hash)
+    except:
+        request.session['msg'] = ['danger', 'The hash provided is either invalid or has been deleted.']
+        return redirect('bfat:bfat_view')
+    try:
+        fat = Fat.objects.get(pk=fat, fatlink_id=link.pk)
+    except:
+        request.session['msg'] = ['danger', 'The hash and {} ID do not match.'.format(term)]
+        return redirect('bfat:bfat_view')
+    fat.delete()
+    request.session['msg'] = ['success', 'The {0} for {0} from link {1} has been successfully deleted.'.format(term, hash)]
+    return redirect('bfat:bfat_view')
