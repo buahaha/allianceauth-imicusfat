@@ -8,7 +8,7 @@
         {% include "bfat/menu.html" %}
         <h2>{% trans "Recent" %}</h2>
         {% if msg %}
-            <div class="alert {{ msg.0 }} alert-dismissible" role="alert">
+            <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
                         <span aria-hidden="true">&times</span>
                     </button>
