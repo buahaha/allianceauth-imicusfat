@@ -145,7 +145,7 @@ def edit_link(request, hash=None):
     if len(fats) > 0:
         flatlist = []
         for fat in fats:
-            fatinfo = [fat.character, fat.system, fat.shiptype]
+            fatinfo = [fat.character.character_name, fat.system, fat.shiptype]
             flatlist.append("\t".join(fatinfo))
         flatlist = "\r\n".join(flatlist)
 
