@@ -138,6 +138,7 @@
                     <div class="panel-body">
                         <h4>Flat List Input</h4>
                         <p> Please keep in mind that processing flat lists may take a few minutes.</p>
+                        {% if fats|length == 0 %}
                         <form class="form-signin" role="form" action="" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
@@ -146,6 +147,15 @@
                             <br />
                             <button class="btn btn-primary btn-block" type="submit" name="submit_flatlist">Submit Flat List</button>
                         </form>
+                        {% else %}
+                        <form class="form-signin" role="form">
+                            <div class="form-group">
+                                <textarea class="form-control" name="flatlist" rows="10" id="flatlist" required></textarea>
+                            </div>
+                            <br />
+                            <button class="btn btn-primary btn-block disabled" type="button">Submit Flat List</button>
+                        </form>
+                        {% endif %}
                     </div>
                 </div>
                 <div id="manualfat" class="tab-pane fade in panel-default">
