@@ -141,7 +141,16 @@ def edit_link(request, hash=None):
     elif '{}-task-code'.format(hash) in request.session:
         msg = request.session.pop('{}-task-code'.format(hash))
     fats = Fat.objects.filter(fatlink=link)
-    ctx = {'term': term, 'form': FatLinkForm, 'msg': msg, 'link': link, 'fats': fats, 'debug': debug}
+    flatlist = None
+    if len(fats) > 0:
+        flatlist = []
+        for fat in fats:
+            fatinfo = [fat.character, fat.system, fat.shiptype]
+            flatlist.append("\t".join(fatinfo))
+        flatlist = "\r\n".join(flatlist)
+
+    ctx = {'term': term, 'form': FatLinkForm, 'msg': msg, 'link': link, 'fats': fats, 'flatlist': flatlist,
+           'debug': debug}
     return render(request, 'bfat/fleet_edit.html', ctx)
 
 
