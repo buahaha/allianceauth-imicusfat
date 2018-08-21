@@ -54,7 +54,8 @@ def bfat_view(request):
 
 @login_required()
 def stats(request):
-    pass
+    ctx = {'term': term}
+    return render(request, 'bfat/stats_main.html', ctx)
 
 
 @login_required()
