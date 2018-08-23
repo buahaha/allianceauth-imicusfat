@@ -26,11 +26,11 @@
                     <h4> Months </h4>
                 </div>
             </div>
-            {% if user.has_perm('bfat.stats_corp_own') or user.has_perm('bfat.stats_corp_other') %}
+            {% if perms.bfat.stats_corp_own or perms.bfat.stats_corp_other %}
             <div id="fatlinks" class="tab-panel fade active panel-default">
                 <div class="panel-body">
                     <h4> Corporations (Select Alliance to See Corps) </h4>
-                    {% if user.has_perm('bfat.stats_corp_other') %}
+                    {% if perms.bfat.stats_corp_other %}
                         {% for key, value in data.items %}
                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                 <div class="panel panel-default">
@@ -65,7 +65,7 @@
                                     </div>
                                 </div>
                         {% endfor %}
-                    {% elif user.has_perm('bfat.stats_corp_own') %}
+                    {% elif perms.bfat.stats_corp_own %}
 
                     {% endif %}
                 </div>
