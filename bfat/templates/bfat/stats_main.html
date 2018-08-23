@@ -45,16 +45,17 @@
                                     </div>
                                     <div id="{{ value.0 }}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                         <div class="panel-body">
-                                            <table>
+                                            <table class="table">
                                                 <tbody>
                                             {% for corp in value %}
                                                 {% if forloop.first %}
-                                                {% endif %}
+                                                {% else %}
                                                         <tr>
                                                             <td><img src="https://imageserver.eveonline.com/corporation/{{ corp.0 }}_32.png" /></td>
                                                             <td>{{ corp.1 }}</td>
                                                             <td><a class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a></td>
                                                         </tr>
+                                                {% endif %}
                                             {% endfor %}
                                                 </tbody>
                                             </table>
