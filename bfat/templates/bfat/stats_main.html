@@ -17,20 +17,60 @@
                 </div>
         {% endif %}
         <ul class="nav nav-tabs">
-             <li class="active"><a data-toggle="tab" href="#fats">{{ term }}s</a></li>
-            <li><a data-toggle="tab" href="#fatlinks">{{ term }}{% trans "Links" %}</a></li>
+             <li class="active"><a data-toggle="tab" href="#mine">{% trans "My Stats" %}</a></li>
+            <li><a data-toggle="tab" href="#corps">{% trans "Corps" %}</a></li>
         </ul>
         <div class="tab-content">
-            <div id="fats" class="tab-pane fade in active panel-default">
+            <div id="mine" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
-                    <h4> Your Most Recent {{ term }}s </h4>
+                    <h4> Months </h4>
                 </div>
             </div>
+            {% if user.has_perm('bfat.stats_corp_own') or user.has_perm('bfat.stats_corp_other') %}
             <div id="fatlinks" class="tab-panel fade active panel-default">
                 <div class="panel-body">
-                    <h4> Most Recent {{ term }} Links (limit 10)</h4>
+                    <h4> Corporations (Select Alliance to See Corps) </h4>
+                    {% if user.has_perm('bfat.stats_corp_other') %}
+                        {% for key, value in data.items %}
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <img src="http://imageserver.eveonline.com/alliance/{{ value.0 }}_128.png" />
+                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                {{ key }}
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            <table>
+                                                <tbody>
+                                            {% for corp in value %}
+                                                {% if forloop.first %}
+                                                {% endif %}
+                                                        <tr>
+                                                            <td><img src="https://imageserver.eveonline.com/corporation/{{ corp.0 }}_128.pnc" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>{{ corp.1 }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><a class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+                                                        </tr>
+                                            {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                        {% endfor %}
+                    {% elif user.has_perm('bfat.stats_corp_own') %}
+
+                    {% endif %}
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 
