@@ -54,8 +54,42 @@ def bfat_view(request):
 
 @login_required()
 def stats(request):
-    ctx = {'term': term}
+    if request.user.has_permission('bfat.stats_corp_other'):
+        corps = EveCorporationInfo.objects.all()
+        alliances = EveAllianceInfo.objects.all()
+
+        data = {'No Alliance': []}
+        for alliance in alliances:
+            data[alliance.alliance_name] = []
+
+        for corp in corps:
+            if corp.alliance is None:
+                data['No Alliance'].append(corp.corporation_id)
+            else:
+                data[corp.alliance.alliance_name].append(corp.corporation_id)
+    elif request.user.has_permission('bfat.stats_corp_own'):
+        data = [request.user.profile.main_character.corporation_id]
+    else:
+        data = None
+    ctx = {'term': term, 'data': data}
     return render(request, 'bfat/stats_main.html', ctx)
+
+
+@login_required()
+def stats_char(request, month=None, year=None):
+    pass
+
+
+@login_required()
+@permissions_required(('bfat.stats_corp_own', 'bfat.stats_corp_other'))
+def stats_corp(request, corpid=None, month=None, year=None):
+    pass
+
+
+@login_required()
+@permission_required('bfat.corp_stats_other')
+def stats_alliance(request, allianceid=None, month=None, year=None):
+    pass
 
 
 @login_required()

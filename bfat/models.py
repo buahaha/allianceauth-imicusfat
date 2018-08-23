@@ -21,7 +21,9 @@ class FatLink(models.Model):
         return self.hash[6:]
 
     class Meta:
-        permissions = (('manage_bfat', 'Can manage the bFAT module'),)
+        permissions = (('manage_bfat', 'Can manage the bFAT module'),
+                       ('stats_corp_own', 'Can see own corp stats'),
+                       ('stats_corp_other', 'Can see stats of other corps.'))
 
 
 # PAP/FAT Model
