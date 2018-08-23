@@ -24,6 +24,7 @@
             <div id="mine" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
                     <h4> Months </h4>
+                    <p>{{ data }}</p>
                 </div>
             </div>
             {% if perms.bfat.stats_corp_own or perms.bfat.stats_corp_other %}
@@ -36,8 +37,8 @@
                                 <div class="panel panel-default">
                                     <div class="panel-heading" role="tab" id="headingOne">
                                         <h4 class="panel-title">
-                                            <img src="http://imageserver.eveonline.com/alliance/{{ value.0 }}_64.png" />
-                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#{{ value.0 }}" aria-expanded="false" aria-controls="collapseOne">
+                                            {% if key == 'No Alliance' %}{% else %}<img src="http://imageserver.eveonline.com/alliance/{{ value.0 }}_32.png" />{% endif %}
+                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#{{ value.0 }}" aria-expanded="false" aria-controls="{{ value.0 }}">
                                                 {{ key }}
                                             </a>
                                         </h4>
@@ -50,7 +51,7 @@
                                                 {% if forloop.first %}
                                                 {% endif %}
                                                         <tr>
-                                                            <td>{% if corp.0 == 'No Alliance' %}{% else %}<img src="https://imageserver.eveonline.com/corporation/{{ corp.0 }}_64.png" />{% endif %}</td>
+                                                            <td><img src="https://imageserver.eveonline.com/corporation/{{ corp.0 }}_32.png" /></td>
                                                             <td>{{ corp.1 }}</td>
                                                             <td><a class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a></td>
                                                         </tr>
