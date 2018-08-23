@@ -38,12 +38,13 @@
                                     <div class="panel-heading" role="tab" id="headingOne">
                                         <h4 class="panel-title">
                                             {% if key == 'No Alliance' %}{% else %}<img src="http://imageserver.eveonline.com/alliance/{{ value.0 }}_32.png" />{% endif %}
-                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#{{ value.0 }}" aria-expanded="false" aria-controls="{{ value.0 }}">
+                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#{{ value.0 }}" aria-expanded="false" aria-controls="{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
                                                 {{ key }}
                                             </a>
+                                            <a class="btn btn-primary btn-sm pull-right" href="{% url 'bfat:stats_ally' value.0 %}" role="button"><span class="glyphicon glyphicon-eye-open" style="color: white"></span> </a>
                                         </h4>
                                     </div>
-                                    <div id="{{ value.0 }}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div id="{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                         <div class="panel-body">
                                             <table class="table">
                                                 <tbody>
