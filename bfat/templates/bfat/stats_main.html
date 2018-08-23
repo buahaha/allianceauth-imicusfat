@@ -31,18 +31,18 @@
                 <div class="panel-body">
                     <h4> Corporations (Select Alliance to See Corps) </h4>
                     {% if perms.bfat.stats_corp_other %}
-                        {% for key, value in data.items %}
                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            {% for key, value in data.items %}
                                 <div class="panel panel-default">
                                     <div class="panel-heading" role="tab" id="headingOne">
                                         <h4 class="panel-title">
                                             <img src="http://imageserver.eveonline.com/alliance/{{ value.0 }}_64.png" />
-                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#{{ value.0 }}" aria-expanded="false" aria-controls="collapseOne">
                                                 {{ key }}
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div id="{{ value.0 }}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                         <div class="panel-body">
                                             <table>
                                                 <tbody>
