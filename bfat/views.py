@@ -54,7 +54,7 @@ def bfat_view(request):
 
 @login_required()
 def stats(request):
-    if request.user.has_permission('bfat.stats_corp_other'):
+    if request.user.has_perm('bfat.stats_corp_other'):
         corps = EveCorporationInfo.objects.all()
         alliances = EveAllianceInfo.objects.all()
 
@@ -67,7 +67,7 @@ def stats(request):
                 data['No Alliance'].append(corp.corporation_id)
             else:
                 data[corp.alliance.alliance_name].append(corp.corporation_id)
-    elif request.user.has_permission('bfat.stats_corp_own'):
+    elif request.user.has_perm('bfat.stats_corp_own'):
         data = [request.user.profile.main_character.corporation_id]
     else:
         data = None
