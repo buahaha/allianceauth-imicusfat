@@ -57,7 +57,7 @@ def get_or_create_char(name: str=None, id: int=None):
     return character
 
 @shared_task
-def process_fats(list, type, hash):
+def process_fats(list, type_, hash):
     """
     Due to the large possible size of fatlists, this process will be scheduled in order to process flat_lists.
     :param list: the list of character info to be processed.
@@ -67,33 +67,46 @@ def process_fats(list, type, hash):
     """
     link = FatLink.objects.get(hash=hash)
     c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
-    if type == 'flatlist':
+    if type_ == 'flatlist':
         if len(list[0]) > 40:
             # Came from fleet comp
             for line in list:
                 data = line.split("\t")
-                character = get_or_create_char(name=data[0].strip(" "))
-                system = data[1].strip(" (Docked)")
-                shiptype = data[2]
-                if character is not None:
-                    fat = Fat(fatlink_id=link.pk, character=character, system=system, shiptype=shiptype).save()
+                process_line.delay(data, 'comp', link)
         else:
             # Came from chat window
             for char in list:
-                character = get_or_create_char(name=char.strip(" "))
-                if character is not None:
-                    fat = Fat(fatlink_id=link.pk, character=character).save()
-    elif type == 'eve':
+                process_line.delay(char, 'chat', link)
+    elif type_ == 'eve':
         for char in list:
-            char_id = char['character_id']
-            sol_id = char['solar_system_id']
-            ship_id = char['ship_type_id']
+            process_character.delay(char, link)
 
-            solar_system = c.Universe.get_universe_systems_system_id(system_id=sol_id).result()
-            ship = c.Universe.get_universe_types_type_id(type_id=ship_id).result()
+@shared_task
+def process_line(line, type_, link):
+    if type_ == 'comp':
+        character = get_or_create_char(name=line[0].strip(" "))
+        system = line[1].strip(" (Docked)")
+        shiptype = line[2]
+        if character is not None:
+            fat = Fat(fatlink_id=link.pk, character=character, system=system, shiptype=shiptype).save()
+    else:
+        character = get_or_create_char(name=line.strip(" "))
+        if character is not None:
+            fat = Fat(fatlink_id=link.pk, character=character).save()
 
-            sol_name = solar_system['name']
-            ship_name = ship['name']
-            character = get_or_create_char(id=char_id)
-            link = FatLink.objects.get(hash=hash)
-            fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
+
+@shared_task
+def process_character(char, link):
+    c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
+    char_id = char['character_id']
+    sol_id = char['solar_system_id']
+    ship_id = char['ship_type_id']
+
+    solar_system = c.Universe.get_universe_systems_system_id(system_id=sol_id).result()
+    ship = c.Universe.get_universe_types_type_id(type_id=ship_id).result()
+
+    sol_name = solar_system['name']
+    ship_name = ship['name']
+    character = get_or_create_char(id=char_id)
+    link = FatLink.objects.get(hash=hash)
+    fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
