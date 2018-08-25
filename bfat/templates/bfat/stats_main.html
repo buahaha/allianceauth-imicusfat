@@ -30,7 +30,7 @@
             {% if perms.bfat.stats_corp_own or perms.bfat.stats_corp_other %}
             <div id="corps" class="tab-panel fade active panel-default">
                 <div class="panel-body">
-                    <h4> Corporations (Select Alliance to See Corps) </h4>
+                    <h4> Corporations (Click Alliance Name to See Corps) </h4>
                     {% if perms.bfat.stats_corp_other %}
                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                             {% for key, value in data.items %}
@@ -54,7 +54,7 @@
                                                         <tr>
                                                             <td><img src="https://imageserver.eveonline.com/corporation/{{ corp.0 }}_32.png" /></td>
                                                             <td>{{ corp.1 }}</td>
-                                                            <td><a class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+                                                            <td><a class="btn btn-primary" href="/bfat/stats/corp/{{ corp.0 }}/"><span class="glyphicon glyphicon-eye-open"></span></a></td>
                                                         </tr>
                                                 {% endif %}
                                             {% endfor %}
@@ -65,7 +65,15 @@
                                 </div>
                         {% endfor %}
                     {% elif perms.bfat.stats_corp_own %}
-                        <p> This is a test</p>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td><img src="https://imageserver.eveonline.com/corporation/{{ data.0.0 }}_32.png" /> </td>
+                                    <td>{{ data.0.1 }}</td>
+                                    <td><a class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     {% endif %}
                 </div>
             </div>
