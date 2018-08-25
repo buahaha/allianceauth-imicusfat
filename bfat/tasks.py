@@ -72,17 +72,18 @@ def process_fats(list, type_, hash):
             # Came from fleet comp
             for line in list:
                 data = line.split("\t")
-                process_line.delay(data, 'comp', link)
+                process_line.delay(data, 'comp', hash)
         else:
             # Came from chat window
             for char in list:
-                process_line.delay(char, 'chat', link)
+                process_line.delay(char, 'chat', hash)
     elif type_ == 'eve':
         for char in list:
-            process_character.delay(char, link)
+            process_character.delay(char, hash)
 
 @shared_task
-def process_line(line, type_, link):
+def process_line(line, type_, hash):
+    link = FatLink.objects.get(hash=hash)
     if type_ == 'comp':
         character = get_or_create_char(name=line[0].strip(" "))
         system = line[1].strip(" (Docked)")
@@ -96,7 +97,8 @@ def process_line(line, type_, link):
 
 
 @shared_task
-def process_character(char, link):
+def process_character(char, hash):
+    link = FatLink.objects.get(hash=hash)
     c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
     char_id = char['character_id']
     sol_id = char['solar_system_id']
