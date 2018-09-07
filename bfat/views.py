@@ -72,13 +72,20 @@ def stats(request):
         data = [(request.user.profile.main_character.corporation_id, request.user.profile.main_character.corporation_name)]
     else:
         data = None
-    char_fats = Fat.objects.filter(fatlink__fattime__year=datetime.now().year)
-    char_stats = {}
-    for i in range(1, 13):
-        char_fats = char_fats.filter(fatlink__fattime__month=i)
-        char_stats[str(i)] = char_fats
+    chars = CharacterOwnership.objects.filter(user=request.user)
+    months = []
+    for char in chars:
+        char_l = [char.character.character_name]
+        char_fats = Fat.objects.filter(fatlink__fattime__year=datetime.now().year)
+        char_stats = {}
+        for i in range(1, 13):
+            char_fat = char_fats.filter(fatlink__fattime__month=i).filter(character__id=char.character.id)
+            if len(char_fat) is not 0:
+                char_stats[str(i)] = char_fat
+        char_l.append.(char_stats)
+        months.append(char_l)
 
-    ctx = {'term': term, 'data': data, 'charstats': char_stats}
+    ctx = {'term': term, 'data': data, 'charstats': months}
     return render(request, 'bfat/stats_main.html', ctx)
 
 
