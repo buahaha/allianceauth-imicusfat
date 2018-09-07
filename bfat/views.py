@@ -78,7 +78,7 @@ def stats(request):
         char_fats = char_fats.filter(fatlink__fattime__month=i)
         char_stats[str(i)] = char_fats
 
-    ctx = {'term': term, 'data': data, 'char-stats': char_stats}
+    ctx = {'term': term, 'data': data, 'charstats': char_stats}
     return render(request, 'bfat/stats_main.html', ctx)
 
 
