@@ -11,6 +11,7 @@ from allianceauth.authentication.models import CharacterOwnership
 from .forms import FatLinkForm, ManualFatForm, FlatListForm
 from django.utils.crypto import get_random_string
 from .tasks import get_or_create_char, process_fats
+from datetime import datetime
 
 
 if hasattr(settings, 'FAT_AS_PAP'):
@@ -71,7 +72,13 @@ def stats(request):
         data = [(request.user.profile.main_character.corporation_id, request.user.profile.main_character.corporation_name)]
     else:
         data = None
-    ctx = {'term': term, 'data': data}
+    char_fats = Fat.objects.filter(fatlink__fattime__year=datetime.now().year)
+    char_stats = {}
+    for i in range(1, 13):
+        char_fats = char_fats.filter(fatlink__fattime__month=i)
+        char_stats[str(i)] = char_fats
+
+    ctx = {'term': term, 'data': data, 'char-stats': char_stats}
     return render(request, 'bfat/stats_main.html', ctx)
 
 
