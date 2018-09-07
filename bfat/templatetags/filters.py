@@ -1,6 +1,5 @@
 from django.template.defaulttags import register
-import datetime.datetime
-
+from datetime import datetime
 
 @register.filter
 def month(value):
