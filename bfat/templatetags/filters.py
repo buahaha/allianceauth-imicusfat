@@ -1,7 +1,7 @@
 from django.template.defaulttags import register
-from datetime import datetime
+import calendar
 
 @register.filter
 def month(value):
     value = int(value)
-    return datetime.date(month=value).strftime("%B")
+    return calendar.month_name[value]
