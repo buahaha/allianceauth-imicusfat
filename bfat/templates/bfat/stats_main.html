@@ -26,7 +26,7 @@
                     <h4> Months </h4>
                     <p> Only months with {{ term }} data in the last 12 months shown.</p>
                     <ul class="nav nav-pills">
-                        {% for char in stats %}
+                        {% for char in months %}
                             {% if forloop.first %}
                                 <li class="active"><a data-toggle="tab" href="#{{ char.0|cut:" " }}">{{ char.0 }}</a></li>
                             {% else %}
@@ -35,7 +35,7 @@
                         {% endfor %}
                     </ul>
                     <div class="tab-content">
-                        {% for char in stats %}
+                        {% for char in months %}
                             {% if forloop.first %}
                                 <div id="{{ char.0|cut:" " }}" class="tab-pane fade in active panel-default">
                             {% else %}
