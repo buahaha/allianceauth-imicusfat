@@ -52,9 +52,9 @@
                                     <tbody>
                                         {% for key, value in char.1.items %}
                                             <tr>
-                                                <td>{{ key }}</td>
+                                                <td>{{ key  }}</td>
                                                 <td>{{ value }}</td>
-                                                <td>BUTTON GOES HERE</td>
+                                                <td><a href="/bfat/stats/char/{{ char.2 }}/{{ key }}/{{ year }}/" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span> </a> </td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>

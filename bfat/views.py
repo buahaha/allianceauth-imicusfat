@@ -87,7 +87,7 @@ def stats(request):
         char_l.append(char.character.character_id)
         months.append(char_l)
 
-    ctx = {'term': term, 'data': data, 'charstats': months}
+    ctx = {'term': term, 'data': data, 'charstats': months, 'year': datetime.now().year}
     return render(request, 'bfat/stats_main.html', ctx)
 
 
