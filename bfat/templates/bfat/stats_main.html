@@ -28,9 +28,9 @@
                     <ul class="nav nav-pills">
                         {% for char in charstats %}
                             {% if forloop.first %}
-                                <li class="active"><img class="image-circle" src="http://image.eveonline.com/Character/{{ char.2 }}_16.png"/> <a data-toggle="tab" href="#{{ char.0|cut:" " }}">{{ char.0 }}</a></li>
+                                <li class="active"><img class="image-circle" src="http://imageserver.eveonline.com/Character/{{ char.2 }}_16.png"/> <a data-toggle="tab" href="#{{ char.0|cut:" " }}">{{ char.0 }}</a></li>
                             {% else %}
-                                <li><img class="image-circle" src="http://image.eveonline.com/Character/{{ char.2 }}_16.png"/> <a data-toggle="tab" href="#{{ char.0|cut:" " }}">{{ char.0 }}</a></li>
+                                <li><img class="image-circle" src="http://imageserver.eveonline.com/Character/{{ char.2 }}_16.png"/> <a data-toggle="tab" href="#{{ char.0|cut:" " }}">{{ char.0 }}</a></li>
                             {% endif %}
                         {% endfor %}
                     </ul>
