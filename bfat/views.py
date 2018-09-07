@@ -47,7 +47,7 @@ def bfat_view(request):
         char_1 = [char.character.character_name]
         for f in fat:
             char_1.append(f)
-        char_l.append(char.character_id)
+        char_l.append(char.character.character_id)
         fats.append(char_1)
     links = FatLink.objects.order_by('fattime').reverse()[:10]
     ctx = {'term': term, 'fats': fats, 'links': links, 'msg': msg}
@@ -84,7 +84,7 @@ def stats(request):
             if len(char_fat) is not 0:
                 char_stats[str(i)] = char_fat.count()
         char_l.append(char_stats)
-        char_l.append(char.character_id)
+        char_l.append(char.character.character_id)
         months.append(char_l)
 
     ctx = {'term': term, 'data': data, 'charstats': months}
