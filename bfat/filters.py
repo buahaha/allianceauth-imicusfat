@@ -6,4 +6,3 @@ import datetime.datetime
 def month(value):
     value = int(value)
     return datetime.date(month=value).strftime("%B"
-                                               
