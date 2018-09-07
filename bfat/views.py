@@ -82,7 +82,7 @@ def stats(request):
             char_fat = char_fats.filter(fatlink__fattime__month=i).filter(character__id=char.character.id)
             if len(char_fat) is not 0:
                 char_stats[str(i)] = char_fat
-        char_l.append.(char_stats)
+        char_l.append(char_stats)
         months.append(char_l)
 
     ctx = {'term': term, 'data': data, 'charstats': months}
