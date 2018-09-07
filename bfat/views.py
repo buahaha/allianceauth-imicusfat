@@ -81,7 +81,7 @@ def stats(request):
         for i in range(1, 13):
             char_fat = char_fats.filter(fatlink__fattime__month=i).filter(character__id=char.character.id)
             if len(char_fat) is not 0:
-                char_stats[str(i)] = char_fat
+                char_stats[str(i)] = char_fat.count()
         char_l.append(char_stats)
         months.append(char_l)
 
