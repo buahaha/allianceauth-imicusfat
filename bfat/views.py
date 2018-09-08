@@ -95,7 +95,7 @@ def stats(request):
 def stats_char(request, charid, month=None, year=None):
     if not month or not year:
         request.session['msg'] = ('danger', 'Date information not complete!')
-    character = EveCharacter.objects.get_or_404(character_id=charid)
+    character = EveCharacter.objects.get(character_id=charid)
     ctx = {'character': character.character_name, 'month': month, 'year': year}
     return render(request, 'bfat/char_stat.html', ctx)
 
