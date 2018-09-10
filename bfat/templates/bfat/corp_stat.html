@@ -28,7 +28,7 @@
                         <div class="tab-pane fade in active panel-default" id="fatsbyship">
                             <div class="panel-body">
                                 <h3>{{ term }}s By Ship Type</h3>
-                                <canvas id="ship-bar-stacked" width="800" height="600"></canvas>
+                                <canvas id="ship-bar-stacked" width="800" height="500"></canvas>
                                 <script>
                                 var corpShipTypeBarChart = new Chart(document.getElementById('ship-bar-stacked'), {
                                     type: "bar",
@@ -99,7 +99,6 @@
                                         }
                                     })
                                 </script>
-                                <p>{{ data_weekday }}</p>
                             </div>
                         </div>
                     </div>
