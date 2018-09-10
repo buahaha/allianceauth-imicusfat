@@ -96,7 +96,24 @@ def stats_char(request, charid, month=None, year=None):
     if not month or not year:
         request.session['msg'] = ('danger', 'Date information not complete!')
     character = EveCharacter.objects.get(character_id=charid)
-    ctx = {'character': character.character_name, 'month': month, 'year': year}
+    fats = Fat.objects.filter(character__character_id=charid, fatlink__fattime__month=month)
+
+    # Data for Ship Type Pie Chart
+    data_ship_type = {}
+    for fat in fats:
+        if fat.shiptype in data_ship_type.keys():
+            continue
+        else:
+            data_ship_type[fat.shiptype] = fats.filter(shiptype=fat.shiptype).count()
+    data_ship_type = [data_ship_type.keys(), data_ship_type.values()]
+
+    # Data for by Time Line Chart
+    data_time = {}
+    for i in range(0, 24):
+        data_time[i] = fats.filter(fatlink__fattime__hour=i)
+    data_time = [data_time.keys(), data_time.values()]
+    ctx = {'character': character.character_name, 'month': month, 'year': year, 'data_ship_type': data_ship_type,
+           'data_time': data_time}
     return render(request, 'bfat/char_stat.html', ctx)
 
 

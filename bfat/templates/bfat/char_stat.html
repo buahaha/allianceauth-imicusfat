@@ -10,6 +10,39 @@
         {% include 'bfat/menu.html' %}
         <h2>{{ character }} {% trans "Statistics" %}</h2>
         <h4>{{ month|month }} {{ year }}</h4>
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#graphs"></a></li>
+            <li><a data-toggle="tab" href="#rawdata"></a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="graphs" class="tab-pane fade in active panel-default">
+                <div class="panel-body">
+                    <h4>{{ term }}s by Ship Type</h4>
+                    <p>Pie Chart goes here!</p>
+                    <canvas id="pie-ship" width="300" height="300"></canvas>
+                    <script>
+                        var shipPieChart = new Chart(document.getElementById("pie-ship"), {
+                            type: "pie",
+                            data: {
+                                datasets: [{
+                                    data: {{ data_ship_type.1 }}
+                                }],
+                                labels: {{ data_ship_type.0 }}
+                            }
+                        })
+                    </script>
 
+                    <h4>{{ term }}s by Time</h4>
+                    <p> Line chart goes here!</p>
+
+                </div>
+            </div>
+            <div id="rawdata" class="tab-panel fade active panel-default">
+                <div class="panel-body">
+                    <h4> {{ term }}s for {{ character }}</h4>
+                    <p> Table goes here.</p>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
