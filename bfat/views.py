@@ -168,7 +168,8 @@ def stats_corp(request, corpid, month=None, year=None):
         stack.append('rgba({}, {}, {}, 1)'.format(random.randint(0, 255),
                                                   random.randint(0, 255),
                                                   random.randint(0, 255)))
-        data_ = stack.append([])
+        stack.append([])
+        data_ = stack[2]
         for char in chars:
             data_.append(value[char])
         stack.append(data_)
