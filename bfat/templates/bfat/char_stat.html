@@ -18,7 +18,7 @@
             <div id="graphs" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
                     <h4>{{ term }}s by Ship Type</h4>
-                    <canvas id="pie-ship" width="300" height="300"></canvas>
+                    <canvas id="pie-ship" width="400" height="400"></canvas>
                     <script>
                         var shipPieChart = new Chart(document.getElementById("pie-ship"), {
                             type: "pie",
@@ -36,7 +36,7 @@
                     </script>
 
                     <h4>{{ term }}s by Time</h4>
-                    <canvas width="300" height="300" id="line-time"></canvas>
+                    <canvas width="500" height="800" id="line-time"></canvas>
                     <script>
                         var {{ term }}LineChart = new Chart(document.getElementById("line-time"),{
                             type: "line",
