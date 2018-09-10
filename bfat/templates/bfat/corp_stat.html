@@ -60,7 +60,7 @@
                         <div id="fatsbytime" class="tab-pane fade in panel-default">
                             <div class="panel-body">
                                 <h3>{{ term }}s By Time</h3>
-                                <canvas id="time-line" width="500" height="300"></canvas>
+                                <canvas id="time-line" width="800" height="500"></canvas>
                                 <script>
                                     var timeLineChart = new Chart(document.getElementById("time-line"), {
                                         type: 'line',
@@ -82,7 +82,7 @@
                         <div class="tab-pane fade in panel-default" id="fatsbyweek">
                             <div class="panel-body">
                                 <h3>{{ term }}s By Weekday</h3>
-                                <canvas id="weekday-line" width="500" height="300"></canvas>
+                                <canvas id="weekday-line" width="800" height="500"></canvas>
                                 <script>
                                     var weekdayLineChart = new Chart(document.getElementById('weekday-line'), {
                                         type: 'line',

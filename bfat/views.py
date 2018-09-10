@@ -186,7 +186,7 @@ def stats_corp(request, corpid, month=None, year=None):
     # Data for By Weekday
     data_weekday = {}
     for i in range(1, 8):
-        data_weekday[datetime.strptime(str(i-1), '%w').strftime('%A')] = fats.filter(fatlink__fattime__day=i).count()
+        data_weekday[datetime.strptime(str(i-1), '%w').strftime('%A')] = fats.filter(fatlink__fattime__week_day=i).count()
     data_weekday = [list(data_weekday.keys()), list(data_weekday.values()),
                     ['rgba({}, {}, {}, 1)'.format(random.randint(0, 255),
                                                   random.randint(0, 255),
