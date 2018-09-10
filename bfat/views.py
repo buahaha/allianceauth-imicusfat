@@ -156,7 +156,7 @@ def stats_corp(request, corpid, month=None, year=None):
             continue
         else:
             chars.append(fat.character.character_name)
-    for key, ship_type in fats.items():
+    for key, ship_type in data.items():
         for char in chars:
             ship_type[char] = 0
     for fat in fats:
