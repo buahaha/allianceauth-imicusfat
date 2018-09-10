@@ -175,8 +175,33 @@ def stats_corp(request, corpid, month=None, year=None):
         stack.append(data_)
         data_stacked.append(tuple(stack))
     data_stacked = [chars, data_stacked]
+
+    # Data for By Time
+    data_time = {}
+    for i in range(0, 24):
+        data_time[i] = fats.filter(fatlink__fattime__hour=i).count()
+    data_time = [list(data_time.keys()), list(data_time.values()),
+                 ['rgba({}, {}, {}, 1)'.format(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))]]
+
+    # Data for By Weekday
+    data_weekday = {}
+    for i in range(1, 8):
+        data_weekday[datetime.strptime(str(i-1), '%w').strftime('%A')] = fats.filter(fatlink__fattime__day=i).count()
+    data_weekday = [list(data_weekday.keys()), list(data_weekday.values()),
+                    ['rgba({}, {}, {}, 1)'.format(random.randint(0, 255),
+                                                  random.randint(0, 255),
+                                                  random.randint(0, 255))]]
+
+    chars = {}
+    for char in characters:
+        fat_c = fats.filter(character_id=char.id).count()
+        if fat_c is not 0:
+            chars[char.character.character_name] = (fat_c, char.character.character_id)
+        else:
+            chars[char.character.character_name] = (0, char.character.character_id)
+
     ctx = {'term': term, 'corporation': corp.corporation_name, 'month': month, 'year': year,
-           'data_stacked': data_stacked}
+           'data_stacked': data_stacked, 'data_time': data_time, 'data_weekday': data_weekday, 'chars': chars}
     return render(request, 'bfat/corp_stat.html', ctx)
 
 

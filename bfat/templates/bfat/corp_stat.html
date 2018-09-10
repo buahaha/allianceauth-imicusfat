@@ -60,11 +60,45 @@
                         <div id="fatsbytime" class="tab-pane fade in panel-default">
                             <div class="panel-body">
                                 <h3>{{ term }}s By Time</h3>
+                                <canvas id="time-line" width="500" height="300"></canvas>
+                                <script>
+                                    var timeLineChart = new Chart(document.getElementById("time-line"), {
+                                        type: 'line',
+                                        data: {
+                                            datasets: [{
+                                                label: '# of {{ term }}s',
+                                                backgroundColor: {{ data_time.2.0|safe }},
+                                                data: {{ data_time.1 }}
+                                            }],
+                                            labels: {{ data_time.0|safe }}
+                                        },
+                                        options: {
+                                            responsive: false
+                                        }
+                                    })
+                                </script>
                             </div>
                         </div>
                         <div class="tab-pane fade in panel-default" id="fatsbyweek">
                             <div class="panel-body">
                                 <h3>{{ term }}s By Weekday</h3>
+                                <canvas id="weekday-line" width="500" height="300"></canvas>
+                                <script>
+                                    var weekdayLineChart = new Chart(document.getElementById('weekday-line'), {
+                                        type: 'line',
+                                        data:{
+                                            datasets: [{
+                                                label: '# of {{ term }}s',
+                                                backgroundColor: {{ data_weekday.2.0|safe }},
+                                                data: {{ data_weekday.1 }}
+                                            }],
+                                            labels: {{ data_weekday.0|safe }}
+                                        },
+                                        options: {
+                                            responsive: false
+                                        }
+                                    })
+                                </script>
                             </div>
                         </div>
                     </div>
@@ -73,7 +107,22 @@
             <div class="tab-pane fade in panel-default" id="members">
                 <div class="panel-body">
                     <h3>{{ corporation }} Members</h3>
-                    <p> Table will go here.</p>
+                    <table class="table">
+                        <thead>
+                            <th>Character</th>
+                            <th>{{ term }}s</th>
+                            <th>Character Stats</th>
+                        </thead>
+                        <tbody>
+                            {% for key, value in characters.items %}
+                                <tr>
+                                    <td>{{ key }}</td>
+                                    <td>{{ value.0 }}</td>
+                                    <td><a class="btn btn-primary" href="/bfat/stats/char/{{ value.1 }}/{{ month }}/{{ year }}/"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
