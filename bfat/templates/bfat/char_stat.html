@@ -35,13 +35,14 @@
                         })
                     </script>
 
-                    <h4>{{ term }}s by Time</h4>
+                    <h4>{{ term }}s by Time of Day</h4>
                     <canvas width="800" height="500" id="line-time"></canvas>
                     <script>
                         var {{ term }}LineChart = new Chart(document.getElementById("line-time"),{
                             type: "line",
                             data: {
                                 datasets: [{
+                                    label: "# of {{ term }}s",
                                     data: {{ data_time.1|safe }},
                                     backgroundColor: {{ data_time.2|safe }}
                                 }],
