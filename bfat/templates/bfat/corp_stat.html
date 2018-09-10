@@ -15,15 +15,13 @@
             var corpShipTypeBarChart = new Chart(document.getElementById('ship-bar-stacked'), {
                 type: "bar",
                 data: {
-                    datasets: [
-                        {% for set in data_stacked.1 %}
+                    datasets: [{% for set in data_stacked.1 %}
                             {
-                              label: {{ set.0|safe }},
-                              backgroundColor: {{ set.1|safe }},
+                              label: '{{ set.0|safe }}',
+                              backgroundColor: '{{ set.1|safe }}',
                               data: {{ set.2 }}
                             },
-                        {% endfor %}
-                    ],
+                        {% endfor %}],
                     labels: {{ data_stacked.0|safe }}
                 },
                 options: {
