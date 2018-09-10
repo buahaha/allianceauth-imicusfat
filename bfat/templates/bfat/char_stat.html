@@ -18,7 +18,6 @@
             <div id="graphs" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
                     <h4>{{ term }}s by Ship Type</h4>
-                    <p>Pie Chart goes here!</p>
                     <canvas id="pie-ship" width="300" height="300"></canvas>
                     <script>
                         var shipPieChart = new Chart(document.getElementById("pie-ship"), {
@@ -37,7 +36,22 @@
                     </script>
 
                     <h4>{{ term }}s by Time</h4>
-                    <p> Line chart goes here!</p>
+                    <canvas width="300" height="300" id="line-time"></canvas>
+                    <script>
+                        var {{ term }}LineChart = new Chart(document.getElementById("line-time"),{
+                            type: "line",
+                            data: {
+                                datasets: [{
+                                    data: {{ data_time.1|safe }},
+                                    backgroundColor: {{ data_time.2|safe }}
+                                }],
+                                labels: {{ data_time.0|safe }}
+                            },
+                            options: {
+                                responsive: false
+                            }
+                        })
+                    </script>
 
                 </div>
             </div>
