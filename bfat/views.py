@@ -117,9 +117,11 @@ def stats_char(request, charid, month=None, year=None):
     data_time = {}
     for i in range(0, 24):
         data_time[i] = fats.filter(fatlink__fattime__hour=i).count()
-    data_time = [list(data_time.keys()), list(data_time.values()), ['rgba({}, {}, {}, 1)'.format(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))]]
-    ctx = {'term': term, 'character': character.character_name, 'month': month, 'year': year, 'data_ship_type': data_ship_type,
-           'data_time': data_time}
+    data_time = [list(data_time.keys()), list(data_time.values()),
+                 ['rgba({}, {}, {}, 1)'.format(random.randint(0, 255),random.randint(0, 255), random.randint(0, 255))]]
+
+    ctx = {'term': term, 'character': character.character_name, 'month': month, 'year': year,
+           'data_ship_type': data_ship_type, 'data_time': data_time, 'fats': fats}
     return render(request, 'bfat/char_stat.html', ctx)
 
 

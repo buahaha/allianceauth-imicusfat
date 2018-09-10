@@ -59,7 +59,24 @@
             <div id="rawdata" class="tab-panel fade active panel-default">
                 <div class="panel-body">
                     <h4> {{ term }}s for {{ character }}</h4>
-                    <p> Table goes here.</p>
+                    <table class="table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Ship</th>
+                            <th>EVE Time</th>
+                        </thead>
+                        <tbody>
+                        {% for fat in fats %}
+                            <tr>
+                                <td>{% if fat.fatlink.fleet %}{{ fat.fatlink.fleet }}{% else %}{{ fat.fatlink.hash }}{% endif %}</td>
+                                <td>{{ fat.system }}</td>
+                                <td>{{ fat.shiptype }}</td>
+                                <td>{{ fat.fatlink.fattime }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
