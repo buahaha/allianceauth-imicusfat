@@ -162,7 +162,7 @@ def stats_corp(request, corpid, month=None, year=None):
     for fat in fats:
         data[fat.shiptype][fat.character.character_name] += 1
     data_stacked = []
-    for key, value in data:
+    for key, value in data.items():
         stack = []
         stack.append(key)
         stack.append('rgba({}, {}, {}, 1)'.format(random.randint(0, 255),
