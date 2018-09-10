@@ -25,7 +25,8 @@
                             type: "pie",
                             data: {
                                 datasets: [{
-                                    data: {{ data_ship_type.1|safe }}
+                                    data: {{ data_ship_type.1|safe }},
+                                    backgroundColor: {{ data_ship_type.2|safe }}
                                 }],
                                 labels: {{ data_ship_type.0|safe }}
                             },
