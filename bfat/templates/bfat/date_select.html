@@ -1,0 +1,30 @@
+{% extends 'allianceauth/base.html' %}
+{% load i18n %}
+{% load filters %}
+{% block page_title %}{{ corporation }} {% trans "Fleet Activity" %}{% endblock %}
+
+{% block title %}
+    <div class="col-lg-12">
+        <br>
+        {% inclde "bfat/menu.html" %}
+        <h2>{{ corporation }} {% trans "Fleet Activity" %}</h2>
+        <h4>Only months with {{ term }} data in the last 12 months are shown.</h4>
+
+        <table class="table">
+            <thead>
+                <th>Month</th>
+                <th>{{ term }}s</th>
+                <th></th>
+            </thead>
+            <tbody>
+                {% for month in months %}
+                    <tr>
+                        <td>{{ month.0|month }}</td>
+                        <td>{{ month.1 }}</td>
+                        <td><a href="bfat/stats/corp/{{ corpid }}/{{ month.0 }}/{{ year }}/" class="btn btn-primary"><span class="glyphicon-eye-open"></span></a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

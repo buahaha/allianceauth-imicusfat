@@ -1,0 +1,43 @@
+{% extends 'allianceauth/base.html' %}
+{% load i18n %}
+{% load filters %}
+{% block page_title %}{{ corporation }} {% trans "Statistics" %}{% endblock %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <br>
+        {% include 'bfat/menu.html' %}
+        <h2>{{ corporation }} {% trans "Statistics" %}</h2>
+        <h4>{{ month|month }} {{ year }}</h4>
+
+        <canvas id="ship-bar-stacked" width="800" height="800"></canvas>
+        <script>
+            var corpShipTypeBarChart = new Chart(document.getElementById('ship-bar-stacked'), {
+                type: "bar",
+                data: {
+                    datasets: [
+                        {% for set in data_stacked.1 %}
+                            {
+                              label: {{ set.0|safe }},
+                              backgroundColor: {{ set.1|safe }},
+                              data: {{ set.2 }}
+                            },
+                        {% endfor %}
+                    ],
+                    labels: {{ data_stacked.0|safe }}
+                },
+                options: {
+                    responsive: false,
+                    scales: {
+                        xAxes: [{
+                            stacked: true
+                        }],
+                        yAxes: [{
+                            stacked: true
+                        }]
+                    }
+                }
+            })
+        </script>
+    </div>
+{% endblock %}

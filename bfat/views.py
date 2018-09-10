@@ -127,13 +127,61 @@ def stats_char(request, charid, month=None, year=None):
 
 @login_required()
 @permissions_required(('bfat.stats_corp_own', 'bfat.stats_corp_other'))
-def stats_corp(request, corpid=None, month=None, year=None):
-    pass
+def stats_corp(request, corpid, month=None, year=None):
+    corp = EveCorporationInfo.objects.get(corporation_id=corpid)
+    if not month and not year:
+        year = datetime.now().year
+        months = []
+        for i in range(1, 13):
+            corp_fats = Fat.objects.filter(character__corpotation_id=corpid).count()
+            if len(corp_fats) is not 0:
+                months.append((i, len(corp_fats)))
+        ctx = {'term': term, 'corporation': corp.corporation_name, 'months': months, 'corpid': corpid, 'year': year}
+        return render(request, 'bfat/date_select.html', ctx)
+
+    fats = Fat.objects.filter(fatlink__fattime__month=month, fatlink__fattime__year=year, character__corporation_id=corpid)
+    characters = EveCharacter.objects.filter(corporation_id=corpid)
+
+    # Data for Stacked Bar Graph
+    # (label, color, [list of data for stack])
+    data = {}
+    for fat in fats:
+        if fat.shiptype in data.keys():
+            continue
+        else:
+            data[fat.shiptype] = {}
+    chars = []
+    for fat in fats:
+        if fat.character.character_name in chars:
+            continue
+        else:
+            chars.append(fat.character.character_name)
+    for key, ship_type in fats.items():
+        for char in chars:
+            ship_type[char] = 0
+    for fat in fats:
+        data[fat.shiptype][fat.character.character_name] += 1
+    data_stacked = []
+    for key, value in data:
+        stack = []
+        stack.append(key)
+        stack.append('rgba({}, {}, {}, 1)'.format(random.randint(0, 255),
+                                                  random.randint(0, 255),
+                                                  random.randint(0, 255)))
+        data_ = stack.append([])
+        for char in chars:
+            data_.append(value[char])
+        stack.append(data_)
+        data_stacked.append(tuple(stack))
+    data_stacked = [chars, data_stacked]
+    ctx = {'term': term, 'corporation': corp.corporation_name, 'month': month, 'year': year,
+           'data_stacked': data_stacked}
+    return render(request, 'bfat/corp_stat.html', ctx)
 
 
 @login_required()
 @permission_required('bfat.corp_stats_other')
-def stats_alliance(request, allianceid=None, month=None, year=None):
+def stats_alliance(request, allianceid, month=None, year=None):
     pass
 
 
