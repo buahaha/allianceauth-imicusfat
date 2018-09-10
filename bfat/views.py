@@ -12,6 +12,7 @@ from .forms import FatLinkForm, ManualFatForm, FlatListForm
 from django.utils.crypto import get_random_string
 from .tasks import get_or_create_char, process_fats
 from datetime import datetime
+import random
 
 
 if hasattr(settings, 'FAT_AS_PAP'):
@@ -105,7 +106,12 @@ def stats_char(request, charid, month=None, year=None):
             continue
         else:
             data_ship_type[fat.shiptype] = fats.filter(shiptype=fat.shiptype).count()
-    data_ship_type = [list(data_ship_type.keys()), list(data_ship_type.values())]
+    colors = []
+    for _ in data_ship_type.keys():
+        bg_color_str = 'rgba({}, {}, {}, 1)'.format(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        colors.append()
+
+    data_ship_type = [list(data_ship_type.keys()), list(data_ship_type.values()), colors]
 
     # Data for by Time Line Chart
     data_time = {}
