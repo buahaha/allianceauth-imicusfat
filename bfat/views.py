@@ -112,7 +112,7 @@ def stats_char(request, charid, month=None, year=None):
     for i in range(0, 24):
         data_time[i] = fats.filter(fatlink__fattime__hour=i)
     data_time = [data_time.keys(), data_time.values()]
-    ctx = {'character': character.character_name, 'month': month, 'year': year, 'data_ship_type': data_ship_type,
+    ctx = {'term': term, 'character': character.character_name, 'month': month, 'year': year, 'data_ship_type': data_ship_type,
            'data_time': data_time}
     return render(request, 'bfat/char_stat.html', ctx)
 
