@@ -196,9 +196,9 @@ def stats_corp(request, corpid, month=None, year=None):
     for char in characters:
         fat_c = fats.filter(character_id=char.id).count()
         if fat_c is not 0:
-            chars[char.character.character_name] = (fat_c, char.character.character_id)
+            chars[char.character_name] = (fat_c, char.character_id)
         else:
-            chars[char.character.character_name] = (0, char.character.character_id)
+            chars[char.character_name] = (0, char.character_id)
 
     ctx = {'term': term, 'corporation': corp.corporation_name, 'month': month, 'year': year,
            'data_stacked': data_stacked, 'data_time': data_time, 'data_weekday': data_weekday, 'chars': chars}
