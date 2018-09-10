@@ -133,7 +133,7 @@ def stats_corp(request, corpid, month=None, year=None):
         year = datetime.now().year
         months = []
         for i in range(1, 13):
-            corp_fats = Fat.objects.filter(character__corpotation_id=corpid).count()
+            corp_fats = Fat.objects.filter(character__corporation_id=corpid).count()
             if len(corp_fats) is not 0:
                 months.append((i, len(corp_fats)))
         ctx = {'term': term, 'corporation': corp.corporation_name, 'months': months, 'corpid': corpid, 'year': year}
