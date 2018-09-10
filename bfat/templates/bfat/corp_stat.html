@@ -5,39 +5,77 @@
 
 {% block content %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
-    
+
     <div class="col-lg-12">
         <br>
         {% include 'bfat/menu.html' %}
         <h2>{{ corporation }} {% trans "Statistics" %}</h2>
         <h4>{{ month|month }} {{ year }}</h4>
 
-        <canvas id="ship-bar-stacked" width="800" height="800"></canvas>
-        <script>
-            var corpShipTypeBarChart = new Chart(document.getElementById('ship-bar-stacked'), {
-                type: "bar",
-                data: {
-                    datasets: [{% for set in data_stacked.1 %}
-                            {
-                              label: '{{ set.0|safe }}',
-                              backgroundColor: '{{ set.1|safe }}',
-                              data: {{ set.2 }}
-                            },
-                        {% endfor %}],
-                    labels: {{ data_stacked.0|safe }}
-                },
-                options: {
-                    responsive: false,
-                    scales: {
-                        xAxes: [{
-                            stacked: true
-                        }],
-                        yAxes: [{
-                            stacked: true
-                        }]
-                    }
-                }
-            })
-        </script>
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#graphs">Graphs</a></li>
+            <li><a data-toggle="tab" href="#members">Members</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="graphs" class="tab-pane fade in active panel-default">
+                <div class="panel-body">
+                    <ul class="nav-pills">
+                        <li class="active"><a data-toggle="tab" href="#fatsbyship">{{ term }}s By Ship Type</a></li>
+                        <li><a data-toggle="tab" href="#fatsbytime">{{ term }}s By Time</a></li>
+                        <li><a data-toggle="tab" href="#fatsbyweek">{{ term }}s By Weekday</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active panel-default" id="fatsbyship">
+                            <div class="panel-body">
+                                <h3>{{ term }}s By Ship Type</h3>
+                                <canvas id="ship-bar-stacked" width="800" height="600"></canvas>
+                                <script>
+                                var corpShipTypeBarChart = new Chart(document.getElementById('ship-bar-stacked'), {
+                                    type: "bar",
+                                    data: {
+                                        datasets: [{% for set in data_stacked.1 %}
+                                                {
+                                                  label: '{{ set.0|safe }}',
+                                                  backgroundColor: '{{ set.1|safe }}',
+                                                  data: {{ set.2 }}
+                                                },
+                                            {% endfor %}],
+                                        labels: {{ data_stacked.0|safe }}
+                                    },
+                                    options: {
+                                        responsive: false,
+                                        scales: {
+                                            xAxes: [{
+                                                stacked: true
+                                            }],
+                                            yAxes: [{
+                                                stacked: true
+                                            }]
+                                        }
+                                    }
+                                })
+                                </script>
+                            </div>
+                        </div>
+                        <div id="fatsbytime" class="tab-pane fade in panel-default">
+                            <div class="panel-body">
+                                <h3>{{ term }}s By Time</h3>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade in panel-default" id="fatsbyweek">
+                            <div class="panel-body">
+                                <h3>{{ term }}s By Weekday</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade in panel-default" id="members">
+                <div class="panel-body">
+                    <h3>{{ corporation }} Members</h3>
+                    <p> Table will go here.</p>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
