@@ -109,7 +109,7 @@ def stats_char(request, charid, month=None, year=None):
     colors = []
     for _ in data_ship_type.keys():
         bg_color_str = 'rgba({}, {}, {}, 1)'.format(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        colors.append()
+        colors.append(bg_color_str)
 
     data_ship_type = [list(data_ship_type.keys()), list(data_ship_type.values()), colors]
 
