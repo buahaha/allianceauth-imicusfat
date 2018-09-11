@@ -21,6 +21,7 @@
                 <div class="panel-body">
                     <ul class="nav nav-pills">
                         <li class="active"><a data-toggle="tab" href="#fatsbyship">{{ term }}s By Ship Type</a></li>
+                        <li><a data-toggle="tab" href="#avgfats">Corporation Performance</a></li>
                         <li><a data-toggle="tab" href="#fatsbytime">{{ term }}s By Time</a></li>
                         <li><a data-toggle="tab" href="#fatsbyweek">{{ term }}s By Weekday</a></li>
                     </ul>
@@ -46,7 +47,10 @@
                                         responsive: false,
                                         scales: {
                                             xAxes: [{
-                                                stacked: true
+                                                stacked: true,
+                                                ticks: {
+                                                    autoSkip: false
+                                                }
                                             }],
                                             yAxes: [{
                                                 stacked: true
@@ -101,6 +105,35 @@
                                 </script>
                             </div>
                         </div>
+                        <div class="tab-pane fade in panel-default" id="avgfats">
+                            <div class="panel-body">
+                                <h3>Average {{ term }}s By Corporation</h3>
+                                <canvas id="avgs" width="800" height="500"></canvas>
+                                <script>
+                                    var averagesHorizontalBarChart = new Chart(document.getElementById('weekday-line'), {
+                                        type: 'horizontalBar',
+                                        data:{
+                                            datasets: [{
+                                                label: 'Average # of {{ term }}s',
+                                                backgroundColor: {{ data_avgs.2|safe }},
+                                                data: {{ data_avgs.1 }}
+                                            }],
+                                            labels: {{ data_avgs.0|safe }}
+                                        },
+                                        options: {
+                                            responsive: false,
+                                            scales: {
+                                                xAxes: [{
+                                                    ticks: {
+                                                        autoSkip: false
+                                                    }
+                                                }]
+                                            }
+                                        }
+                                    })
+                                </script>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -115,7 +148,7 @@
                             <th>Corporation Stats</th>
                         </thead>
                         <tbody>
-                            {% for key, value in chars.items %}
+                            {% for key, value in corps.items %}
                                 <tr>
                                     <td>{{ key }}</td>
                                     <td>{{ value.1 }}</td>
