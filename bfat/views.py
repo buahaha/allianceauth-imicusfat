@@ -204,7 +204,7 @@ def stats_corp(request, corpid, month=None, year=None):
         chars[char.character_name] = (fat_c, char.character_id)
 
     ctx = {'term': term, 'corporation': corp.corporation_name, 'month': month, 'year': year,
-           'data_stacked': data_stacked, 'data_time': data_time, 'data_weekday': data_weekday, 'chars': chars}
+           'data_stacked': data_stacked, 'data_time': data_time, 'data_weekday': data_weekday, 'chars': chars, 'type': 0}
     return render(request, 'bfat/corp_stat.html', ctx)
 
 
@@ -226,7 +226,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
             ally_fats = Fat.objects.filter(character__alliance_id=allianceid, fatlink__fattime__month=i).count()
             if ally_fats is not 0:
                 months.append((i, ally_fats))
-        ctx = {'term': term, 'corporation': name, 'months': months, 'corpid': allianceid, 'year': year}
+        ctx = {'term': term, 'corporation': name, 'months': months, 'corpid': allianceid, 'year': year, 'type': 1}
         return render(request, 'bfat/date_select.html', ctx)
 
     if not month or not year:
