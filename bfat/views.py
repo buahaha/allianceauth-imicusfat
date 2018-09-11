@@ -35,6 +35,7 @@ get_corporation_corporation_id
 get_alliance_alliance_id
 """
 
+
 # Create your views here.
 @login_required()
 def bfat_view(request):
@@ -94,9 +95,14 @@ def stats(request):
 
 @login_required()
 def stats_char(request, charid, month=None, year=None):
+    character = EveCharacter.objects.get(character_id=charid)
+    valid = CharacterOwnership.objects.filter(user=request.user)
+    if character not in valid or not request.user.has_perm("bfat.stats_char_other"):
+        request.session['msg'] = ('warning', 'You do not have permission to view statistics for that character.')
+        return redirect('bfat:bfat_view')
     if not month or not year:
         request.session['msg'] = ('danger', 'Date information not complete!')
-    character = EveCharacter.objects.get(character_id=charid)
+        return redirect('bfat:bfat_view')
     fats = Fat.objects.filter(character__character_id=charid, fatlink__fattime__month=month)
 
     # Data for Ship Type Pie Chart
@@ -195,10 +201,7 @@ def stats_corp(request, corpid, month=None, year=None):
     chars = {}
     for char in characters:
         fat_c = fats.filter(character_id=char.id).count()
-        if fat_c is not 0:
-            chars[char.character_name] = (fat_c, char.character_id)
-        else:
-            chars[char.character_name] = (0, char.character_id)
+        chars[char.character_name] = (fat_c, char.character_id)
 
     ctx = {'term': term, 'corporation': corp.corporation_name, 'month': month, 'year': year,
            'data_stacked': data_stacked, 'data_time': data_time, 'data_weekday': data_weekday, 'chars': chars}
@@ -208,7 +211,100 @@ def stats_corp(request, corpid, month=None, year=None):
 @login_required()
 @permission_required('bfat.corp_stats_other')
 def stats_alliance(request, allianceid, month=None, year=None):
-    pass
+    if allianceid is 000:
+        allianceid = None
+    if allianceid is not None:
+        ally = EveAllianceInfo.objects.get(alliance_id=allianceid)
+        name = ally.alliance_name
+    else:
+        name = "No Alliance"
+
+    if not month and not year:
+        year = datetime.now().year
+        months = []
+        for i in range(1, 13):
+            ally_fats = Fat.objects.filter(character__alliance_id=allianceid, fatlink__fattime__month=i).count()
+            if ally_fats is not 0:
+                months.append((i, ally_fats))
+        ctx = {'term': term, 'corporation': name, 'months': months, 'corpid': allianceid, 'year': year}
+        return render(request, 'bfat/date_select.html', ctx)
+
+    if not month or not year:
+        request.session['msg'] = ('danger', 'Date information incomplete.')
+        return redirect('bfat:bfat_view')
+
+    fats = Fat.objects.filter(character__alliance_id=allianceid,
+                              fatlink__fattime__month=month,
+                              fatlink__fattime__year=year)
+    corporations = EveCorporationInfo.objects.filter(alliance_id=allianceid)
+
+    # Fats by ship type?
+    data = {}
+    for fat in fats:
+        if fat.shiptype in data.keys():
+            continue
+        else:
+            data[fat.shiptype] = {}
+    corps = []
+    for fat in fats:
+        if fat.character.corporation_name in corps:
+            continue
+        else:
+            corps.append(fat.character.corporation_name)
+    for key, ship_type in data.items():
+        for corp in corps:
+            ship_type[corp] = 0
+    for fat in fats:
+        data[fat.shiptype][fat.character.corporation_name] += 1
+    data_stacked = []
+    for key, value in data.items():
+        stack = []
+        stack.append(key)
+        stack.append('rgba({}, {}, {}, 1)'.format(random.randint(0, 255),
+                                                  random.randint(0, 255),
+                                                  random.randint(0, 255)))
+        stack.append([])
+        data_ = stack[2]
+        for corp in corps:
+            data_.append(value[corp])
+        stack.append(data_)
+        data_stacked.append(tuple(stack))
+    data_stacked = [corp, data_stacked]
+
+    # Avg fats by corp
+    data_avgs = {}
+    for corp in corporations:
+        c_fats = fats.filter(character__corporation_id=corp.corporation_id).count()
+        data_avgs[corp] = int(c_fats/corp.member_count)
+    data_avgs = [list(data_avgs.keys()), list(data.values()), 'rgba({}, {}, {}, 1)'.format(random.randint(0, 255),
+                                                                                           random.randint(0, 255),
+                                                                                           random.randint(0, 255))]
+
+    # Fats by Time
+    data_time = {}
+    for i in range(0, 24):
+        data_time[i] = fats.filter(fatlink__fattime__hour=i).count()
+    data_time = [list(data_time.keys()), list(data_time.values()),
+                 ['rgba({}, {}, {}, 1)'.format(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))]]
+
+    # Fats by weekday
+    data_weekday = []
+    for i in range(1, 8):
+        data_weekday.append(fats.filter(fatlink__fattime__week_day=i).count())
+    data_weekday = [['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                    data_weekday, ['rgba({}, {}, {}, 1)'.format(random.randint(0, 255),
+                                                                random.randint(0, 255),
+                                                                random.randint(0, 255))]]
+
+    # Corp list
+    corps = {}
+    for corp in corporations:
+        c_fats = fats.filter(character__corporation_id=corp.corporation_id).count()
+        data_avgs[corp] = (corp.corporation_id, c_fats, int(c_fats / corp.member_count))
+
+    ctx = {'term': term, 'alliance': name, 'month': month, 'year': year, 'data_stacked': data_stacked,
+           'data_avgs': data_avgs, 'data_time': data_time, 'data_weekday': data_weekday, 'corps': corps}
+    return render(request, 'bfat/ally_stat.html', ctx)
 
 
 @login_required()

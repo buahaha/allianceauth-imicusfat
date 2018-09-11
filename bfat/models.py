@@ -23,7 +23,8 @@ class FatLink(models.Model):
     class Meta:
         permissions = (('manage_bfat', 'Can manage the bFAT module'),
                        ('stats_corp_own', 'Can see own corp stats'),
-                       ('stats_corp_other', 'Can see stats of other corps.'))
+                       ('stats_corp_other', 'Can see stats of other corps.'),
+                       ('stats_char_other', 'Can see stats of characters not associated with current user.'))
 
 
 # PAP/FAT Model
