@@ -276,7 +276,8 @@ def stats_alliance(request, allianceid, month=None, year=None):
     data_avgs = {}
     for corp in corporations:
         c_fats = fats.filter(character__corporation_id=corp.corporation_id).count()
-        data_avgs[corp] = int(c_fats/corp.member_count)
+        avg = c_fats/corp.member_count
+        data_avgs[corp] = avg
     data_avgs = [list(data_avgs.keys()), list(data_avgs.values()), 'rgba({}, {}, {}, 1)'.format(random.randint(0, 255),
                                                                                            random.randint(0, 255),
                                                                                            random.randint(0, 255))]
@@ -301,7 +302,8 @@ def stats_alliance(request, allianceid, month=None, year=None):
     corps = {}
     for corp in corporations:
         c_fats = fats.filter(character__corporation_id=corp.corporation_id).count()
-        corps[corp] = (corp.corporation_id, c_fats, int(c_fats/corp.member_count))
+        avg = c_fats/corp.member_count
+        corps[corp] = (corp.corporation_id, c_fats, avg)
 
     ctx = {'term': term, 'alliance': name, 'month': month, 'year': year, 'data_stacked': data_stacked,
            'data_avgs': data_avgs, 'data_time': data_time, 'data_weekday': data_weekday, 'corps': corps}
