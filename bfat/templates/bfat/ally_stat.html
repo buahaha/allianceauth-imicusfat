@@ -14,7 +14,7 @@
 
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#graphs">Graphs</a></li>
-            <li><a data-toggle="tab" href="#members">Members</a></li>
+            <li><a data-toggle="tab" href="#members">Corporations</a></li>
         </ul>
         <div class="tab-content">
             <div id="graphs" class="tab-pane fade in active panel-default">
@@ -108,6 +108,7 @@
                         <div class="tab-pane fade in panel-default" id="avgfats">
                             <div class="panel-body">
                                 <h3>Average {{ term }}s By Corporation</h3>
+                                <h5>Data here is rounded to whole numbers, for the most accurate information check the corps tab.</h5>
                                 <canvas id="avgs" width="1000" height="700"></canvas>
                                 <script>
                                     var averagesHorizontalBarChart = new Chart(document.getElementById('avgs'), {

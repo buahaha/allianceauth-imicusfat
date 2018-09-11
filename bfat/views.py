@@ -13,6 +13,7 @@ from django.utils.crypto import get_random_string
 from .tasks import get_or_create_char, process_fats
 from datetime import datetime
 import random
+from collections import OrderedDict
 
 
 if hasattr(settings, 'FAT_AS_PAP'):
@@ -35,6 +36,8 @@ get_corporation_corporation_id
 get_alliance_alliance_id
 """
 
+def sortAvgs(tup):
+    return tup[1][2]
 
 # Create your views here.
 @login_required()
@@ -281,6 +284,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
         c_fats = fats.filter(character__corporation_id=corp.corporation_id).count()
         avg = c_fats/corp.member_count
         data_avgs[corp.corporation_name] = int(avg)
+    data_avgs = OrderedDict(sorted(data_avgs.items(), key=sortAvgs, reverse=True))
     data_avgs = [list(data_avgs.keys()), list(data_avgs.values()), 'rgba({}, {}, {}, 1)'.format(random.randint(0, 255),
                                                                                            random.randint(0, 255),
                                                                                            random.randint(0, 255))]
@@ -307,7 +311,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
         c_fats = fats.filter(character__corporation_id=corp.corporation_id).count()
         avg = c_fats/corp.member_count
         corps[corp] = (corp.corporation_id, c_fats, round(avg, 2))
-
+    corps = OrderedDict(sorted(corps.items(), key=sortAvgs, reverse=True))
     ctx = {'term': term, 'alliance': name, 'month': month, 'year': year, 'data_stacked': data_stacked,
            'data_avgs': data_avgs, 'data_time': data_time, 'data_weekday': data_weekday, 'corps': corps}
     return render(request, 'bfat/ally_stat.html', ctx)
