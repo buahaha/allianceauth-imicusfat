@@ -269,7 +269,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
             data_.append(value[corp])
         stack.append(data_)
         data_stacked.append(tuple(stack))
-    data_stacked = [corp, data_stacked]
+    data_stacked = [corps, data_stacked]
 
     # Avg fats by corp
     data_avgs = {}
