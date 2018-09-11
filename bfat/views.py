@@ -277,7 +277,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
     for corp in corporations:
         c_fats = fats.filter(character__corporation_id=corp.corporation_id).count()
         avg = c_fats/corp.member_count
-        data_avgs[corp.corporation_name] = round(avg, 2)
+        data_avgs[corp.corporation_name] = int(avg)
     data_avgs = [list(data_avgs.keys()), list(data_avgs.values()), 'rgba({}, {}, {}, 1)'.format(random.randint(0, 255),
                                                                                            random.randint(0, 255),
                                                                                            random.randint(0, 255))]
