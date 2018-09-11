@@ -257,9 +257,9 @@ def stats_alliance(request, allianceid, month=None, year=None):
             ship_type[corp] = 0
     for fat in fats:
         data[fat.shiptype][fat.character.corporation_name] += 1
-    if 'None' in data.keys():
-        data['Unknown'] = data['None']
-        data.pop('None')
+    if None in data.keys():
+        data['Unknown'] = data[None]
+        data.pop(None)
     data_stacked = []
     for key, value in data.items():
         stack = []
