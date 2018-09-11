@@ -143,7 +143,7 @@ def stats_corp(request, corpid, month=None, year=None):
             corp_fats = Fat.objects.filter(character__corporation_id=corpid, fatlink__fattime__month=i).count()
             if corp_fats is not 0:
                 months.append((i, corp_fats))
-        ctx = {'term': term, 'corporation': corp.corporation_name, 'months': months, 'corpid': corpid, 'year': year}
+        ctx = {'term': term, 'corporation': corp.corporation_name, 'months': months, 'corpid': corpid, 'year': year,  'type': 0}
         return render(request, 'bfat/date_select.html', ctx)
 
     fats = Fat.objects.filter(fatlink__fattime__month=month, fatlink__fattime__year=year, character__corporation_id=corpid)
@@ -205,7 +205,7 @@ def stats_corp(request, corpid, month=None, year=None):
         chars[char.character_name] = (fat_c, char.character_id)
 
     ctx = {'term': term, 'corporation': corp.corporation_name, 'month': month, 'year': year,
-           'data_stacked': data_stacked, 'data_time': data_time, 'data_weekday': data_weekday, 'chars': chars, 'type': 0}
+           'data_stacked': data_stacked, 'data_time': data_time, 'data_weekday': data_weekday, 'chars': chars}
     return render(request, 'bfat/corp_stat.html', ctx)
 
 
