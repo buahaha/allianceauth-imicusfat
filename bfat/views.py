@@ -217,6 +217,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
         ally = EveAllianceInfo.objects.get(alliance_id=allianceid)
         name = ally.alliance_name
     else:
+        ally = None
         name = "No Alliance"
 
     if not month and not year:
@@ -236,7 +237,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
     fats = Fat.objects.filter(character__alliance_id=allianceid,
                               fatlink__fattime__month=month,
                               fatlink__fattime__year=year)
-    corporations = EveCorporationInfo.objects.filter(alliance_id=allianceid)
+    corporations = EveCorporationInfo.objects.filter(alliance=ally)
 
     # Fats by ship type?
     data = {}
