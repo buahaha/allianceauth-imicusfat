@@ -93,7 +93,7 @@
                                         data:{
                                             datasets: [{
                                                 label: '# of {{ term }}s',
-                                                backgroundColor: '{{ data_weekday.2|safe }}',
+                                                backgroundColor: {{ data_weekday.2|safe }},
                                                 data: {{ data_weekday.1 }}
                                             }],
                                             labels: {{ data_weekday.0|safe }}
@@ -115,7 +115,7 @@
                                         data:{
                                             datasets: [{
                                                 label: 'Average # of {{ term }}s',
-                                                backgroundColor: {{ data_avgs.2|safe }},
+                                                backgroundColor: '{{ data_avgs.2|safe }}',
                                                 data: {{ data_avgs.1 }}
                                             }],
                                             labels: {{ data_avgs.0|safe }}
