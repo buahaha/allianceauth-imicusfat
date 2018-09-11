@@ -301,7 +301,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
     corps = {}
     for corp in corporations:
         c_fats = fats.filter(character__corporation_id=corp.corporation_id).count()
-        corps[corp] = (corp.corporation_id, c_fats, int(c_fats / corp.member_count))
+        corps[corp] = (corp.corporation_id, c_fats, int(c_fats/corp.member_count))
 
     ctx = {'term': term, 'alliance': name, 'month': month, 'year': year, 'data_stacked': data_stacked,
            'data_avgs': data_avgs, 'data_time': data_time, 'data_weekday': data_weekday, 'corps': corps}
