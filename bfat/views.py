@@ -69,7 +69,7 @@ def stats(request):
 
         for corp in corps:
             if corp.alliance is None:
-                data['No Alliance'].append(corp.corporation_id)
+                data['No Alliance'].append((corp.corporation_id, corp.corporation_name))
             else:
                 data[corp.alliance.alliance_name].append((corp.corporation_id, corp.corporation_name))
     elif request.user.has_perm('bfat.stats_corp_own'):
