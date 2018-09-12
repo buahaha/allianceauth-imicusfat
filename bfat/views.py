@@ -212,7 +212,7 @@ def stats_corp(request, corpid, month=None, year=None):
 @login_required()
 @permission_required('bfat.corp_stats_other')
 def stats_alliance(request, allianceid, month=None, year=None):
-    if allianceid is 000:
+    if allianceid is '000':
         allianceid = None
     if allianceid is not None:
         ally = EveAllianceInfo.objects.get(alliance_id=allianceid)
