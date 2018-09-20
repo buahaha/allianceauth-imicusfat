@@ -29,17 +29,17 @@ def get_or_create_char(name: str=None, id: int=None):
         result = c.Search.get_search(categories=['character'], search=name, strict=True).result()
         if 'character' not in result:
             return None
-        char_id = result['character'][0]
-        qs = EveCharacter.objects.filter(character_id=char_id)
+        id = result['character'][0]
+        qs = EveCharacter.objects.filter(character_id=id)
     elif id:
         # If an ID is passed we can just check the db for it.
-        qs = EveCharacter.objects.filter(character_id=char_id)
+        qs = EveCharacter.objects.filter(character_id=id)
     elif not name and not id:
         raise NoDataError("No character name or id provided.")
 
     if len(qs) == 0:
         # Create Character
-        character = EveCharacter.objects.create_character(char_id)
+        character = EveCharacter.objects.create_character(id)
         character = EveCharacter.objects.get(pk=character.pk)
         # Make corp and alliance info objects for future sane
         if character.alliance_id is not None:
