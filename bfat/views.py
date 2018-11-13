@@ -357,8 +357,7 @@ def link_create_click(request):
             return redirect('bfat:link_edit', hash=hash)
         else:
             request.session['msg'] = ['danger', ('Something went wrong when attempting to submit your'
-                                                 ' clickable {0}Link. \n'
-                                                 'Form: {1}\nValid: {2}'.format(term, request.POST, form.is_valid()))]
+                                                 ' clickable {0}Link.'.format(term))]
             return redirect('bfat:bfat_view')
 
     else:
