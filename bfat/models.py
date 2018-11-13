@@ -27,6 +27,12 @@ class FatLink(models.Model):
                        ('stats_char_other', 'Can see stats of characters not associated with current user.'))
 
 
+# Clickable Link Duration Model
+class ClickFatDuration(models.Model):
+    duration = models.PositiveIntegerField()
+    fleet = models.ForeignKey(FatLink, on_delete=models.CASCADE)
+
+
 # PAP/FAT Model
 class Fat(models.Model):
     character = models.ForeignKey(EveCharacter, on_delete=models.CASCADE)
