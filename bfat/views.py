@@ -5,15 +5,16 @@ import os
 from django.core.paginator import Paginator
 from django.conf import settings
 from esi.decorators import token_required
-from .models import Fat, FatLink, ManualFat, DelLog
+from .models import Fat, ClickFatDuration, FatLink, ManualFat, DelLog
 from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
 from allianceauth.authentication.models import CharacterOwnership
-from .forms import FatLinkForm, ManualFatForm, FlatListForm
+from .forms import FatLinkForm, ManualFatForm, FlatListForm, ClickFatForm
 from django.utils.crypto import get_random_string
 from .tasks import get_or_create_char, process_fats
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
 from collections import OrderedDict
+from allianceauth.eveonline.providers import provider
 
 
 if hasattr(settings, 'FAT_AS_PAP'):
@@ -24,6 +25,9 @@ else:
 SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.json')
 """
 Swagger Operations:
+
+get_characters_character_id_location
+get_characters_character_id_ship
 
 get_characters_character_id_fleet
 get_fleets_fleet_id
@@ -325,10 +329,49 @@ def links(request, page=1):
 
 
 @login_required()
+@permission_required(('bfat.manage_bfat', 'bfat.addfatlink'))
+def link_add(request):
+    ctx = {'term': term}
+    return render(request, 'bfat/addlink.html', ctx)
+
+
+@login_required()
+@permissions_required(('bfat.manage_bfat', 'bfat.addfatlink'))
+def link_create_click(request):
+    if request.method == "POST":
+        form = ClickFatForm(request.POST)
+        if form.is_valid():
+            hash = get_random_string(length=30)
+            link = FatLink()
+            link.fleet = form.cleaned_data['name']
+            link.creator = request.user
+            link.hash = hash
+            link.save()
+            dur = ClickFatDuration()
+            dur.fleet = FatLink.objects.get(hash=hash)
+            dur.duration = form.cleaned_data['duration']
+            dur.save()
+
+            request.session['{}-creation-code'.format(hash)] = 202
+
+            return redirect('bfat:link_edit', hash=hash)
+        else:
+            request.session['msg'] = ['danger', ('Something went wrong when attempting to submit your'
+                                                 ' clickable {0}Link.'.format(term))]
+            return redirect('bfat:bfat_view')
+
+    else:
+        request.session['msg'] = ['warning',
+                                  ('You must fill out the form on the "Add {0}Link" '
+                                   'page to create a clickable {0}Link'.format(term))]
+        return redirect('bfat:bfat_view')
+
+
+@login_required()
 @permissions_required(('bfat.manage_bfat', 'bfat.addfatlink'))
 @token_required(
     scopes=['esi-fleets.read_fleet.v1'])
-def link_add(request, token):
+def link_create_esi(request, token):
     # "error": "The fleet does not exist or you don't have access to it!"
     hash = get_random_string(length=30)
     link = FatLink(fleet=None, creator=request.user, hash=hash)
@@ -351,6 +394,49 @@ def link_add(request, token):
     except:
         request.session['{}-creation-code'.format(hash)] = 404
         return redirect('bfat:link_edit', hash=hash)
+
+
+@login_required()
+@token_required(scopes=['esi-location.read_location.v1', 'esi-location.read_ship_type.v1'])
+def click_link(request, token, hash=None):
+    if hash is None:
+        request.session['msg'] = ['warning', 'No {}link hash provided.'.format(term)]
+        return redirect('bfat:bfat_view')
+    try:
+        try:
+            fleet = FatLink.objects.get(hash=hash)
+        except:
+            request.session['msg'] = ['warning', 'The hash provided is not valid.']
+            return redirect('bfat:bfat_view')
+        dur = ClickFatDuration.objects.get(fleet=fleet)
+
+        if (datetime.now()-timedelta(minutes=dur.duration)) >= fleet.fattime:
+            request.session['msg'] = ['warning', ('Sorry, that {0}Link is expired. If you were on that fleet, '
+                                                  'contact your FC about having your {0} manually added.'.format(term))]
+            return redirect('bfat:bfat_view')
+
+        character = EveCharacter.objects.get(token.character_id)
+        c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
+        try:
+            location = c.Location.get_characters_character_id_location(character_id=token.character_id).result()
+            ship = c.Location.get_characters_character_id_ship(character_id=token.character_id).result()
+            location = c.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()['name']
+            ship = provider.get_itemtype(ship['ship_type_id']).name
+
+            try:
+                fat = Fat(fatlink=fleet, character=character, system=location, shiptype=ship)
+                fat.save()
+            except:
+                request.session['msg'] = ['warning', ('A {} already exists for the selected character ({}) and fleet'
+                                                      ' combination.'.format(term, character.character_name))]
+                return redirect('bfat:bfat_view')
+        except:
+            request.session['msg'] = ['warning', ('There was an issue with the token for {}.'
+                                                  ' Please try again.'.format(character.character_name))]
+            return redirect('bfat:bfat_view')
+    except:
+        request.session['msg'] = ['warning', 'The hash provided is not for a clickable {}Link'.format(term)]
+        return redirect('bfat:bfat_view')
 
 
 @login_required()

@@ -43,6 +43,16 @@
                 <h4>Oh No!</h4>
                 <p>Something went wrong!</p>
             </div>
+            {% elif msg == 202 %}
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                    <span aria-hidden="true">&times</span>
+                </button>
+                <h4>Success!</h4>
+                <p>&#9642; Clickable {{ term }}Link Created!</p>
+                <p>&#9642; Make sure to give your fleet members the following link to click so that they get credit for this fleet. </p>
+                <p>&#9642; <i>Link: <a href="{% url 'bfat:link_click' link.hash %}" class="label label-success">COPY ME!</a></i> </p>
+                </div>
             {% elif msg == 1 %}
             <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
