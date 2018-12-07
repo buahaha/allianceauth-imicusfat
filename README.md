@@ -3,6 +3,9 @@
 A better FAT system for Alliance Auth.
 
 ## Installation
+
+**IMPORTANT NOTE**: This is a _replacement_ for `allianceauth.fleetactivitytracking` and **cannot** be installed alongside it. If you are currently using the FAT system that ships with AA. You will want to back up your database, and uninstall it. (Remember to do `python manage.py migrate fleetactivitytracking zero` before removing it from `INSTALLED_APPS`!)
+
 `pip install git+https://gitlab.com/colcrunch/allianceauth-bfat.git`
 
 Add to your `INSTALLED_APPS`
