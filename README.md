@@ -13,6 +13,8 @@ Add to your `INSTALLED_APPS`
 'bfat',
 ```
 
+If you are using mysql, you need to add the timezone tables to your database. For instructions, please see this link: https://dev.mysql.com/doc/refman/5.5/en/mysql-tzinfo-to-sql.html Users using sqlite do not need to worry about this.
+
 Restart your workers.
 
 
