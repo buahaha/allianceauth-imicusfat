@@ -329,14 +329,14 @@ def links(request, page=1):
 
 
 @login_required()
-@permission_required(('bfat.manage_bfat', 'bfat.addfatlink'))
+@permission_required(('bfat.manage_bfat', 'bfat.add_fatlink'))
 def link_add(request):
     ctx = {'term': term}
     return render(request, 'bfat/addlink.html', ctx)
 
 
 @login_required()
-@permissions_required(('bfat.manage_bfat', 'bfat.addfatlink'))
+@permissions_required(('bfat.manage_bfat', 'bfat.add_fatlink'))
 def link_create_click(request):
     if request.method == "POST":
         form = ClickFatForm(request.POST)
