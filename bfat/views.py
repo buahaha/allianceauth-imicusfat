@@ -102,8 +102,8 @@ def stats(request):
 def stats_char(request, charid, month=None, year=None):
     character = EveCharacter.objects.get(character_id=charid)
     valid = [char.character for char in CharacterOwnership.objects.filter(user=request.user)]
-    if character not in valid or not request.user.has_perm("bfat.stats_char_other"):
-        request.session['msg'] = ('warning', 'You do not have permission to view statistics for that character.')
+    if character not in valid and not request.user.has_perm("bfat.stats_char_other"):
+        request.session['msg'] = ('warning', f'You do not have permission to view statistics for that character. {request.user.has_perm("bfat.stats_char_other")}')
         return redirect('bfat:bfat_view')
     if not month or not year:
         request.session['msg'] = ('danger', 'Date information not complete!')
@@ -214,7 +214,7 @@ def stats_corp(request, corpid, month=None, year=None):
 
 
 @login_required()
-@permission_required('bfat.corp_stats_other')
+@permission_required('bfat.stats_corp_other')
 def stats_alliance(request, allianceid, month=None, year=None):
     if allianceid == '000':
         allianceid = None
