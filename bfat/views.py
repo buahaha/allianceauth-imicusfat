@@ -103,7 +103,7 @@ def stats_char(request, charid, month=None, year=None):
     character = EveCharacter.objects.get(character_id=charid)
     valid = [char.character for char in CharacterOwnership.objects.filter(user=request.user)]
     if character not in valid and not request.user.has_perm("bfat.stats_char_other"):
-        request.session['msg'] = ('warning', f'You do not have permission to view statistics for that character. {request.user.has_perm("bfat.stats_char_other")}')
+        request.session['msg'] = ('warning', 'You do not have permission to view statistics for that character.')
         return redirect('bfat:bfat_view')
     if not month or not year:
         request.session['msg'] = ('danger', 'Date information not complete!')
