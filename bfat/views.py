@@ -432,9 +432,9 @@ def click_link(request, token, hash=None):
                     name = fleet.fleet
                 else:
                     name = fleet.hash
-                request.session['msg'] = ['success', ('Success! {} '
-                                                      'registered for {} at {}'.format(term,
-                                                                                       character.character_name, name))]
+                request.session['msg'] = ['success', ('{} registered for {} at {}'.format(term,
+                                                                                          character.character_name,
+                                                                                          name))]
                 return redirect('bfat:bfat_view')
             except:
                 request.session['msg'] = ['warning', ('A {} already exists for the selected character ({}) and fleet'
