@@ -368,7 +368,7 @@ def link_create_click(request):
 
 
 @login_required()
-@permissions_required(('bfat.manage_bfat', 'bfat.addfatlink'))
+@permissions_required(('bfat.manage_bfat', 'bfat.add_fatlink'))
 @token_required(
     scopes=['esi-fleets.read_fleet.v1'])
 def link_create_esi(request, token):
@@ -440,7 +440,7 @@ def click_link(request, token, hash=None):
 
 
 @login_required()
-@permissions_required(('bfat.manage_bfat', 'bfat.add_fatlink', 'bfat.edit_fatlink'))
+@permissions_required(('bfat.manage_bfat', 'bfat.add_fatlink', 'bfat.change_fatlink'))
 def edit_link(request, hash=None):
     if hash is None:
         request.session['msg'] = ['warning', 'No {}link hash provided.'.format(term)]
