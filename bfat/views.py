@@ -4,6 +4,7 @@ from allianceauth.authentication.decorators import permissions_required
 import os
 from django.core.paginator import Paginator
 from django.conf import settings
+from django.utils import timezone
 from esi.decorators import token_required
 from .models import Fat, ClickFatDuration, FatLink, ManualFat, DelLog
 from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
@@ -409,13 +410,14 @@ def click_link(request, token, hash=None):
             request.session['msg'] = ['warning', 'The hash provided is not valid.']
             return redirect('bfat:bfat_view')
         dur = ClickFatDuration.objects.get(fleet=fleet)
+        now = timezone.now()-timedelta(minutes=dur.duration)
 
-        if (datetime.now()-timedelta(minutes=dur.duration)) >= fleet.fattime:
+        if now >= fleet.fattime:
             request.session['msg'] = ['warning', ('Sorry, that {0}Link is expired. If you were on that fleet, '
                                                   'contact your FC about having your {0} manually added.'.format(term))]
             return redirect('bfat:bfat_view')
 
-        character = EveCharacter.objects.get(token.character_id)
+        character = EveCharacter.objects.get(character_id=token.character_id)
         c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
         try:
             location = c.Location.get_characters_character_id_location(character_id=token.character_id).result()
@@ -426,6 +428,14 @@ def click_link(request, token, hash=None):
             try:
                 fat = Fat(fatlink=fleet, character=character, system=location, shiptype=ship)
                 fat.save()
+                if fleet.fleet is not None:
+                    name = fleet.fleet
+                else:
+                    name = fleet.hash
+                request.session['msg'] = ['success', ('Success! {} '
+                                                      'registered for {} at {}'.format(term,
+                                                                                       character.character_name, name))]
+                return redirect('bfat:bfat_view')
             except:
                 request.session['msg'] = ['warning', ('A {} already exists for the selected character ({}) and fleet'
                                                       ' combination.'.format(term, character.character_name))]
@@ -434,8 +444,8 @@ def click_link(request, token, hash=None):
             request.session['msg'] = ['warning', ('There was an issue with the token for {}.'
                                                   ' Please try again.'.format(character.character_name))]
             return redirect('bfat:bfat_view')
-    except:
-        request.session['msg'] = ['warning', 'The hash provided is not for a clickable {}Link'.format(term)]
+    except Exception as e:
+        request.session['msg'] = ['warning', 'The hash provided is not for a clickable {}Link.'.format(term)]
         return redirect('bfat:bfat_view')
 
 
