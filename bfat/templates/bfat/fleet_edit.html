@@ -137,7 +137,7 @@
                                         <td>{{ fat.character.character_name }}</td>
                                         <td>{{ fat.system }}</td>
                                         <td>{{ fat.shiptype }}</td>
-                                        <td>{% if perms.bfat.delete_fat %}<a class="btn btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
+                                        <td>{% if perms.bfat.delete_fat %}<a class="btn btn-danger" href="{% url 'bfat:fat_delete' link.hash fat.id %}"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
                                     </tr>
                                 {% endfor %}
                              </tbody>

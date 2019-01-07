@@ -26,5 +26,5 @@ urlpatterns = [
     url(r'^links/(?P<hash>[a-zA-Z0-9]+)/click/$', views.click_link, name="link_click"),
     url(r'^links/del/$', views.del_link, name="link_delete"),
     url(r'^links/(?P<hash>[a-zA-Z0-9]+)/del/$', views.del_link, name="link_delete"),
-    url(r'^links/(?P<hash>[a-zA-Z0-9]+)/(?P<fat>[0-9]+)/del/$', views.del_fat, name="link_delete"),
+    url(r'^links/(?P<hash>[a-zA-Z0-9]+)/(?P<fat>[0-9]+)/del/$', views.del_fat, name="fat_delete"),
 ]
