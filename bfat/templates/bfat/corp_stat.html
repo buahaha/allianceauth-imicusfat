@@ -110,7 +110,7 @@
             <div class="tab-pane fade in panel-default" id="members">
                 <div class="panel-body">
                     <h3>{{ corporation }} Members</h3>
-                    <table class="table">
+                    <table class="table" id="corp-members">
                         <thead>
                             <th>Character</th>
                             <th>{{ term }}s</th>
@@ -130,4 +130,15 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block extra_javascript %}
+    {% include 'bundles/datatables-js.html' %}
+{% endblock %}
+{% block extra_css %}
+    {% include 'bundles/datatables-css.html' %}
+{% endblock %}
+{% block extra_script %}
+    $(document).ready(function(){
+        $('#corp-members').DataTable();
+    });
 {% endblock %}

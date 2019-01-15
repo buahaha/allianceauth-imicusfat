@@ -124,7 +124,7 @@
                 <div id="{{ term }}s" class="tab-pane fade in active panel-default">
                     <div class="panel-body">
                          <h4>{{ term }}s for this {{ term }}Link</h4>
-                         <table class="table">
+                         <table class="table" id="fat-chars">
                              <thead>
                                 <th>Character</th>
                                 <th>Location</th>
@@ -202,4 +202,15 @@
     </div>
 
 
+{% endblock %}
+{% block extra_javascript %}
+    {% include 'bundles/datatables-js.html' %}
+{% endblock %}
+{% block extra_css %}
+    {% include 'bundles/datatables-css.html' %}
+{% endblock %}
+{% block extra_script %}
+    $(document).ready(function(){
+        $('#fat-chars').DataTable();
+    });
 {% endblock %}

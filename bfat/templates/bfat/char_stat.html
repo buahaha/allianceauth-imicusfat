@@ -59,7 +59,7 @@
             <div id="rawdata" class="tab-panel fade active panel-default">
                 <div class="panel-body">
                     <h4> {{ term }}s for {{ character }}</h4>
-                    <table class="table">
+                    <table class="table" id="raw-data">
                         <thead>
                             <th>Name</th>
                             <th>Location</th>
@@ -81,4 +81,15 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block extra_javascript %}
+    {% include 'bundles/datatables-js.html' %}
+{% endblock %}
+{% block extra_css %}
+    {% include 'bundles/datatables-css.html' %}
+{% endblock %}
+{% block extra_script %}
+    $(document).ready(function(){
+        $('#raw-data').DataTable();
+    });
 {% endblock %}

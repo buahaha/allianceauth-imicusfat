@@ -321,10 +321,8 @@ def stats_alliance(request, allianceid, month=None, year=None):
 
 
 @login_required()
-def links(request, page=1):
+def links(request):
     links = FatLink.objects.all().order_by('fattime').reverse()
-    pages = Paginator(links, 15)
-    links = pages.page(page)
     ctx = {'term': term, 'links': links}
     return render(request, 'bfat/fat_list.html', ctx)
 
