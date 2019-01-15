@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 import random
 from collections import OrderedDict
 from allianceauth.eveonline.providers import provider
+from django.db.models import Count
 
 
 if hasattr(settings, 'FAT_AS_PAP'):
@@ -322,7 +323,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
 
 @login_required()
 def links(request):
-    links = FatLink.objects.all().order_by('fattime').reverse()
+    links = FatLink.objects.all().order_by('fattime').reverse().annotate(number_of_fats=Count('fat'))
     ctx = {'term': term, 'links': links}
     return render(request, 'bfat/fat_list.html', ctx)
 
