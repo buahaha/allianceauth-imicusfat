@@ -29,9 +29,9 @@
                     <ul class="nav nav-pills">
                         {% for char in charstats %}
                             {% if forloop.first %}
-                                <li class="active"><a data-toggle="tab" href="#{{ char.0|cut:" " }}"><img class="img-circle" src="http://imageserver.eveonline.com/Character/{{ char.2 }}_32.jpg"/>  {{ char.0 }}</a></li>
+                                <li class="active"><a data-toggle="tab" href="#{{ char.0|cut:" " }}"><img class="img-circle" src="https://imageserver.eveonline.com/Character/{{ char.2 }}_32.jpg"/>  {{ char.0 }}</a></li>
                             {% else %}
-                                <li><a data-toggle="tab" href="#{{ char.0|cut:" " }}"><img class="img-circle" src="http://imageserver.eveonline.com/Character/{{ char.2 }}_32.jpg"/>  {{ char.0 }}</a></li>
+                                <li><a data-toggle="tab" href="#{{ char.0|cut:" " }}"><img class="img-circle" src="https://imageserver.eveonline.com/Character/{{ char.2 }}_32.jpg"/>  {{ char.0 }}</a></li>
                             {% endif %}
                         {% endfor %}
                     </ul>
@@ -81,7 +81,7 @@
                                 <div class="panel panel-default">
                                     <div class="panel-heading" role="tab" id="heading{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
                                         <h4 class="panel-title">
-                                            {% if key == 'No Alliance' %}<img src="http://imageserver.eveonline.com/alliance/1_32.png"/>{% else %}<img src="http://imageserver.eveonline.com/alliance/{{ value.0 }}_32.png" />{% endif %}
+                                            {% if key == 'No Alliance' %}<img src="https://imageserver.eveonline.com/alliance/1_32.png"/>{% else %}<img src="https://imageserver.eveonline.com/alliance/{{ value.0 }}_32.png" />{% endif %}
                                             <a role="button" class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}" aria-expanded="false" aria-controls="{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
                                                 {{ key }}
                                             </a>
