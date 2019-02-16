@@ -21,7 +21,7 @@
             <li class="{% navactive request 'bfat:links bfat:link_edit' %}">
                 <a href="{% url 'bfat:links' %}">{{ term }} {% trans "Links" %}</a>
             </li>
-            {% if perms.bfat.manage_bfat or perms.bfat.addfatlink %}
+            {% if perms.bfat.manage_bfat or perms.bfat.add_fatlink %}
                 <li class="{% navactive request 'bfat:link_add' %}">
                     <a href="{% url 'bfat:link_add' %}">Add {{ term }}Link</a>
                 </li>

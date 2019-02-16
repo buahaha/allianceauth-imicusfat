@@ -329,7 +329,7 @@ def links(request):
 
 
 @login_required()
-@permission_required(('bfat.manage_bfat', 'bfat.add_fatlink'))
+@permissions_required(('bfat.manage_bfat', 'bfat.add_fatlink'))
 def link_add(request):
     ctx = {'term': term}
     return render(request, 'bfat/addlink.html', ctx)
