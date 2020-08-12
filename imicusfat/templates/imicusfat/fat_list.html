@@ -1,0 +1,63 @@
+{% extends 'allianceauth/base.html' %}
+{% load i18n %}
+{% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <br>
+        {% include "bfat/menu.html" %}
+        <h2>{% trans "All" %} {{ term }}{% trans "Links" %}</h2>
+        <table class="table" id="link-list">
+            <thead>
+                <th>Fleet Name</th>
+                <th>Creator</th>
+                <th>EVE Time</th>
+                <th># of {{ term }}s</th>
+                <th>Utils</th>
+            </thead>
+            <tbody>
+                {% for link in links %}
+                    <tr>
+                        <td>{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}</td>
+                        <td>{{ link.creator.profile.main_character.character_name }}</td>
+                        <td>{{ link.fattime }}</td>
+                        <td>{{ link.number_of_fats }}</td>
+                        <td>{% if perms.bfat.change_fatlink %}<a class="btn btn-info" href="{% url 'bfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}
+{% block extra_javascript %}
+    {% include 'bundles/datatables-js.html' %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.js" integrity="sha256-l6SU+rVSlkyIcMsqjy0mb6ne/qPpYotdVSFd9vLmV1A=" crossorigin="anonymous"></script>
+{% endblock %}
+{% block extra_css %}
+    {% include 'bundles/datatables-css.html' %}
+{% endblock %}
+{% block extra_script %}
+    $.fn.dataTable.moment = function ( format, locale ) {
+        var types = $.fn.dataTable.ext.type;
+
+        // Add type detection
+        types.detect.unshift( function ( d ) {
+            return moment( d, format, locale, true ).isValid() ?
+                'moment-'+format :
+                null;
+        } );
+
+        // Add sorting method - use an integer for the sorting
+        types.order[ 'moment-'+format+'-pre' ] = function ( d ) {
+            return moment( d, format, locale, true ).unix();
+        };
+    };
+
+    $(document).ready(function(){
+        $.fn.dataTable.moment( 'MMM. D, YYYY, hh:mm a' );
+
+        $('#link-list').DataTable();
+    });
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'allianceauth/base.html' %}
+{% load i18n %}
+{% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <br>
+        {% include "bfat/menu.html" %}
+        <h2>{% trans "Create a " %}{{ term }}{% trans "Link" %}</h2>
+        {% if msg %}
+            <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                        <span aria-hidden="true">&times</span>
+                    </button>
+                    {% if msg.0 != 'warning' %}<h4>{% if msg.0 == 'danger' %}Oh No!{% elif msg.0 == 'success' %}Success!{% endif %}</h4>{% endif %}
+                    <p>{{ msg.1 }}</p>
+                </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-6 mr-md-1">
+                <h3> Create a {{ term }}Link using ESI. </h3>
+                <p> If you are not in a fleet, you <i>can</i> still use this option, however you will <i>need</i> to use a flat list if you do.</p>
+                <a class="btn btn-primary btn-block" href="{% url 'bfat:link_create_esi' %}"><span class="fa fa-plus fa-fw"></span>Add {{ term }}Link from ESI</a>
+            </div>
+            <div class="col-md-6 ml-md-2">
+                <h3> Create a clickable {{ term }}Link</h3>
+                <p>This option will create a clickable like just like that created by the standard FAT module.</p>
+                <!-- Form Goes Here -->
+                <form class="form" role="form" action="{% url 'bfat:link_create_click' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="text" class="form-control" name="name" id="name" placeholder="Fleet Name" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="number" class="form-control" name="duration" id="duration" placeholder="Live Time (Minutes)" required>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-primary btn-block" type="submit" name="submit_click" id="submit_click"><span class="fa fa-plus fa-fw"></span>Add Clickable {{ term }}Link</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

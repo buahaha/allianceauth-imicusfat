@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
-from bfat import __version__
+from imicusfat import __version__
 
 install_requires = [
     'django-bootstrap-form',
@@ -12,11 +12,11 @@ testing_extras = [
 ]
 
 setup(
-    name='allianceauth-bfat',
+    name='allianceauth-imicusfat',
     version=__version__,
-    author='Col Crunch',
-    author_email='it-team@serin.space',
-    description='A better FAT system for Alliance Auth',
+    author='Aproia',
+    author_email='sogetsu90@gmail.com',
+    description='FAT system built from Better FAT system, customised for Evictus',
     install_requires=install_requires,
     extras_require={
         'testing': testing_extras,
@@ -25,7 +25,7 @@ setup(
     python_requires='~=3.4',
     license='GPLv3',
     packages=find_packages(),
-    url='https://gitlab.com/colcrunch/allianceauth-bfat',
+    url='https://gitlab.com/Aproia/allianceauth-bfat',
     zip_safe=False,
     include_package_data=True,
 )
