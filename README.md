@@ -1,6 +1,6 @@
-# allianceauth-bfat
+# allianceauth-imicusfat
 
-A FAT system built for the Evictus Alliance
+A FAT system built for the Evictus Alliance. Allows for usage alongside built in FAT system.
 
 
 
