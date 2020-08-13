@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Fat',
+            name='IFat',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('system', models.CharField(max_length=30)),
@@ -28,27 +28,27 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='FatLink',
+            name='IFatLink',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('fattime', models.DateTimeField(default=django.utils.timezone.now)),
+                ('ifattime', models.DateTimeField(default=django.utils.timezone.now)),
                 ('fleet', models.CharField(max_length=254)),
                 ('hash', models.CharField(max_length=254)),
                 ('creator', models.ForeignKey(on_delete=models.SET(imicusfat.models.get_sentinel_user), to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
-            model_name='fat',
-            name='fatlink',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='imicusfat.FatLink'),
+            model_name='ifat',
+            name='ifatlink',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='imicusfat.IFatLink'),
         ),
         migrations.AddField(
-            model_name='fat',
+            model_name='ifat',
             name='user',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterUniqueTogether(
-            name='fat',
-            unique_together={('character', 'fatlink')},
+            name='ifat',
+            unique_together={('character', 'ifatlink')},
         ),
     ]

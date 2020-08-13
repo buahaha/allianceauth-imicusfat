@@ -69,10 +69,10 @@
                         <tbody>
                         {% for fat in fats %}
                             <tr>
-                                <td>{% if fat.fatlink.fleet %}{{ fat.fatlink.fleet }}{% else %}{{ fat.fatlink.hash }}{% endif %}</td>
+                                <td>{% if fat.ifatlink.fleet %}{{ fat.ifatlink.fleet }}{% else %}{{ fat.ifatlink.hash }}{% endif %}</td>
                                 <td>{{ fat.system }}</td>
                                 <td>{{ fat.shiptype }}</td>
-                                <td>{{ fat.fatlink.fattime }}</td>
+                                <td>{{ fat.ifatlink.fattime }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>

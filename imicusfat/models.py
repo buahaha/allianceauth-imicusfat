@@ -11,8 +11,8 @@ def get_sentinel_user():
 
 
 # FatLink Model
-class FatLink(models.Model):
-    fattime = models.DateTimeField(default=timezone.now)
+class IFatLink(models.Model):
+    ifattime = models.DateTimeField(default=timezone.now)
     fleet = models.CharField(max_length=254, null=True)
     hash = models.CharField(max_length=254)
     creator = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
@@ -28,35 +28,35 @@ class FatLink(models.Model):
 
 
 # Clickable Link Duration Model
-class ClickFatDuration(models.Model):
+class ClickIFatDuration(models.Model):
     duration = models.PositiveIntegerField()
-    fleet = models.ForeignKey(FatLink, on_delete=models.CASCADE)
+    fleet = models.ForeignKey(IFatLink, on_delete=models.CASCADE)
 
 
 # PAP/FAT Model
-class Fat(models.Model):
+class IFat(models.Model):
     character = models.ForeignKey(EveCharacter, on_delete=models.CASCADE)
-    fatlink = models.ForeignKey(FatLink, on_delete=models.CASCADE)
+    ifatlink = models.ForeignKey(IFatLink, on_delete=models.CASCADE)
     system = models.CharField(max_length=100, null=True)
     shiptype = models.CharField(max_length=100, null=True)
 
     class Meta:
-        unique_together = (('character', 'fatlink'),)
+        unique_together = (('character', 'ifatlink'),)
 
     def __str__(self):
-        return "{} - {}".format(self.fatlink, self.character)
+        return "{} - {}".format(self.ifatlink, self.character)
 
 
 # Log Model for Manual FAT creation
-class ManualFat(models.Model):
+class ManualIFat(models.Model):
     creator = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
-    fatlink = models.ForeignKey(FatLink, on_delete=models.CASCADE)
+    ifatlink = models.ForeignKey(IFatLink, on_delete=models.CASCADE)
     character = models.ForeignKey(EveCharacter, on_delete=models.CASCADE)
     
     # Add property for getting the user for a character.
 
     def __str__(self):
-        return "{} - {} ({})".format(self.fatlink, self.character, self.creator)
+        return "{} - {} ({})".format(self.ifatlink, self.character, self.creator)
 
 
 # Log Model for Deletion of Fats and FatLinks
@@ -68,9 +68,9 @@ class DelLog(models.Model):
 
     def delt_to_str(self):
         if self.deltype == 0:
-            return 'FatLink'
+            return 'IFatLink'
         else:
-            return 'Fat'
+            return 'IFat'
 
     def __str__(self):
         return '{}/{} - {}'.format(self.delt_to_str(), self.string, self.remover)

@@ -20,7 +20,7 @@
                     <tr>
                         <td>{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}</td>
                         <td>{{ link.creator.profile.main_character.character_name }}</td>
-                        <td>{{ link.fattime }}</td>
+                        <td>{{ link.ifattime }}</td>
                         <td>{{ link.number_of_fats }}</td>
                         <td>{% if perms.imicusfat.change_fatlink %}<a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}</td>
                     </tr>

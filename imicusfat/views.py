@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from django.utils import timezone
 from esi.decorators import token_required
-from .models import Fat, ClickFatDuration, FatLink, ManualFat, DelLog
+from .models import IFat, ClickIFatDuration, IFatLink, ManualIFat, DelLog
 from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
 from allianceauth.authentication.models import CharacterOwnership
 from .forms import FatLinkForm, ManualFatForm, FlatListForm, ClickFatForm
@@ -52,13 +52,13 @@ def imicusfat_view(request):
     chars = CharacterOwnership.objects.filter(user=request.user)
     fats = []
     for char in chars:
-        fat = Fat.objects.filter(character=char.character).order_by('fatlink__fattime').reverse()[:30]
+        fat = IFat.objects.filter(character=char.character).order_by('ifatlink__ifattime').reverse()[:30]
         char_1 = [char.character.character_name]
         for f in fat:
             char_1.append(f)
         char_1.append(char.character.character_id)
         fats.append(char_1)
-    links = FatLink.objects.order_by('fattime').reverse()[:10]
+    links = IFatLink.objects.order_by('ifattime').reverse()[:10]
     ctx = {'term': term, 'fats': fats, 'links': links, 'msg': msg}
     return render(request, 'imicusfat/imicusfatview.html', ctx)
 
@@ -86,10 +86,10 @@ def stats(request):
     months = []
     for char in chars:
         char_l = [char.character.character_name]
-        char_fats = Fat.objects.filter(fatlink__fattime__year=datetime.now().year)
+        char_fats = IFat.objects.filter(ifatlink__ifattime__year=datetime.now().year)
         char_stats = {}
         for i in range(1, 13):
-            char_fat = char_fats.filter(fatlink__fattime__month=i).filter(character__id=char.character.id)
+            char_fat = char_fats.filter(ifatlink__ifattime__month=i).filter(character__id=char.character.id)
             if len(char_fat) is not 0:
                 char_stats[str(i)] = char_fat.count()
         char_l.append(char_stats)
@@ -110,7 +110,7 @@ def stats_char(request, charid, month=None, year=None):
     if not month or not year:
         request.session['msg'] = ('danger', 'Date information not complete!')
         return redirect('imicusfat:imicusfat_view')
-    fats = Fat.objects.filter(character__character_id=charid, fatlink__fattime__month=month)
+    fats = IFat.objects.filter(character__character_id=charid, ifatlink__ifattime__month=month)
 
     # Data for Ship Type Pie Chart
     data_ship_type = {}
@@ -129,7 +129,7 @@ def stats_char(request, charid, month=None, year=None):
     # Data for by Time Line Chart
     data_time = {}
     for i in range(0, 24):
-        data_time[i] = fats.filter(fatlink__fattime__hour=i).count()
+        data_time[i] = fats.filter(ifatlink__ifattime__hour=i).count()
     data_time = [list(data_time.keys()), list(data_time.values()),
                  ['rgba({}, {}, {}, 1)'.format(random.randint(0, 255),random.randint(0, 255), random.randint(0, 255))]]
 
@@ -146,13 +146,13 @@ def stats_corp(request, corpid, month=None, year=None):
         year = datetime.now().year
         months = []
         for i in range(1, 13):
-            corp_fats = Fat.objects.filter(character__corporation_id=corpid, fatlink__fattime__month=i).count()
+            corp_fats = IFat.objects.filter(character__corporation_id=corpid, ifatlink__ifattime__month=i).count()
             if corp_fats is not 0:
                 months.append((i, corp_fats))
         ctx = {'term': term, 'corporation': corp.corporation_name, 'months': months, 'corpid': corpid, 'year': year,  'type': 0}
         return render(request, 'imicusfat/date_select.html', ctx)
 
-    fats = Fat.objects.filter(fatlink__fattime__month=month, fatlink__fattime__year=year, character__corporation_id=corpid)
+    fats = IFat.objects.filteri(fatlink__ifattime__month=month, ifatlink__ifattime__year=year, character__corporation_id=corpid)
     characters = EveCharacter.objects.filter(corporation_id=corpid)
 
     # Data for Stacked Bar Graph
@@ -192,14 +192,14 @@ def stats_corp(request, corpid, month=None, year=None):
     # Data for By Time
     data_time = {}
     for i in range(0, 24):
-        data_time[i] = fats.filter(fatlink__fattime__hour=i).count()
+        data_time[i] = fats.filter(ifatlink__ifattime__hour=i).count()
     data_time = [list(data_time.keys()), list(data_time.values()),
                  ['rgba({}, {}, {}, 1)'.format(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))]]
 
     # Data for By Weekday
     data_weekday = []
     for i in range(1, 8):
-        data_weekday.append(fats.filter(fatlink__fattime__week_day=i).count())
+        data_weekday.append(fats.filter(ifatlink__ifattime__week_day=i).count())
     data_weekday = [['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
                     data_weekday, ['rgba({}, {}, {}, 1)'.format(random.randint(0, 255),
                                                                 random.randint(0, 255),
@@ -231,7 +231,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
         year = datetime.now().year
         months = []
         for i in range(1, 13):
-            ally_fats = Fat.objects.filter(character__alliance_id=allianceid, fatlink__fattime__month=i).count()
+            ally_fats = IFat.objects.filter(character__alliance_id=allianceid, ifatlink__ifattime__month=i).count()
             if ally_fats is not 0:
                 months.append((i, ally_fats))
         ctx = {'term': term, 'corporation': name, 'months': months, 'corpid': allianceid, 'year': year, 'type': 1}
@@ -241,9 +241,9 @@ def stats_alliance(request, allianceid, month=None, year=None):
         request.session['msg'] = ('danger', 'Date information incomplete.')
         return redirect('imicusfat:imicusfat_view')
 
-    fats = Fat.objects.filter(character__alliance_id=allianceid,
-                              fatlink__fattime__month=month,
-                              fatlink__fattime__year=year)
+    fats = IFat.objects.filter(character__alliance_id=allianceid,
+                              ifatlink__ifattime__month=month,
+                              ifatlink__ifattime__year=year)
     corporations = EveCorporationInfo.objects.filter(alliance=ally)
 
     # Fats by ship type?
@@ -296,14 +296,14 @@ def stats_alliance(request, allianceid, month=None, year=None):
     # Fats by Time
     data_time = {}
     for i in range(0, 24):
-        data_time[i] = fats.filter(fatlink__fattime__hour=i).count()
+        data_time[i] = fats.filter(ifatlink__ifattime__hour=i).count()
     data_time = [list(data_time.keys()), list(data_time.values()),
                  ['rgba({}, {}, {}, 1)'.format(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))]]
 
     # Fats by weekday
     data_weekday = []
     for i in range(1, 8):
-        data_weekday.append(fats.filter(fatlink__fattime__week_day=i).count())
+        data_weekday.append(fats.filter(ifatlink__ifattime__week_day=i).count())
     data_weekday = [['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
                     data_weekday, ['rgba({}, {}, {}, 1)'.format(random.randint(0, 255),
                                                                 random.randint(0, 255),
@@ -323,7 +323,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
 
 @login_required()
 def links(request):
-    links = FatLink.objects.all().order_by('fattime').reverse().annotate(number_of_fats=Count('fat'))
+    links = IFatLink.objects.all().order_by('ifattime').reverse().annotate(number_of_fats=Count('ifat'))
     ctx = {'term': term, 'links': links}
     return render(request, 'imicusfat/fat_list.html', ctx)
 
@@ -342,13 +342,13 @@ def link_create_click(request):
         form = ClickFatForm(request.POST)
         if form.is_valid():
             hash = get_random_string(length=30)
-            link = FatLink()
+            link = IFatLink()
             link.fleet = form.cleaned_data['name']
             link.creator = request.user
             link.hash = hash
             link.save()
-            dur = ClickFatDuration()
-            dur.fleet = FatLink.objects.get(hash=hash)
+            dur = ClickIFatDuration()
+            dur.fleet = IFatLink.objects.get(hash=hash)
             dur.duration = form.cleaned_data['duration']
             dur.save()
 
@@ -374,7 +374,7 @@ def link_create_click(request):
 def link_create_esi(request, token):
     # "error": "The fleet does not exist or you don't have access to it!"
     hash = get_random_string(length=30)
-    link = FatLink(fleet=None, creator=request.user, hash=hash)
+    link = IFatLink(fleet=None, creator=request.user, hash=hash)
     link.save()
 
     # Check if there is a fleet
@@ -404,11 +404,11 @@ def click_link(request, token, hash=None):
         return redirect('imicusfat:imicusfat_view')
     try:
         try:
-            fleet = FatLink.objects.get(hash=hash)
+            fleet = IFatLink.objects.get(hash=hash)
         except:
             request.session['msg'] = ['warning', 'The hash provided is not valid.']
             return redirect('imicusfat:imicusfat_view')
-        dur = ClickFatDuration.objects.get(fleet=fleet)
+        dur = ClickIFatDuration.objects.get(fleet=fleet)
         now = timezone.now()-timedelta(minutes=dur.duration)
 
         if now >= fleet.fattime:
@@ -425,7 +425,7 @@ def click_link(request, token, hash=None):
             ship = provider.get_itemtype(ship['ship_type_id']).name
 
             try:
-                fat = Fat(fatlink=fleet, character=character, system=location, shiptype=ship)
+                fat = IFat(ifatlink=fleet, character=character, system=location, shiptype=ship)
                 fat.save()
                 if fleet.fleet is not None:
                     name = fleet.fleet
@@ -455,7 +455,7 @@ def edit_link(request, hash=None):
         request.session['msg'] = ['warning', 'No {}link hash provided.'.format(term)]
         return redirect('imicusfat:imicusfat_view')
     try:
-        link = FatLink.objects.get(hash=hash)
+        link = IFatLink.objects.get(hash=hash)
     except:
         request.session['msg'] =['warning', 'The hash provided is not valid.']
         return redirect('imicusfat:imicusfat_view')
@@ -481,8 +481,8 @@ def edit_link(request, hash=None):
             creator = request.user
             character = get_or_create_char(name=character_name)
             if character is not None:
-                fat = Fat(fatlink_id=link.pk, character=character, system=system, shiptype=shiptype).save()
-                ManualFat(fatlink_id=link.pk, creator=creator, character=character).save()
+                fat = IFat(ifatlink_id=link.pk, character=character, system=system, shiptype=shiptype).save()
+                ManualIFat(ifatlink_id=link.pk, creator=creator, character=character).save()
                 request.session['{}-task-code'.format(hash)] = 3
             else:
                 request.session['{}-task-code'.format(hash)] = 4
@@ -493,7 +493,7 @@ def edit_link(request, hash=None):
         msg = request.session.pop('{}-creation-code'.format(hash))
     elif '{}-task-code'.format(hash) in request.session:
         msg = request.session.pop('{}-task-code'.format(hash))
-    fats = Fat.objects.filter(fatlink=link)
+    fats = IFat.objects.filter(ifatlink=link)
     flatlist = None
     if len(fats) > 0:
         flatlist = []
@@ -514,7 +514,7 @@ def del_link(request, hash=None):
         request.session['msg'] = ['warning', 'No {}link hash provided.'.format(term)]
         return redirect('imicusfat:imicusfat_view')
     try:
-        link = FatLink.objects.get(hash=hash)
+        link = IFatLink.objects.get(hash=hash)
     except:
         request.session['msg'] = ['danger', 'The hash provided is either invalid or has been deleted.']
         return redirect('imicusfat:imicusfat_view')
@@ -528,12 +528,12 @@ def del_link(request, hash=None):
 @permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.delete_fat', 'imicusfat.delete_fatlink'))
 def del_fat(request, hash, fat):
     try:
-        link = FatLink.objects.get(hash=hash)
+        link = IFatLink.objects.get(hash=hash)
     except:
         request.session['msg'] = ['danger', 'The hash provided is either invalid or has been deleted.']
         return redirect('imicusfat:imicusfat_view')
     try:
-        fat = Fat.objects.get(pk=fat, fatlink_id=link.pk)
+        fat = IFat.objects.get(pk=fat, ifatlink_id=link.pk)
     except:
         request.session['msg'] = ['danger', 'The hash and {} ID do not match.'.format(term)]
         return redirect('imicusfat:imicusfat_view')

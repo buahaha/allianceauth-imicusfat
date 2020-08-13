@@ -23,29 +23,29 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AlterModelOptions(
-            name='fatlink',
+            name='ifatlink',
             options={'permissions': (('manage_imicusfat', 'Can manage the imicusfat module'), ('stats_corp_own', 'Can see own corp stats'), ('stats_corp_other', 'Can see stats of other corps.'), ('stats_char_other', 'Can see stats of characters not associated with current user.'))},
         ),
         migrations.RemoveField(
-            model_name='fat',
+            model_name='ifat',
             name='station',
         ),
         migrations.RemoveField(
-            model_name='fat',
+            model_name='ifat',
             name='user',
         ),
         migrations.AlterField(
-            model_name='fat',
+            model_name='ifat',
             name='shiptype',
             field=models.CharField(max_length=100, null=True),
         ),
         migrations.AlterField(
-            model_name='fat',
+            model_name='ifat',
             name='system',
             field=models.CharField(max_length=100, null=True),
         ),
         migrations.AlterField(
-            model_name='fatlink',
+            model_name='ifatlink',
             name='fleet',
             field=models.CharField(max_length=254, null=True),
         ),

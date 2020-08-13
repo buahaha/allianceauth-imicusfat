@@ -16,12 +16,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='ManualFat',
+            name='ManualIFat',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('character', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='eveonline.EveCharacter')),
                 ('creator', models.ForeignKey(on_delete=models.SET(imicusfat.models.get_sentinel_user), to=settings.AUTH_USER_MODEL)),
-                ('fatlink', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='imicusfat.FatLink')),
+                ('ifatlink', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='imicusfat.IFatLink')),
             ],
         ),
     ]
