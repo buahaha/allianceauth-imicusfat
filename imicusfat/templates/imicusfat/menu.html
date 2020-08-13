@@ -11,19 +11,19 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="{% url 'bfat:bfat_view' %}">{% trans "Better FAT" %}</a>
+        <a class="navbar-brand" href="{% url 'imicusfat:imicusfat_view' %}">{% trans "Better FAT" %}</a>
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-            <li class="{% navactive request 'bfat_stats bfat_corp_stats bfat_char_stats bfat_ally_stats' %}">
-                <a href="{% url 'bfat:stats' %}">{% trans "Statistics" %}</a>
+            <li class="{% navactive request 'imicusfat_stats imicusfat_corp_stats imicusfat_char_stats imicusfat_ally_stats' %}">
+                <a href="{% url 'imicusfat:stats' %}">{% trans "Statistics" %}</a>
             </li>
-            <li class="{% navactive request 'bfat:links bfat:link_edit' %}">
-                <a href="{% url 'bfat:links' %}">{{ term }} {% trans "Links" %}</a>
+            <li class="{% navactive request 'imicusfat:links imicusfat:link_edit' %}">
+                <a href="{% url 'imicusfat:links' %}">{{ term }} {% trans "Links" %}</a>
             </li>
-            {% if perms.bfat.manage_bfat or perms.bfat.add_fatlink %}
-                <li class="{% navactive request 'bfat:link_add' %}">
-                    <a href="{% url 'bfat:link_add' %}">Add {{ term }}Link</a>
+            {% if perms.imicusfat.manage_imicusfat or perms.imicusfat.add_fatlink %}
+                <li class="{% navactive request 'imicusfat:link_add' %}">
+                    <a href="{% url 'imicusfat:link_add' %}">Add {{ term }}Link</a>
                 </li>
             {% endif %}
         </ul>
