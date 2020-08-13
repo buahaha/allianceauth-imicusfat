@@ -1,7 +1,7 @@
 from esi.clients import esi_client_factory
 from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
 import os
-from .models import Fat, FatLink
+from .models import IFat, IFatLink
 from celery import shared_task
 import logging
 
@@ -65,7 +65,7 @@ def process_fats(list, type_, hash):
     :param hash: the hash from the fat link.
     :return:
     """
-    link = FatLink.objects.get(hash=hash)
+    link = IFatLink.objects.get(hash=hash)
     c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
     if type_ == 'flatlist':
         if len(list[0]) > 40:
@@ -83,22 +83,22 @@ def process_fats(list, type_, hash):
 
 @shared_task
 def process_line(line, type_, hash):
-    link = FatLink.objects.get(hash=hash)
+    link = IFatLink.objects.get(hash=hash)
     if type_ == 'comp':
         character = get_or_create_char(name=line[0].strip(" "))
         system = line[1].strip(" (Docked)")
         shiptype = line[2]
         if character is not None:
-            fat = Fat(fatlink_id=link.pk, character=character, system=system, shiptype=shiptype).save()
+            ifat = IFat(ifatlink_id=link.pk, character=character, system=system, shiptype=shiptype).save()
     else:
         character = get_or_create_char(name=line.strip(" "))
         if character is not None:
-            fat = Fat(fatlink_id=link.pk, character=character).save()
+            ifat = IFat(ifatlink_id=link.pk, character=character).save()
 
 
 @shared_task
 def process_character(char, hash):
-    link = FatLink.objects.get(hash=hash)
+    link = IFatLink.objects.get(hash=hash)
     c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
     char_id = char['character_id']
     sol_id = char['solar_system_id']
@@ -110,5 +110,5 @@ def process_character(char, hash):
     sol_name = solar_system['name']
     ship_name = ship['name']
     character = get_or_create_char(id=char_id)
-    link = FatLink.objects.get(hash=hash)
-    fat = Fat(fatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
+    link = IFatLink.objects.get(hash=hash)
+    fat = IFat(ifatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
