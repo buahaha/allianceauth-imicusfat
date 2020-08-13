@@ -5,7 +5,7 @@
 {% block content %}
     <div class="col-lg-12">
         <br>
-        {% include "bfat/menu.html" %}
+        {% include "imicusfat/menu.html" %}
         <h2>{% trans "All" %} {{ term }}{% trans "Links" %}</h2>
         <table class="table" id="link-list">
             <thead>
@@ -22,7 +22,7 @@
                         <td>{{ link.creator.profile.main_character.character_name }}</td>
                         <td>{{ link.fattime }}</td>
                         <td>{{ link.number_of_fats }}</td>
-                        <td>{% if perms.bfat.change_fatlink %}<a class="btn btn-info" href="{% url 'bfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}</td>
+                        <td>{% if perms.imicusfat.change_fatlink %}<a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}</td>
                     </tr>
                 {% endfor %}
             </tbody>
