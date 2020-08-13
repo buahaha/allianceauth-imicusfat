@@ -5,7 +5,7 @@
 {% block content %}
     <div class="col-lg-12">
         <br>
-        {% include "bfat/menu.html" %}
+        {% include "imicusfat/menu.html" %}
         <h2>{% trans "Recent" %}</h2>
         {% if msg %}
             <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
@@ -87,7 +87,7 @@
                                     <td>{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}</td>
                                     <td>{{ link.creator.profile.main_character.character_name }}</td>
                                     <td>{{ link.fattime }}</td>
-                                    <td>{% if perms.bfat.edit_fatlink %}<a class="btn btn-info" href="{% url 'bfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}</td>
+                                    <td>{% if perms.imicusfat.edit_fatlink %}<a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
