@@ -14,9 +14,9 @@ testing_extras = [
 setup(
     name='allianceauth-imicusfat',
     version=__version__,
-    author='Aproia',
-    author_email='sogetsu90@gmail.com',
-    description='FAT system built from Better FAT system, customised for Evictus',
+    author='Aproia Raholan',
+    author_email='evictus.iou@gmail.com',
+    description='Alliance Auth FAT/PAP System for Evictus',
     install_requires=install_requires,
     extras_require={
         'testing': testing_extras,
@@ -25,7 +25,7 @@ setup(
     python_requires='~=3.4',
     license='GPLv3',
     packages=find_packages(),
-    url='https://gitlab.com/Aproia/allianceauth-bfat',
+    url='https://gitlab.com/evictus.iou/allianceauth-imicusfat',
     zip_safe=False,
     include_package_data=True,
 )
