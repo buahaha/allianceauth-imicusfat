@@ -42,7 +42,7 @@ class IFat(models.Model):
 
     class Meta:
         unique_together = (('character', 'ifatlink'),)
-
+        
     def __str__(self):
         return "{} - {}".format(self.ifatlink, self.character)
 
