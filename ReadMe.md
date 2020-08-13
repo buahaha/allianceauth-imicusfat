@@ -1,6 +1,6 @@
 # ImicusFAT
 
-FAT/PAP System for Alliance Auth. Built for the Evictus Alliance. 
+FAT/PAP System for [Alliance Auth](https://gitlab.com/allianceauth/allianceauth). Built for the Evictus Alliance. 
 
 
 ## Installation
