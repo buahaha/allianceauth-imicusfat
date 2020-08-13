@@ -58,6 +58,8 @@
     $(document).ready(function(){
         $.fn.dataTable.moment( 'MMM. D, YYYY, hh:mm a' );
 
-        $('#link-list').DataTable();
+        $('#link-list').DataTable( {
+            "order": [[ 3, "desc" ]]
+        } );
     });
 {% endblock %}

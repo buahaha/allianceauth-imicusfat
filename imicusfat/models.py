@@ -25,6 +25,7 @@ class IFatLink(models.Model):
                        ('stats_corp_own', 'Can see own corp stats'),
                        ('stats_corp_other', 'Can see stats of other corps.'),
                        ('stats_char_other', 'Can see stats of characters not associated with current user.'))
+        ordering = ('-ifattime',)
 
 
 # Clickable Link Duration Model
@@ -42,7 +43,7 @@ class IFat(models.Model):
 
     class Meta:
         unique_together = (('character', 'ifatlink'),)
-
+        
     def __str__(self):
         return "{} - {}".format(self.ifatlink, self.character)
 

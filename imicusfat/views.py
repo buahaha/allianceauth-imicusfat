@@ -17,6 +17,7 @@ import random
 from collections import OrderedDict
 from allianceauth.eveonline.providers import provider
 from django.db.models import Count
+from .helpers import get_years_months
 
 
 if hasattr(settings, 'FAT_AS_PAP'):
@@ -149,10 +150,11 @@ def stats_corp(request, corpid, month=None, year=None):
             corp_fats = IFat.objects.filter(character__corporation_id=corpid, ifatlink__ifattime__month=i).count()
             if corp_fats is not 0:
                 months.append((i, corp_fats))
+
         ctx = {'term': term, 'corporation': corp.corporation_name, 'months': months, 'corpid': corpid, 'year': year,  'type': 0}
         return render(request, 'imicusfat/date_select.html', ctx)
 
-    fats = IFat.objects.filteri(fatlink__ifattime__month=month, ifatlink__ifattime__year=year, character__corporation_id=corpid)
+    fats = IFat.objects.filter(ifatlink__ifattime__month=month, ifatlink__ifattime__year=year, character__corporation_id=corpid)
     characters = EveCharacter.objects.filter(corporation_id=corpid)
 
     # Data for Stacked Bar Graph
@@ -231,7 +233,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
         year = datetime.now().year
         months = []
         for i in range(1, 13):
-            ally_fats = IFat.objects.filter(character__alliance_id=allianceid, ifatlink__ifattime__month=i).count()
+            ally_fats = IFat.objects.filter(character__alliance_id=allianceid, ifatlink__ifattime__month=i, ifatlink__ifattime__year=year).count()
             if ally_fats is not 0:
                 months.append((i, ally_fats))
         ctx = {'term': term, 'corporation': name, 'months': months, 'corpid': allianceid, 'year': year, 'type': 1}

@@ -35,7 +35,7 @@
                                     data: {
                                         datasets: [{% for set in data_stacked.1 %}
                                                 {
-                                                  label: '{{ set.0|safe }}',
+                                                  label: '{{ set.0|escapejs }}',
                                                   backgroundColor: '{{ set.1|safe }}',
                                                   data: {{ set.2 }}
                                                 },
