@@ -5,7 +5,7 @@
 {% block content %}
     <div class="col-lg-12">
         <br>
-        {% include "bfat/menu.html" %}
+        {% include "imicusfat/menu.html" %}
         <h2>{% trans "Create a " %}{{ term }}{% trans "Link" %}</h2>
         {% if msg %}
             <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
@@ -20,13 +20,13 @@
             <div class="col-md-6 mr-md-1">
                 <h3> Create a {{ term }}Link using ESI. </h3>
                 <p> If you are not in a fleet, you <i>can</i> still use this option, however you will <i>need</i> to use a flat list if you do.</p>
-                <a class="btn btn-primary btn-block" href="{% url 'bfat:link_create_esi' %}"><span class="fa fa-plus fa-fw"></span>Add {{ term }}Link from ESI</a>
+                <a class="btn btn-primary btn-block" href="{% url 'imicusfat:link_create_esi' %}"><span class="fa fa-plus fa-fw"></span>Add {{ term }}Link from ESI</a>
             </div>
             <div class="col-md-6 ml-md-2">
                 <h3> Create a clickable {{ term }}Link</h3>
                 <p>This option will create a clickable like just like that created by the standard FAT module.</p>
                 <!-- Form Goes Here -->
-                <form class="form" role="form" action="{% url 'bfat:link_create_click' %}" method="POST">
+                <form class="form" role="form" action="{% url 'imicusfat:link_create_click' %}" method="POST">
                     {% csrf_token %}
                     <div class="form-group">
                         <div class="row">
