@@ -152,7 +152,7 @@ def stats_corp(request, corpid, month=None, year=None):
         ctx = {'term': term, 'corporation': corp.corporation_name, 'months': months, 'corpid': corpid, 'year': year,  'type': 0}
         return render(request, 'imicusfat/date_select.html', ctx)
 
-    fats = IFat.objects.filteri(ifatlink__ifattime__month=month, ifatlink__ifattime__year=year, character__corporation_id=corpid)
+    fats = IFat.objects.filter(ifatlink__ifattime__month=month, ifatlink__ifattime__year=year, character__corporation_id=corpid)
     characters = EveCharacter.objects.filter(corporation_id=corpid)
 
     # Data for Stacked Bar Graph
