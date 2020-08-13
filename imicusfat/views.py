@@ -411,7 +411,7 @@ def click_link(request, token, hash=None):
         dur = ClickIFatDuration.objects.get(fleet=fleet)
         now = timezone.now()-timedelta(minutes=dur.duration)
 
-        if now >= fleet.fattime:
+        if now >= fleet.ifattime:
             request.session['msg'] = ['warning', ('Sorry, that {0}Link is expired. If you were on that fleet, '
                                                   'contact your FC about having your {0} manually added.'.format(term))]
             return redirect('imicusfat:imicusfat_view')
