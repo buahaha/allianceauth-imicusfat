@@ -17,7 +17,6 @@ import random
 from collections import OrderedDict
 from allianceauth.eveonline.providers import provider
 from django.db.models import Count
-from .helpers import get_years_months
 
 
 if hasattr(settings, 'FAT_AS_PAP'):
