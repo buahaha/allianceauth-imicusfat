@@ -146,7 +146,7 @@ def stats_corp(request, corpid, month=None, year=None):
         year = datetime.now().year
         months = []
         for i in range(1, 13):
-            corp_fats = IFat.objects.filter(character__corporation_id=corpid, ifatlink__ifattime__month=i).count()
+            corp_fats = IFat.objects.filter(character__corporation_id=corpid, ifatlink__ifattime__month=i, ifatlink__ifattime__year=year).count()
             if corp_fats is not 0:
                 months.append((i, corp_fats))
 
