@@ -72,7 +72,7 @@
                                 <td>{% if fat.ifatlink.fleet %}{{ fat.ifatlink.fleet }}{% else %}{{ fat.ifatlink.hash }}{% endif %}</td>
                                 <td>{{ fat.system }}</td>
                                 <td>{{ fat.shiptype }}</td>
-                                <td>{{ fat.ifatlink.ifattime }}</td>
+                                <td>{{ fat.ifatlink.ifattime|date:"M. d, Y, H:i" }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -107,8 +107,10 @@
     };
 
     $(document).ready(function(){
-        $.fn.dataTable.moment( 'MMM. D, YYYY, hh:mm a' );
+        $.fn.dataTable.moment( 'MMM. D, YYYY, HH:mm' );
 
-        $('#raw-data').DataTable();
+        $('#raw-data').DataTable({
+            "order": [[ 2, "desc" ]]
+        });
     });
 {% endblock %}

@@ -324,7 +324,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
 
 @login_required()
 def links(request):
-    links = IFatLink.objects.all().order_by('ifattime').reverse().annotate(number_of_fats=Count('ifat'))
+    links = IFatLink.objects.all().order_by('-ifattime').annotate(number_of_fats=Count('ifat'))
     ctx = {'term': term, 'links': links}
     return render(request, 'imicusfat/fat_list.html', ctx)
 

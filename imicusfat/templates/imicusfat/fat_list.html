@@ -20,7 +20,7 @@
                     <tr>
                         <td>{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}</td>
                         <td>{{ link.creator.profile.main_character.character_name }}</td>
-                        <td>{{ link.ifattime }}</td>
+                        <td>{{ link.ifattime|date:"M. d, Y, H:i" }}</td>
                         <td>{{ link.number_of_fats }}</td>
                         <td>{% if perms.imicusfat.change_fatlink %}<a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}</td>
                     </tr>
@@ -41,14 +41,14 @@
 {% block extra_script %}
     $.fn.dataTable.moment = function ( format, locale ) {
         var types = $.fn.dataTable.ext.type;
-
+    
         // Add type detection
         types.detect.unshift( function ( d ) {
             return moment( d, format, locale, true ).isValid() ?
                 'moment-'+format :
                 null;
         } );
-
+    
         // Add sorting method - use an integer for the sorting
         types.order[ 'moment-'+format+'-pre' ] = function ( d ) {
             return moment( d, format, locale, true ).unix();
@@ -56,10 +56,10 @@
     };
 
     $(document).ready(function(){
-        $.fn.dataTable.moment( 'MMM. D, YYYY, hh:mm a' );
-
+        $.fn.dataTable.moment( 'MMM. D, YYYY, HH:mm' );
+        
         $('#link-list').DataTable( {
-            "order": [[ 3, "desc" ]]
+            "order": [[ 2, "desc" ]]
         } );
     });
 {% endblock %}
