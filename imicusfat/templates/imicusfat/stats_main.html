@@ -18,8 +18,10 @@
                 </div>
         {% endif %}
         <ul class="nav nav-tabs">
-             <li class="active"><a data-toggle="tab" href="#mine">{% trans "My Stats" %}</a></li>
-            <li><a data-toggle="tab" href="#corps">{% trans "Corps" %}</a></li>
+            <li class="active"><a data-toggle="tab" href="#mine">{% trans "My Stats" %}</a></li>
+            {% if perms.imicusfat.stats_corp_own or perms.imicusfat.stats_corp_other %}
+                <li><a data-toggle="tab" href="#corps">{% trans "Corps" %}</a></li>
+            {% endif %}
         </ul>
         <div class="tab-content">
             <div id="mine" class="tab-pane fade in active panel-default">
@@ -114,7 +116,7 @@
                                 <tr>
                                     <td><img src="https://images.evetech.net/corporations/{{ data.0.0 }}/logo?size=32" /> </td>
                                     <td>{{ data.0.1 }}</td>
-                                    <td><a class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+                                    <td><a class="btn btn-primary" href="/imicusfat/stats/corp/{{ data.0.0 }}/"><span class="glyphicon glyphicon-eye-open"></span></a></td>
                                 </tr>
                             </tbody>
                         </table>

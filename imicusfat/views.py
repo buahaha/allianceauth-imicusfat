@@ -141,7 +141,15 @@ def stats_char(request, charid, month=None, year=None):
 @login_required()
 @permissions_required(('imicusfat.stats_corp_own', 'imicusfat.stats_corp_other'))
 def stats_corp(request, corpid, month=None, year=None):
+    
+    # Check character has permission to view other corp stats
+    if int(request.user.profile.main_character.corporation_id) != int(corpid):
+        if not request.user.has_perm("imicusfat.stats_corp_other"):
+            request.session['msg'] = ('warning', 'You do not have permission to view statistics for that corporation.')
+            return redirect('imicusfat:imicusfat_view') 
+
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
+
     if not month and not year:
         year = datetime.now().year
         months = []
