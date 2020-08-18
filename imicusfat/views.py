@@ -46,6 +46,7 @@ get_alliance_alliance_id
 # Create your views here.
 @login_required()
 def imicusfat_view(request):
+
     msg = None
     if 'msg' in request.session:
         msg = request.session.pop('msg')
@@ -338,14 +339,14 @@ def links(request):
 
 
 @login_required()
-@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_fatlink'))
+@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink'))
 def link_add(request):
     ctx = {'term': term}
     return render(request, 'imicusfat/addlink.html', ctx)
 
 
 @login_required()
-@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_fatlink'))
+@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink'))
 def link_create_click(request):
     if request.method == "POST":
         form = ClickFatForm(request.POST)
@@ -377,7 +378,7 @@ def link_create_click(request):
 
 
 @login_required()
-@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_fatlink'))
+@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink'))
 @token_required(
     scopes=['esi-fleets.read_fleet.v1'])
 def link_create_esi(request, token):
@@ -458,7 +459,7 @@ def click_link(request, token, hash=None):
 
 
 @login_required()
-@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_fatlink', 'imicusfat.change_fatlink'))
+@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink', 'imicusfat.change_ifatlink'))
 def edit_link(request, hash=None):
     if hash is None:
         request.session['msg'] = ['warning', 'No {}link hash provided.'.format(term)]
@@ -517,7 +518,7 @@ def edit_link(request, hash=None):
 
 
 @login_required()
-@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.delete_fatlink'))
+@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.delete_ifatlink'))
 def del_link(request, hash=None):
     if hash is None:
         request.session['msg'] = ['warning', 'No {}link hash provided.'.format(term)]
@@ -534,7 +535,7 @@ def del_link(request, hash=None):
 
 
 @login_required()
-@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.delete_fat', 'imicusfat.delete_fatlink'))
+@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.delete_ifat', 'imicusfat.delete_ifatlink'))
 def del_fat(request, hash, fat):
     try:
         link = IFatLink.objects.get(hash=hash)

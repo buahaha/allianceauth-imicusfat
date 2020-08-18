@@ -22,7 +22,7 @@
                         <td>{{ link.creator.profile.main_character.character_name }}</td>
                         <td>{{ link.ifattime|date:"M. d, Y, H:i" }}</td>
                         <td>{{ link.number_of_fats }}</td>
-                        <td>{% if perms.imicusfat.change_fatlink %}<a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}</td>
+                        <td>{% if perms.imicusfat.change_ifatlink %}<a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}</td>
                     </tr>
                 {% endfor %}
             </tbody>
