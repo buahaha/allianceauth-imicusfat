@@ -36,9 +36,9 @@
                     <div class="tab-content">
                         {% for char in fats %}
                             {% if forloop.first %}
-                                <div id="#{{ char|last }}" class="tab-pane fade in active panel-default">
+                                <div id="{{ char|last }}" class="tab-pane fade in active panel-default">
                             {% else %}
-                                <div id="#{{ char|last }}" class="tab-pane fade active panel-default">
+                                <div id="{{ char|last }}" class="tab-pane fade active panel-default">
                             {% endif %}
                             <div class="panel-body">
                             {% if char|slice:"1:-1"|length > 0 %}
