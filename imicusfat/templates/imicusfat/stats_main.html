@@ -31,18 +31,18 @@
                     <ul class="nav nav-pills">
                         {% for char in charstats %}
                             {% if forloop.first %}
-                                <li class="active"><a data-toggle="tab" href="#{{ char.0|cut:" " }}"><img class="img-circle" src="https://images.evetech.net/characters/{{ char.2 }}/portrait?size=32"/>  {{ char.0 }}</a></li>
+                                <li class="active"><a data-toggle="tab" href="#{{ char.2 }}"><img class="img-circle" src="https://images.evetech.net/characters/{{ char.2 }}/portrait?size=32"/>  {{ char.0 }}</a></li>
                             {% else %}
-                                <li><a data-toggle="tab" href="#{{ char.0|cut:" " }}"><img class="img-circle" src="https://images.evetech.net/characters/{{ char.2 }}/portrait?size=32"/>  {{ char.0 }}</a></li>
+                                <li><a data-toggle="tab" href="#{{ char.2 }}"><img class="img-circle" src="https://images.evetech.net/characters/{{ char.2 }}/portrait?size=32"/>  {{ char.0 }}</a></li>
                             {% endif %}
                         {% endfor %}
                     </ul>
                     <div class="tab-content">
                         {% for char in charstats %}
                             {% if forloop.first %}
-                                <div id="{{ char.0|cut:" " }}" class="tab-pane fade in active panel-default">
+                                <div id="{{ char.2 }}" class="tab-pane fade in active panel-default">
                             {% else %}
-                                <div id="{{ char.0|cut:" " }}" class="tab-pane fade active panel-default">
+                                <div id="{{ char.2 }}" class="tab-pane fade active panel-default">
                             {% endif %}
                             <div class="panel-body">
                             {% if char.1|length > 0 %}
