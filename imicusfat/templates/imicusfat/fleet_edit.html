@@ -51,7 +51,17 @@
                 <h4>Success!</h4>
                 <p>&#9642; Clickable {{ term }}Link Created!</p>
                 <p>&#9642; Make sure to give your fleet members the following link to click so that they get credit for this fleet. </p>
-                <p>&#9642; <i>Link: <a href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success">COPY ME!</a></i> </p>
+                <p>&#9642; 
+                    Link: 
+                    <i>https://auth.evictus.space{% url 'imicusfat:link_click' link.hash %} 
+                        <a id="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
+                    </i>
+                    <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title="Copied!"
+                        data-clipboard-text="https://auth.evictus.space{% url 'imicusfat:link_click' link.hash %}">
+                        Copy me!
+                    </button>
+                </p>
+                </p>
                 </div>
             {% elif msg == 1 %}
             <div class="alert alert-success alert-dismissible" role="alert">
@@ -113,7 +123,17 @@
                         </form>
                         <div class="col-md-2">Creator: {{ link.creator.profile.main_character.character_name }}</div>
                         <div class="col-md-2 col-md-offset-8">Time: {{ link.ifattime }}</div>
-                        <div class="col-md-10"><p>Link: <i>https://auth.evictus.space/{% url 'imicusfat:link_click' link.hash %} <a href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success">COPY ME!</a></i></p></div>
+                        <div class="col-md-10">
+                            <p>Link: 
+                                <i>https://auth.evictus.space{% url 'imicusfat:link_click' link.hash %} 
+                                    <a id="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
+                                </i>
+                                <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title="Copied!"
+                                    data-clipboard-text="https://auth.evictus.space{% url 'imicusfat:link_click' link.hash %}">
+                                    Copy me!
+                                </button>
+                            </p>
+                        </div>
                     </div>
                 </div>
             <ul class="nav nav-tabs">
@@ -206,12 +226,24 @@
 {% endblock %}
 {% block extra_javascript %}
     {% include 'bundles/datatables-js.html' %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
 {% endblock %}
 {% block extra_css %}
     {% include 'bundles/datatables-css.html' %}
 {% endblock %}
 {% block extra_script %}
+    
+
     $(document).ready(function(){
         $('#fat-chars').DataTable();
+
+        var clipboard = new ClipboardJS('.copy-btn');
+
+        clipboard.on('success', function(e) {
+            $('.copy-btn').tooltip('show');
+        });
     });
+
+    
 {% endblock %}
