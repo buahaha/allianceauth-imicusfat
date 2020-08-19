@@ -507,7 +507,6 @@ def edit_link(request, hash=None):
            'debug': debug}
     return render(request, 'imicusfat/fleet_edit.html', ctx)
 
-
 @login_required()
 @permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.delete_fatlink'))
 def del_link(request, hash=None):
@@ -519,6 +518,9 @@ def del_link(request, hash=None):
     except:
         request.session['msg'] = ['danger', 'The hash provided is either invalid or has been deleted.']
         return redirect('imicusfat:imicusfat_view')
+
+    fats = IFat.objects.filter(ifatlink_id=link.pk).delete()
+
     link.delete()
     DelLog(remover=request.user, deltype=0, string=link.__str__()).save()
     request.session['msg'] = ['success', 'The {0}Link ({1}) and all associated {0}s have been successfully deleted.'.format(term, hash)]
@@ -526,7 +528,7 @@ def del_link(request, hash=None):
 
 
 @login_required()
-@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.delete_fat', 'imicusfat.delete_fatlink'))
+@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.delete_fat'))
 def del_fat(request, hash, fat):
     try:
         link = IFatLink.objects.get(hash=hash)
