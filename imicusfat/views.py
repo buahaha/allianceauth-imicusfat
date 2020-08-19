@@ -111,7 +111,7 @@ def stats_char(request, charid, month=None, year=None):
     if not month or not year:
         request.session['msg'] = ('danger', 'Date information not complete!')
         return redirect('imicusfat:imicusfat_view')
-    fats = IFat.objects.filter(character__character_id=charid, ifatlink__ifattime__month=month)
+    fats = IFat.objects.filter(character__character_id=charid, ifatlink__ifattime__month=month, ifatlink__ifattime__year=year)
 
     # Data for Ship Type Pie Chart
     data_ship_type = {}
