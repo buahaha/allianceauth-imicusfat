@@ -13,6 +13,19 @@ Add to your `INSTALLED_APPS`
 ```py
 'imicusfat',
 ```
+#### Data Migration from AA-FAT
+```
+Disable foreign key checks
+
+INSERT INTO imicusfat_ifat (id, `system`, shiptype, character_id, ifatlink_id)
+SELECT id,`system`,shiptype,character_id,fatlink_id
+FROM fleetactivitytracking_fat;
+
+INSERT INTO imicusfat_ifatlink (id, ifattime, fleet, hash, creator_id)
+SELECT id,fatdatetime,fleet,hash,creator_id 
+FROM fleetactivitytracking_fatlink;
+```
+
 
 #### Timezone Tables
 If you are using mysql, you need to add the timezone tables to your database.<br>
