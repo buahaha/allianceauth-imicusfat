@@ -142,12 +142,12 @@ def stats_char(request, charid, month=None, year=None):
 @login_required()
 @permissions_required(('imicusfat.stats_corp_own', 'imicusfat.stats_corp_other'))
 def stats_corp(request, corpid, month=None, year=None):
-    
+
     # Check character has permission to view other corp stats
     if int(request.user.profile.main_character.corporation_id) != int(corpid):
         if not request.user.has_perm("imicusfat.stats_corp_other"):
             request.session['msg'] = ('warning', 'You do not have permission to view statistics for that corporation.')
-            return redirect('imicusfat:imicusfat_view') 
+            return redirect('imicusfat:imicusfat_view')
 
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
 
@@ -379,8 +379,7 @@ def link_create_click(request):
 
 @login_required()
 @permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink'))
-@token_required(
-    scopes=['esi-fleets.read_fleet.v1'])
+@token_required(scopes=['esi-fleets.read_fleet.v1'])
 def link_create_esi(request, token):
     # "error": "The fleet does not exist or you don't have access to it!"
     hash = get_random_string(length=30)

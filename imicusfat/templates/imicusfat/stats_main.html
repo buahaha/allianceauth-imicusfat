@@ -1,6 +1,8 @@
 {% extends 'allianceauth/base.html' %}
+
 {% load i18n %}
 {% load filters %}
+
 {% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
 
 {% block content %}
@@ -8,6 +10,7 @@
         <br>
         {% include "imicusfat/menu.html" %}
         <h2>{% trans "Statistics" %}</h2>
+
         {% if msg %}
             <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
@@ -17,17 +20,21 @@
                     <p>{{ msg.1 }}</p>
                 </div>
         {% endif %}
+
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#mine">{% trans "My Stats" %}</a></li>
             {% if perms.imicusfat.stats_corp_own or perms.imicusfat.stats_corp_other %}
                 <li><a data-toggle="tab" href="#corps">{% trans "Corps" %}</a></li>
             {% endif %}
         </ul>
+
         <div class="tab-content">
             <div id="mine" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
                     <h4> Months </h4>
+
                     <p> Only months with {{ term }} data in the last 12 months are shown.</p>
+
                     <ul class="nav nav-pills">
                         {% for char in charstats %}
                             {% if forloop.first %}
@@ -37,6 +44,7 @@
                             {% endif %}
                         {% endfor %}
                     </ul>
+
                     <div class="tab-content">
                         {% for char in charstats %}
                             {% if forloop.first %}
@@ -44,41 +52,43 @@
                             {% else %}
                                 <div id="{{ char.2 }}" class="tab-pane fade active panel-default">
                             {% endif %}
-                            <div class="panel-body">
-                            {% if char.1|length > 0 %}
-                                <table class="table">
-                                    <thead>
-                                        <th>Month</th>
-                                        <th>{{ term }} Count</th>
-                                        <th></th>
-                                    </thead>
-                                    <tbody>
-                                        {% for key, value in char.1.items %}
-                                            <tr>
-                                                <td>{{ key|month }}</td>
-                                                <td>{{ value }}</td>
-                                                <td><a href="/imicusfat/stats/char/{{ char.2 }}/{{ key }}/{{ year }}/" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span> </a> </td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            {% else %}
-                                <div class="alert alert-warning" role="alert">
-                                    <p>No {{ term }}s for {{ char.0 }}</p>
+                                <div class="panel-body">
+                                {% if char.1|length > 0 %}
+                                    <table class="table">
+                                        <thead>
+                                            <th>Month</th>
+                                            <th>{{ term }} Count</th>
+                                            <th></th>
+                                        </thead>
+
+                                        <tbody>
+                                            {% for key, value in char.1.items %}
+                                                <tr>
+                                                    <td>{{ key|month }}</td>
+                                                    <td>{{ value }}</td>
+                                                    <td><a href="/imicusfat/stats/char/{{ char.2 }}/{{ key }}/{{ year }}/" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span> </a> </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <div class="alert alert-warning" role="alert">
+                                        <p>No {{ term }}s for {{ char.0 }}</p>
+                                    </div>
+                                {% endif %}
                                 </div>
-                            {% endif %}
                             </div>
-                        </div>
                         {% endfor %}
-                        </div>
+                    </div>
                 </div>
             </div>
+
             {% if perms.imicusfat.stats_corp_own or perms.imicusfat.stats_corp_other %}
             <div id="corps" class="tab-panel fade active panel-default">
                 <div class="panel-body">
                     <h4> Corporations (Click Alliance Name to See Corps) </h4>
                     {% if perms.imicusfat.stats_corp_other %}
-                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                             {% for key, value in data.items %}
                                 <div class="panel panel-default">
                                     <div class="panel-heading" role="tab" id="heading{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
@@ -126,6 +136,4 @@
             {% endif %}
         </div>
     </div>
-
-
 {% endblock %}
