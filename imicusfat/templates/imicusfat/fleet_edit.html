@@ -1,6 +1,9 @@
 {% extends 'allianceauth/base.html' %}
+
 {% load i18n %}
 {% load bootstrap %}
+{% load static %}
+
 {% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
 
 {% block content %}
@@ -227,14 +230,14 @@
 {% block extra_javascript %}
     {% include 'bundles/datatables-js.html' %}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
+    <script type="text/javascript" src="{% static 'imicusfat/javascript/clipboard-js/clipboard.min.js' %}"></script>
 {% endblock %}
+
 {% block extra_css %}
     {% include 'bundles/datatables-css.html' %}
 {% endblock %}
+
 {% block extra_script %}
-
-
     $(document).ready(function(){
         $('#fat-chars').DataTable();
 
@@ -244,6 +247,4 @@
             $('.copy-btn').tooltip('show');
         });
     });
-
-
 {% endblock %}

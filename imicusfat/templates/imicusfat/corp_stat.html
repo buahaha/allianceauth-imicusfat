@@ -1,10 +1,12 @@
 {% extends 'allianceauth/base.html' %}
+
 {% load i18n %}
-{% load filters %}
+{% load static %}
+
 {% block page_title %}{{ corporation }} {% trans "Statistics" %}{% endblock %}
 
 {% block content %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script type="text/javascript" src="{% static 'imicusfat/javascript/chart-js/Chart.min.js' %}"></script>
 
     <div class="col-lg-12">
         <br>
@@ -16,6 +18,7 @@
             <li class="active"><a data-toggle="tab" href="#graphs">Graphs</a></li>
             <li><a data-toggle="tab" href="#members">Members</a></li>
         </ul>
+
         <div class="tab-content">
             <div id="graphs" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
@@ -24,10 +27,12 @@
                         <li><a data-toggle="tab" href="#fatsbytime">{{ term }}s By Time</a></li>
                         <li><a data-toggle="tab" href="#fatsbyweek">{{ term }}s By Weekday</a></li>
                     </ul>
+
                     <div class="tab-content">
                         <div class="tab-pane fade in active panel-default" id="fatsbyship">
                             <div class="panel-body">
                                 <h3>{{ term }}s By Ship Type</h3>
+
                                 <canvas id="ship-bar-stacked" width="800" height="500"></canvas>
                                 <script>
                                 var corpShipTypeBarChart = new Chart(document.getElementById('ship-bar-stacked'), {
@@ -60,9 +65,11 @@
                                 </script>
                             </div>
                         </div>
+
                         <div id="fatsbytime" class="tab-pane fade in panel-default">
                             <div class="panel-body">
                                 <h3>{{ term }}s By Time</h3>
+
                                 <canvas id="time-line" width="800" height="500"></canvas>
                                 <script>
                                     var timeLineChart = new Chart(document.getElementById("time-line"), {
@@ -82,9 +89,11 @@
                                 </script>
                             </div>
                         </div>
+
                         <div class="tab-pane fade in panel-default" id="fatsbyweek">
                             <div class="panel-body">
                                 <h3>{{ term }}s By Weekday</h3>
+
                                 <canvas id="weekday-line" width="800" height="500"></canvas>
                                 <script>
                                     var weekdayLineChart = new Chart(document.getElementById('weekday-line'), {
@@ -107,15 +116,18 @@
                     </div>
                 </div>
             </div>
+
             <div class="tab-pane fade in panel-default" id="members">
                 <div class="panel-body">
                     <h3>{{ corporation }} Members</h3>
+
                     <table class="table" id="corp-members">
                         <thead>
                             <th>Character</th>
                             <th>{{ term }}s</th>
                             <th>Character Stats</th>
                         </thead>
+
                         <tbody>
                             {% for key, value in chars.items %}
                                 <tr>
@@ -131,32 +143,35 @@
         </div>
     </div>
 {% endblock %}
+
 {% block extra_javascript %}
     {% include 'bundles/datatables-js.html' %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.js" integrity="sha256-l6SU+rVSlkyIcMsqjy0mb6ne/qPpYotdVSFd9vLmV1A=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'imicusfat/javascript/moment-js/moment.min.js' %}"></script>
 {% endblock %}
+
 {% block extra_css %}
     {% include 'bundles/datatables-css.html' %}
 {% endblock %}
+
 {% block extra_script %}
-    $.fn.dataTable.moment = function ( format, locale ) {
+    $.fn.dataTable.moment = function (format, locale) {
         var types = $.fn.dataTable.ext.type;
 
         // Add type detection
-        types.detect.unshift( function ( d ) {
-            return moment( d, format, locale, true ).isValid() ?
+        types.detect.unshift(function(d) {
+            return moment(d, format, locale, true).isValid() ?
                 'moment-'+format :
                 null;
         } );
 
         // Add sorting method - use an integer for the sorting
-        types.order[ 'moment-'+format+'-pre' ] = function ( d ) {
-            return moment( d, format, locale, true ).unix();
+        types.order[ 'moment-'+format+'-pre' ] = function(d) {
+            return moment(d, format, locale, true).unix();
         };
     };
 
-    $(document).ready(function(){
-        $.fn.dataTable.moment( 'MMM. D, YYYY, hh:mm a' );
+    $(document).ready(function() {
+        $.fn.dataTable.moment('MMM. D, YYYY, hh:mm a');
 
         $('#corp-members').DataTable();
     });

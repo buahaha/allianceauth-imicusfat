@@ -13,6 +13,14 @@ Add to your `INSTALLED_APPS`
 ```py
 'imicusfat',
 ```
+
+Run migrations and collect static files
+
+```python
+python manage.py collectstatic
+python manage.py migrate
+```
+
 #### Data Migration from AA-FAT
 ```
 Disable foreign key checks

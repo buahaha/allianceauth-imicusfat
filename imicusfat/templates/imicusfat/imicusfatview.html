@@ -1,5 +1,7 @@
 {% extends 'allianceauth/base.html' %}
+
 {% load i18n %}
+
 {% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
 
 {% block content %}
@@ -7,6 +9,7 @@
         <br>
         {% include "imicusfat/menu.html" %}
         <h2>{% trans "Recent" %}</h2>
+
         {% if msg %}
             <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
@@ -16,14 +19,17 @@
                     <p>{{ msg.1 }}</p>
                 </div>
         {% endif %}
+
         <ul class="nav nav-tabs">
              <li class="active"><a data-toggle="tab" href="#fats">{{ term }}s</a></li>
             <li><a data-toggle="tab" href="#fatlinks">{{ term }}{% trans "Links" %}</a></li>
         </ul>
+
         <div class="tab-content">
             <div id="fats" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
                     <h4> Your Most Recent {{ term }}s </h4>
+
                     <ul class="nav nav-pills">
                         {% for char in fats %}
                             {% if forloop.first %}
@@ -33,47 +39,51 @@
                             {% endif %}
                         {% endfor %}
                     </ul>
+
                     <div class="tab-content">
                         {% for char in fats %}
-                            {% if forloop.first %}
-                                <div id="{{ char|last }}" class="tab-pane fade in active panel-default">
-                            {% else %}
-                                <div id="{{ char|last }}" class="tab-pane fade active panel-default">
-                            {% endif %}
-                            <div class="panel-body">
-                            {% if char|slice:"1:-1"|length > 0 %}
-                                <table class="table">
-                                    <thead>
-                                        <th>Fleet Name</th>
-                                        <th>Location</th>
-                                        <th>Ship</th>
-                                        <th>EVE Time</th>
-                                    </thead>
-                                    <tbody>
-                                        {% for ifat in char|slice:"1:" %}
-                                            <tr>
-                                                <td>{% if ifat.ifatlink.fleet %}{{ ifat.ifatlink.fleet }}{% else %}{{ ifat.ifatlink.hash }}{% endif %}</td>
-                                                <td>{{ ifat.system }}</td>
-                                                <td>{{ ifat.shiptype }}</td>
-                                                <td>{{ ifat.ifatlink.ifattime }}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            {% else %}
-                                <div class="alert alert-warning" role="alert">
-                                    <p>No {{ term }}s for {{ char.0 }}</p>
+                        {% if forloop.first %}
+                            <div id="{{ char|last }}" class="tab-pane fade in active panel-default">
+                        {% else %}
+                            <div id="{{ char|last }}" class="tab-pane fade active panel-default">
+                        {% endif %}
+
+                                <div class="panel-body">
+                                    {% if char|slice:"1:-1"|length > 0 %}
+                                        <table class="table">
+                                            <thead>
+                                                <th>Fleet Name</th>
+                                                <th>Location</th>
+                                                <th>Ship</th>
+                                                <th>EVE Time</th>
+                                            </thead>
+                                            <tbody>
+                                                {% for ifat in char|slice:"1:" %}
+                                                    <tr>
+                                                        <td>{% if ifat.ifatlink.fleet %}{{ ifat.ifatlink.fleet }}{% else %}{{ ifat.ifatlink.hash }}{% endif %}</td>
+                                                        <td>{{ ifat.system }}</td>
+                                                        <td>{{ ifat.shiptype }}</td>
+                                                        <td>{{ ifat.ifatlink.ifattime }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% else %}
+                                        <div class="alert alert-warning" role="alert">
+                                            <p>No {{ term }}s for {{ char.0 }}</p>
+                                        </div>
+                                    {% endif %}
                                 </div>
-                            {% endif %}
                             </div>
-                        </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
+
             <div id="fatlinks" class="tab-panel fade active panel-default">
                 <div class="panel-body">
                     <h4> Most Recent {{ term }} Links </h4>
+
                     <table class="table">
                         <thead>
                             <th>Fleet Name</th>
@@ -81,6 +91,7 @@
                             <th>EVE Time</th>
                             <th>Utils</th>
                         </thead>
+
                         <tbody>
                             {% for link in links %}
                                 <tr>
@@ -95,8 +106,5 @@
                 </div>
             </div>
         </div>
-
     </div>
-
-
 {% endblock %}
