@@ -256,7 +256,21 @@ def stats_alliance(request, allianceid, month=None, year=None):
                               ifatlink__ifattime__year=year)
     corporations = EveCorporationInfo.objects.filter(alliance=ally)
 
-    # Fats by ship type?
+    # Data for Ship Type Pie Chart
+    data_ship_type = {}
+    for fat in fats:
+        if fat.shiptype in data_ship_type.keys():
+            continue
+        else:
+            data_ship_type[fat.shiptype] = fats.filter(shiptype=fat.shiptype).count()
+    colors = []
+    for _ in data_ship_type.keys():
+        bg_color_str = 'rgba({}, {}, {}, 1)'.format(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        colors.append(bg_color_str)
+
+    data_ship_type = [list(data_ship_type.keys()), list(data_ship_type.values()), colors]
+
+    # Fats by corp and ship type?
     data = {}
     for fat in fats:
         if fat.shiptype in data.keys():
@@ -327,7 +341,8 @@ def stats_alliance(request, allianceid, month=None, year=None):
         corps[corp] = (corp.corporation_id, c_fats, round(avg, 2))
     corps = OrderedDict(sorted(corps.items(), key=lambda x: x[1][2], reverse=True))
     ctx = {'term': term, 'alliance': name, 'month': month, 'year': year, 'data_stacked': data_stacked,
-           'data_avgs': data_avgs, 'data_time': data_time, 'data_weekday': data_weekday, 'corps': corps}
+           'data_avgs': data_avgs, 'data_time': data_time, 'data_weekday': data_weekday, 'corps': corps,
+           'data_ship_type': data_ship_type}
     return render(request, 'imicusfat/ally_stat.html', ctx)
 
 

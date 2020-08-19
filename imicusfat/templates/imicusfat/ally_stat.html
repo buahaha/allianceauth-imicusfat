@@ -34,35 +34,21 @@
                             <div class="panel-body">
                                 <h3>{{ term }}s By Ship Type</h3>
 
-                                <canvas id="ship-bar-stacked" width="800" height="500"></canvas>
+                                <canvas id="ship-pie" width="800" height="500"></canvas>
                                 <script>
-                                var corpShipTypeBarChart = new Chart(document.getElementById('ship-bar-stacked'), {
-                                    type: "bar",
-                                    data: {
-                                        datasets: [{% for set in data_stacked.1 %}
-                                                {
-                                                  label: '{{ set.0|escapejs }}',
-                                                  backgroundColor: '{{ set.1|safe }}',
-                                                  data: {{ set.2 }}
-                                                },
-                                            {% endfor %}],
-                                        labels: {{ data_stacked.0|safe }}
-                                    },
-                                    options: {
-                                        responsive: false,
-                                        scales: {
-                                            xAxes: [{
-                                                stacked: true,
-                                                ticks: {
-                                                    autoSkip: false
-                                                }
+                                    var shipPieChart = new Chart(document.getElementById("ship-pie"), {
+                                        type: "pie",
+                                        data: {
+                                            datasets: [{
+                                                data: {{ data_ship_type.1| safe }},
+                                                backgroundColor: {{ data_ship_type.2| safe }}
                                             }],
-                                            yAxes: [{
-                                                stacked: true
-                                            }]
+                                            labels: {{ data_ship_type.0 | safe }}
+                                        },
+                                        options: {
+                                            responsive: true
                                         }
-                                    }
-                                })
+                                    })
                                 </script>
                             </div>
                         </div>
