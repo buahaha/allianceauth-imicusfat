@@ -31,7 +31,7 @@
                                 href="{% url 'imicusfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}
                         </td>
                         <td>{% if perms.imicusfat.delete_ifatlink %}<a class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"
-                                data-url="{% url 'imicusfat:link_delete' link.hash %}"
+                                data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_delete' link.hash %}"
                                 data-name="{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}">
                                 <span class="glyphicon glyphicon-trash"></span></a>{% endif %}
                         </td>
