@@ -23,44 +23,48 @@
         <div class="tab-content">
             <div id="graphs" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
-                    <h4>{{ term }}s by Ship Type</h4>
-                    <canvas id="pie-ship" width="400" height="400"></canvas>
+                    <div class="col-md-4">
+                        <h4>{{ term }}s by Ship Type</h4>
+                        <canvas style="width: 400py; max-width: 100%; height: 400px;" id="pie-ship"></canvas>
 
-                    <script>
-                        var shipPieChart = new Chart(document.getElementById("pie-ship"), {
-                            type: "pie",
-                            data: {
-                                datasets: [{
-                                    data: {{ data_ship_type.1|safe }},
-                                    backgroundColor: {{ data_ship_type.2|safe }}
-                                }],
-                                labels: {{ data_ship_type.0|safe }}
-                            },
-                            options: {
-                                responsive: false
-                            }
-                        })
-                    </script>
+                        <script>
+                            var shipPieChart = new Chart(document.getElementById("pie-ship"), {
+                                type: "pie",
+                                data: {
+                                    datasets: [{
+                                        data: {{ data_ship_type.1|safe }},
+                                        backgroundColor: {{ data_ship_type.2|safe }}
+                                    }],
+                                    labels: {{ data_ship_type.0|safe }}
+                                },
+                                options: {
+                                    responsive: false
+                                }
+                            })
+                        </script>
+                    </div>
 
-                    <h4>{{ term }}s by Time of Day</h4>
-                    <canvas width="800" height="500" id="line-time"></canvas>
+                    <div class="col-md-8">
+                        <h4>{{ term }}s by Time of Day</h4>
+                        <canvas style="width: 100%; height: 400px;" id="line-time"></canvas>
 
-                    <script>
-                        var {{ term }}LineChart = new Chart(document.getElementById("line-time"),{
-                            type: "line",
-                            data: {
-                                datasets: [{
-                                    label: "# of {{ term }}s",
-                                    data: {{ data_time.1|safe }},
-                                    backgroundColor: {{ data_time.2|safe }}
-                                }],
-                                labels: {{ data_time.0|safe }}
-                            },
-                            options: {
-                                responsive: false
-                            }
-                        })
-                    </script>
+                        <script>
+                            var {{ term }}LineChart = new Chart(document.getElementById("line-time"),{
+                                type: "line",
+                                data: {
+                                    datasets: [{
+                                        label: "# of {{ term }}s",
+                                        data: {{ data_time.1|safe }},
+                                        backgroundColor: {{ data_time.2|safe }}
+                                    }],
+                                    labels: {{ data_time.0|safe }}
+                                },
+                                options: {
+                                    responsive: false
+                                }
+                            })
+                        </script>
+                    </div>
                 </div>
             </div>
 
