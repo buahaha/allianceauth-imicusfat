@@ -46,6 +46,7 @@ get_alliance_alliance_id
 # Create your views here.
 @login_required()
 def imicusfat_view(request):
+
     msg = None
     if 'msg' in request.session:
         msg = request.session.pop('msg')
@@ -110,7 +111,7 @@ def stats_char(request, charid, month=None, year=None):
     if not month or not year:
         request.session['msg'] = ('danger', 'Date information not complete!')
         return redirect('imicusfat:imicusfat_view')
-    fats = IFat.objects.filter(character__character_id=charid, ifatlink__ifattime__month=month)
+    fats = IFat.objects.filter(character__character_id=charid, ifatlink__ifattime__month=month, ifatlink__ifattime__year=year)
 
     # Data for Ship Type Pie Chart
     data_ship_type = {}
@@ -141,12 +142,12 @@ def stats_char(request, charid, month=None, year=None):
 @login_required()
 @permissions_required(('imicusfat.stats_corp_own', 'imicusfat.stats_corp_other'))
 def stats_corp(request, corpid, month=None, year=None):
-    
+
     # Check character has permission to view other corp stats
     if int(request.user.profile.main_character.corporation_id) != int(corpid):
         if not request.user.has_perm("imicusfat.stats_corp_other"):
             request.session['msg'] = ('warning', 'You do not have permission to view statistics for that corporation.')
-            return redirect('imicusfat:imicusfat_view') 
+            return redirect('imicusfat:imicusfat_view')
 
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
 
@@ -338,14 +339,14 @@ def links(request):
 
 
 @login_required()
-@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_fatlink'))
+@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink'))
 def link_add(request):
     ctx = {'term': term}
     return render(request, 'imicusfat/addlink.html', ctx)
 
 
 @login_required()
-@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_fatlink'))
+@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink'))
 def link_create_click(request):
     if request.method == "POST":
         form = ClickFatForm(request.POST)
@@ -377,9 +378,8 @@ def link_create_click(request):
 
 
 @login_required()
-@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_fatlink'))
-@token_required(
-    scopes=['esi-fleets.read_fleet.v1'])
+@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink'))
+@token_required(scopes=['esi-fleets.read_fleet.v1'])
 def link_create_esi(request, token):
     # "error": "The fleet does not exist or you don't have access to it!"
     hash = get_random_string(length=30)
@@ -458,7 +458,7 @@ def click_link(request, token, hash=None):
 
 
 @login_required()
-@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_fatlink', 'imicusfat.change_fatlink'))
+@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink', 'imicusfat.change_ifatlink'))
 def edit_link(request, hash=None):
     if hash is None:
         request.session['msg'] = ['warning', 'No {}link hash provided.'.format(term)]
@@ -516,7 +516,7 @@ def edit_link(request, hash=None):
     return render(request, 'imicusfat/fleet_edit.html', ctx)
 
 @login_required()
-@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.delete_fatlink'))
+@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.delete_ifatlink'))
 def del_link(request, hash=None):
     if hash is None:
         request.session['msg'] = ['warning', 'No {}link hash provided.'.format(term)]
@@ -536,7 +536,7 @@ def del_link(request, hash=None):
 
 
 @login_required()
-@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.delete_fat'))
+@permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.delete_ifat'))
 def del_fat(request, hash, fat):
     try:
         link = IFatLink.objects.get(hash=hash)

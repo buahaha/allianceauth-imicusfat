@@ -4,7 +4,7 @@ from imicusfat import __version__
 
 install_requires = [
     'django-bootstrap-form',
-    'allianceauth>=2.0',
+    'allianceauth>=2.7.2',
 ]
 
 testing_extras = [
@@ -20,9 +20,9 @@ setup(
     install_requires=install_requires,
     extras_require={
         'testing': testing_extras,
-        ':python_version=="3.4"': ['typing'],
+        ':python_version=="3.6"': ['typing'],
     },
-    python_requires='~=3.4',
+    python_requires='~=3.6',
     license='GPLv3',
     packages=find_packages(),
     url='https://gitlab.com/evictus.iou/allianceauth-imicusfat',

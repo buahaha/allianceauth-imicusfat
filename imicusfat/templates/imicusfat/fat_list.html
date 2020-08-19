@@ -1,5 +1,8 @@
 {% extends 'allianceauth/base.html' %}
+
 {% load i18n %}
+{% load static %}
+
 {% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
 
 {% block content %}
@@ -7,6 +10,7 @@
         <br>
         {% include "imicusfat/menu.html" %}
         <h2>{% trans "All" %} {{ term }}{% trans "Links" %}</h2>
+
         <table class="table" id="link-list">
             <thead>
                 <th>Fleet Name</th>
@@ -15,6 +19,7 @@
                 <th># of {{ term }}s</th>
                 <th colspan="2">Utils</th>
             </thead>
+
             <tbody>
                 {% for link in links %}
                     <tr>
@@ -22,13 +27,14 @@
                         <td>{{ link.creator.profile.main_character.character_name }}</td>
                         <td>{{ link.ifattime|date:"M. d, Y, H:i" }}</td>
                         <td>{{ link.number_of_fats }}</td>
-                        <td>{% if perms.imicusfat.change_fatlink %}<a class="btn btn-info"
+                        <td>{% if perms.imicusfat.change_ifatlink %}<a class="btn btn-info"
                                 href="{% url 'imicusfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}
                         </td>
-                        <td>{% if perms.imicusfat.delete_fatlink %}<a class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"
+                        <td>{% if perms.imicusfat.delete_ifatlink %}<a class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"
                                 data-url="{% url 'imicusfat:link_delete' link.hash %}"
                                 data-name="{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}">
-                                <span class="glyphicon glyphicon-trash"></span></a>{% endif %}</td>
+                                <span class="glyphicon glyphicon-trash"></span></a>{% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -59,33 +65,36 @@
     </div>
 
 {% endblock %}
+
 {% block extra_javascript %}
     {% include 'bundles/datatables-js.html' %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.js" integrity="sha256-l6SU+rVSlkyIcMsqjy0mb6ne/qPpYotdVSFd9vLmV1A=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'imicusfat/javascript/moment-js/moment.min.js' %}"></script>
 {% endblock %}
+
 {% block extra_css %}
     {% include 'bundles/datatables-css.html' %}
 {% endblock %}
+
 {% block extra_script %}
-    $.fn.dataTable.moment = function ( format, locale ) {
+    $.fn.dataTable.moment = function(format, locale) {
         var types = $.fn.dataTable.ext.type;
-    
+
         // Add type detection
-        types.detect.unshift( function ( d ) {
-            return moment( d, format, locale, true ).isValid() ?
+        types.detect.unshift(function(d) {
+            return moment(d, format, locale, true).isValid() ?
                 'moment-'+format :
                 null;
         } );
-    
+
         // Add sorting method - use an integer for the sorting
-        types.order[ 'moment-'+format+'-pre' ] = function ( d ) {
-            return moment( d, format, locale, true ).unix();
+        types.order[ 'moment-'+format+'-pre' ] = function(d) {
+            return moment(d, format, locale, true).unix();
         };
     };
 
     $(document).ready(function(){
-        $.fn.dataTable.moment( 'MMM. D, YYYY, HH:mm' );
-        
+        $.fn.dataTable.moment('MMM. D, YYYY, HH:mm');
+
         $('#link-list').DataTable( {
             "order": [[ 2, "desc" ]]
         } );
