@@ -139,7 +139,7 @@
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" class="tab" href="#{{ term }}s">{{ term }}s</a></li>
                 <li><a data-toggle="tab" class="tab" href="#flatlist">Flat List</a></li>
-                <li><a data-toggle="tab" class="tab" href="#manualfat">Manual {{ term }}</a></li>
+                <li>{% if perms.imicusfat.add_ifat %}<a data-toggle="tab" class="tab" href="#manualfat">Manual {{ term }}</a>{% endif %}</li>
             </ul>
             <div class="tab-content">
                 <div id="{{ term }}s" class="tab-pane fade in active panel-default">
