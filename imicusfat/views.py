@@ -5,7 +5,6 @@ import os
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.utils import timezone
-from esi.clients import EsiClientProvider
 from esi.decorators import token_required
 from .models import IFat, ClickIFatDuration, IFatLink, ManualIFat, DelLog
 from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
@@ -42,8 +41,6 @@ get_search
 get_corporation_corporation_id
 get_alliance_alliance_id
 """
-
-esi = EsiClientProvider(spec_file=SWAGGER_SPEC_PATH)
 
 
 # Create your views here.
@@ -405,15 +402,12 @@ def link_create_esi(request, token):
     link.save()
 
     # Check if there is a fleet
-    # c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
+    c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
     try:
-        # f = c.Fleets.get_characters_character_id_fleet(character_id=token.character_id).result()
-        f = esi.client.Fleets.get_characters_character_id_fleet(character_id=token.character_id).result()
+        f = c.Fleets.get_characters_character_id_fleet(character_id=token.character_id).result()
         try:
-            # fleet = c.Fleets.get_fleets_fleet_id(fleet_id=f['fleet_id']).result()
-            fleet = esi.client.Fleets.get_fleets_fleet_id(fleet_id=f['fleet_id']).result()
-            # m = c.Fleets.get_fleets_fleet_id_members(fleet_id=f['fleet_id']).result()
-            m = esi.client.Fleets.get_fleets_fleet_id_members(fleet_id=f['fleet_id']).result()
+            fleet = c.Fleets.get_fleets_fleet_id(fleet_id=f['fleet_id']).result()
+            m = c.Fleets.get_fleets_fleet_id_members(fleet_id=f['fleet_id']).result()
             process_fats.delay(m, 'eve', hash)
 
             request.session['{}-creation-code'.format(hash)] = 200
@@ -447,14 +441,11 @@ def click_link(request, token, hash=None):
             return redirect('imicusfat:imicusfat_view')
 
         character = EveCharacter.objects.get(character_id=token.character_id)
-        # c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
+        c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
         try:
-            # location = c.Location.get_characters_character_id_location(character_id=token.character_id).result()
-            # ship = c.Location.get_characters_character_id_ship(character_id=token.character_id).result()
-            # location = c.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()['name']
-            location = esi.client.Location.get_characters_character_id_location(character_id=token.character_id).result()
-            ship = esi.client.Location.get_characters_character_id_ship(character_id=token.character_id).result()
-            location = esi.client.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()['name']
+            location = c.Location.get_characters_character_id_location(character_id=token.character_id).result()
+            ship = c.Location.get_characters_character_id_ship(character_id=token.character_id).result()
+            location = c.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()['name']
             ship = provider.get_itemtype(ship['ship_type_id']).name
 
             try:
