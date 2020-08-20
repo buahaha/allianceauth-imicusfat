@@ -1,4 +1,5 @@
-from esi.clients import esi_client_factory
+# from esi.clients import esi_client_factory
+from esi.clients import EsiClientProvider
 from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
 import os
 from .models import IFat, IFatLink
@@ -8,6 +9,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.json')
+
+esi = EsiClientProvider(spec_file=SWAGGER_SPEC_PATH)
 
 
 class NoDataError(Exception):
@@ -26,8 +29,8 @@ def get_or_create_char(name: str=None, id: int=None):
     """
     if name:
         # If a name is passed we have to check it on ESI
-        c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
-        result = c.Search.get_search(categories=['character'], search=name, strict=True).result()
+        # c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
+        result = esi.client.Search.get_search(categories=['character'], search=name, strict=True).result()
         if 'character' not in result:
             return None
         id = result['character'][0]
@@ -66,8 +69,8 @@ def process_fats(list, type_, hash):
     :param hash: the hash from the fat link.
     :return:
     """
-    link = IFatLink.objects.get(hash=hash)
-    c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
+    # link = IFatLink.objects.get(hash=hash)
+    # c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
     if type_ == 'flatlist':
         if len(list[0]) > 40:
             # Came from fleet comp
@@ -99,17 +102,17 @@ def process_line(line, type_, hash):
 
 @shared_task
 def process_character(char, hash):
-    link = IFatLink.objects.get(hash=hash)
-    c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
+    # link = IFatLink.objects.get(hash=hash)
+    # c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
     char_id = char['character_id']
     sol_id = char['solar_system_id']
     ship_id = char['ship_type_id']
 
     solar_system = c.Universe.get_universe_systems_system_id(system_id=sol_id).result()
-    ship = c.Universe.get_universe_types_type_id(type_id=ship_id).result()
+    ship = esi.client.Universe.get_universe_types_type_id(type_id=ship_id).result()
 
     sol_name = solar_system['name']
     ship_name = ship['name']
     character = get_or_create_char(id=char_id)
     link = IFatLink.objects.get(hash=hash)
-    fat = IFat(ifatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
+    # fat = IFat(ifatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
