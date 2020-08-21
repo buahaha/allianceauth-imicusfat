@@ -63,7 +63,7 @@
                                                         <td>{% if ifat.ifatlink.fleet %}{{ ifat.ifatlink.fleet }}{% else %}{{ ifat.ifatlink.hash }}{% endif %}</td>
                                                         <td>{{ ifat.system }}</td>
                                                         <td>{{ ifat.shiptype }}</td>
-                                                        <td>{{ ifat.ifatlink.ifattime }}</td>
+                                                        <td>{{ ifat.ifatlink.ifattime|date:"Y-M-d, H:i" }}</td>
                                                     </tr>
                                                 {% endfor %}
                                             </tbody>
@@ -97,7 +97,7 @@
                                 <tr>
                                     <td>{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}</td>
                                     <td>{{ link.creator.profile.main_character.character_name }}</td>
-                                    <td>{{ link.ifattime }}</td>
+                                    <td>{{ link.ifattime|date:"Y-M-d, H:i" }}</td>
                                     <td>{% if perms.imicusfat.change_ifatlink %}<a class="btn btn-info"
                                         href="{% url 'imicusfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}
                                 </td>
