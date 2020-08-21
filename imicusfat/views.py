@@ -518,7 +518,6 @@ def link_create_esi(request, token):
     link.save()
 
     # Check if there is a fleet
-    # c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
     try:
         requiredScopes = ['esi-fleets.read_fleet.v1']
         esiToken = Token.get_token(token.character_id, requiredScopes)
@@ -529,16 +528,13 @@ def link_create_esi(request, token):
         ).result()
 
         try:
-            # fleet = c.Fleets.get_fleets_fleet_id(fleet_id=f['fleet_id']).result()
-            # m = c.Fleets.get_fleets_fleet_id_members(fleet_id=f['fleet_id']).result()
-
             fleet = esi.client.Fleets.get_fleets_fleet_id(
-                fleet_id=f['fleet_id'],
+                fleet_id = f['fleet_id'],
                 token = esiToken.valid_access_token()
             ).result()
 
             m = esi.client.Fleets.get_fleets_fleet_id_members(
-                fleet_id=f['fleet_id'],
+                fleet_id = f['fleet_id'],
                 token = esiToken.valid_access_token()
             ).result()
 
