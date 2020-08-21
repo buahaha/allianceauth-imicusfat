@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from esi.clients import EsiClientProvider
 
 from allianceauth.services.hooks import get_extension_logger

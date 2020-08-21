@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from allianceauth.authentication.decorators import permissions_required
 from allianceauth.authentication.models import CharacterOwnership
 from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
@@ -26,6 +27,7 @@ from .tasks import get_or_create_char, process_fats
 from .utils import LoggerAddTag
 
 import random
+
 
 logger = LoggerAddTag(get_extension_logger(__name__), __title__)
 

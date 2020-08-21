@@ -1,12 +1,20 @@
-from django.db import models
-from django.contrib.auth.models import User
+# -*- coding: utf-8 -*-
 from allianceauth.eveonline.models import EveCharacter
-from django.utils import timezone
+from allianceauth.services.hooks import get_extension_logger
+
+from django.contrib.auth.models import User
+from django.db import models
 from django.db.models.query import QuerySet
+from django.utils import timezone
+
+from . import __title__
+from .utils import LoggerAddTag
+
+
+logger = LoggerAddTag(get_extension_logger(__name__), __title__)
+
 
 # Create your models here.
-
-
 def get_sentinel_user():
     return User.objects.get_or_create(username='deleted')[0]
 
@@ -92,7 +100,7 @@ class IFat(SoftDeletionModel):
 
     class Meta:
         unique_together = (('character', 'ifatlink'),)
-        
+
     def __str__(self):
         return "{} - {}".format(self.ifatlink, self.character)
 
@@ -102,7 +110,7 @@ class ManualIFat(models.Model):
     creator = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
     ifatlink = models.ForeignKey(IFatLink, on_delete=models.CASCADE)
     character = models.ForeignKey(EveCharacter, on_delete=models.CASCADE)
-    
+
     # Add property for getting the user for a character.
 
     def __str__(self):

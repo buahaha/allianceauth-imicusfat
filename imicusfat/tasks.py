@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
 from allianceauth.services.hooks import get_extension_logger
 from celery import shared_task
