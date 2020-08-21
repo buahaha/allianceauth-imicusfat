@@ -25,7 +25,7 @@
                     <tr>
                         <td>{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}</td>
                         <td>{{ link.creator.profile.main_character.character_name }}</td>
-                        <td>{{ link.ifattime|date:"M. d, Y, H:i" }}</td>
+                        <td>{{ link.ifattime|date:"Y-M-d, H:i" }}</td>
                         <td>{{ link.number_of_fats }}</td>
                         <td>{% if perms.imicusfat.change_ifatlink %}<a class="btn btn-info"
                                 href="{% url 'imicusfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}
@@ -93,7 +93,7 @@
     };
 
     $(document).ready(function(){
-        $.fn.dataTable.moment('MMM. D, YYYY, HH:mm');
+        $.fn.dataTable.moment('YYYY-MMM-D, HH:mm');
 
         $('#link-list').DataTable( {
             "order": [[ 2, "desc" ]]
