@@ -1,2 +1,2 @@
-__title__ = 'Imicus FAT'
-__version__ = '0.1.0'
+__title__ = 'ImicusFAT'
+__version__ = '0.2.0'
