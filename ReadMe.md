@@ -49,4 +49,4 @@ FAT_AS_PAP = True
 ```
 
 ## Credits
-• ImicusFAT • Developed and Maintained by @Aproia with @exiom • Based on [allianceauth-bfat](https://gitlab.com/colcrunch/allianceauth-bfat) by @colcrunch •
+• ImicusFAT • Developed and Maintained by @Aproia with @exiom and @ppfeufer • Based on [allianceauth-bfat](https://gitlab.com/colcrunch/allianceauth-bfat) by @colcrunch •
