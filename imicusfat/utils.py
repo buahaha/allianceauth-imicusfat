@@ -1,8 +1,9 @@
-import logging
-import os
-
+# -*- coding: utf-8 -*-
 from django.utils.functional import lazy
 from django.utils.html import format_html
+
+import logging
+import os
 
 
 # Format for output of datetime for this app
