@@ -21,7 +21,7 @@ from esi.models import Token
 
 from . import __title__
 from .forms import FatLinkForm, ManualFatForm, FlatListForm, ClickFatForm
-from .models import IFat, ClickIFatDuration, IFatLink, ManualIFat, DelLog
+from .models import IFat, ClickIFatDuration, IFatLink, ManualIFat, DelLog, IFatLinkType
 from .providers import esi
 from .tasks import get_or_create_char, process_fats
 from .utils import LoggerAddTag
@@ -516,8 +516,11 @@ def links(request):
 @login_required()
 @permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink'))
 def link_add(request):
+    link_types = IFatLinkType.objects.all()
+
     context = {
-        'term': term
+        'term': term,
+        'link_types': link_types
     }
 
     logger.info(
@@ -538,6 +541,9 @@ def link_create_click(request):
             hash = get_random_string(length=30)
             link = IFatLink()
             link.fleet = form.cleaned_data['name']
+            if (form.cleaned_data['type'] is not None):
+                link.link_type = IFatLinkType.objects.get(id=form.cleaned_data['type'])
+
             link.creator = request.user
             link.hash = hash
             link.save()
@@ -572,12 +578,7 @@ def link_create_click(request):
 @login_required()
 @permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink'))
 @token_required(scopes=['esi-fleets.read_fleet.v1'])
-def link_create_esi(request, token):
-    # "error": "The fleet does not exist or you don't have access to it!"
-    hash = get_random_string(length=30)
-    link = IFatLink(fleet=None, creator=request.user, hash=hash)
-    link.save()
-
+def link_create_esi(request, token, hash):
     # Check if there is a fleet
     try:
         requiredScopes = ['esi-fleets.read_fleet.v1']
@@ -619,6 +620,19 @@ def link_create_esi(request, token):
 
         return redirect('imicusfat:link_edit', hash=hash)
 
+
+@login_required()
+def create_esi_fat(request):
+    # "error": "The fleet does not exist or you don't have access to it!"
+    form = FatLinkForm(request.POST)
+    hash = get_random_string(length=30)
+
+    if form.is_valid():
+        link = IFatLink(fleet=form.cleaned_data['name'], creator=request.user, hash=hash)
+        if (form.cleaned_data['type'] is not None):
+                link.link_type = IFatLinkType.objects.get(id=form.cleaned_data['type'])
+        link.save()
+        return redirect('imicusfat:link_create_esi', hash=hash)
 
 @login_required()
 @token_required(scopes=['esi-location.read_location.v1', 'esi-location.read_ship_type.v1'])

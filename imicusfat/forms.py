@@ -4,7 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class FatLinkForm(forms.Form):
-    fleet = forms.CharField(label=_('Fleet Name'), max_length=50)
+    name = forms.CharField(label=_('Fleet Name'), max_length=50)
+    type = forms.IntegerField(label=_('Type'), required=False)
 
 
 class FlatListForm(forms.Form):
@@ -20,3 +21,4 @@ class ManualFatForm(forms.Form):
 class ClickFatForm(forms.Form):
     name = forms.CharField(label=_('Fleet Name'), max_length=50)
     duration = forms.IntegerField(label=_('Duration'), min_value=1)
+    type = forms.IntegerField(label=_('Type'), required=False)

@@ -18,7 +18,6 @@
                     <h4>Success!</h4>
                     <p>&#9642; {{ term }}Link Created!</p>
                     <p>&#9642; {{ term }}s have been queued, they may take a few mins to show up.</p>
-                    <p>&#9642; Make sure to set the fleet name!</p>
                 </div>
             {% elif msg == 403 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
@@ -27,7 +26,6 @@
                     </button>
                     <h4>Not Fleet Boss!</h4>
                     <p>&#9642; {{ term }}Link created. Please upload a flatlist using the flatlist tab to generate {{ term }}s for fleet members.</p>
-                    <p>&#9642; Make sure to set the fleet name!</p>
                 </div>
             {% elif msg == 404 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
@@ -36,7 +34,6 @@
                     </button>
                     <h4>Not in Fleet!</h4>
                     <p>&#9642; {{ term }}Link created. The character used to create this {{ term }}Link is not in a fleet. In order to generate {{ term }}s for fleet members, please upload a flatlist using the flatlist tab.</p>
-                    <p>&#9642; Make sure to set the fleet name!</p>
                 </div>
             {% elif msg == 0 %}
             <div class="alert alert-danger alert-dismissible" role="alert">
