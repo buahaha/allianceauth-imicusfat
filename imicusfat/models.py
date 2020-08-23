@@ -57,6 +57,16 @@ class SoftDeletionQuerySet(QuerySet):
         return self.exclude(deleted_at=None)
 
 
+# Fat Link type (StratOp, ADM, HD etc)
+class IFatLinkType(SoftDeletionModel):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=254)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return "{} - {}".format(self.id, self.name)
+
+
 # FatLink Model
 class IFatLink(SoftDeletionModel):
     ifattime = models.DateTimeField(default=timezone.now)
@@ -64,6 +74,7 @@ class IFatLink(SoftDeletionModel):
     hash = models.CharField(max_length=254)
     creator = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
     deleted_at = models.DateTimeField(blank=True, null=True)
+    link_type = models.ForeignKey(IFatLinkType, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.hash[6:]

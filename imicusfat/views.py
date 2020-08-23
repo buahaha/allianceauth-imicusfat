@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from django.utils import timezone
 from esi.decorators import token_required
-from .models import IFat, ClickIFatDuration, IFatLink, ManualIFat, DelLog
+from .models import IFat, ClickIFatDuration, IFatLink, ManualIFat, DelLog, IFatLinkType
 from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
 from allianceauth.authentication.models import CharacterOwnership
 from .forms import FatLinkForm, ManualFatForm, FlatListForm, ClickFatForm
@@ -356,7 +356,8 @@ def links(request):
 @login_required()
 @permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink'))
 def link_add(request):
-    ctx = {'term': term}
+    link_types = IFatLinkType.objects.all()
+    ctx = {'term': term, 'link_types': link_types}
     return render(request, 'imicusfat/addlink.html', ctx)
 
 
@@ -365,10 +366,14 @@ def link_add(request):
 def link_create_click(request):
     if request.method == "POST":
         form = ClickFatForm(request.POST)
+        print(form.is_valid())
         if form.is_valid():
             hash = get_random_string(length=30)
             link = IFatLink()
             link.fleet = form.cleaned_data['name']
+            if (form.cleaned_data['type'] is not None):
+                link.link_type = IFatLinkType.objects.get(id=form.cleaned_data['type'])
+
             link.creator = request.user
             link.hash = hash
             link.save()
@@ -395,12 +400,7 @@ def link_create_click(request):
 @login_required()
 @permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink'))
 @token_required(scopes=['esi-fleets.read_fleet.v1'])
-def link_create_esi(request, token):
-    # "error": "The fleet does not exist or you don't have access to it!"
-    hash = get_random_string(length=30)
-    link = IFatLink(fleet=None, creator=request.user, hash=hash)
-    link.save()
-
+def link_create_esi(request, token, hash):
     # Check if there is a fleet
     c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
     try:
@@ -419,6 +419,19 @@ def link_create_esi(request, token):
         request.session['{}-creation-code'.format(hash)] = 404
         return redirect('imicusfat:link_edit', hash=hash)
 
+
+@login_required()
+def create_esi_fat(request):
+    # "error": "The fleet does not exist or you don't have access to it!"
+    form = FatLinkForm(request.POST)
+    hash = get_random_string(length=30)
+    print('Creating FAT')
+    if form.is_valid():
+        link = IFatLink(fleet=form.cleaned_data['name'], creator=request.user, hash=hash)
+        if (form.cleaned_data['type'] is not None):
+                link.link_type = IFatLinkType.objects.get(id=form.cleaned_data['type'])
+        link.save()
+        return redirect('imicusfat:link_create_esi', hash=hash)
 
 @login_required()
 @token_required(scopes=['esi-location.read_location.v1', 'esi-location.read_ship_type.v1'])
