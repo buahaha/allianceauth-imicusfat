@@ -516,13 +516,11 @@ def links(request):
 @login_required()
 @permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink'))
 def link_add(request):
-<<<<<<< imicusfat/views.py
     link_types = IFatLinkType.objects.all()
-    ctx = {'term': term, 'link_types': link_types}
-    return render(request, 'imicusfat/addlink.html', ctx)
-=======
+
     context = {
-        'term': term
+        'term': term,
+        'link_types': link_types
     }
 
     logger.info(
@@ -531,7 +529,6 @@ def link_add(request):
     )
 
     return render(request, 'imicusfat/addlink.html', context)
->>>>>>> imicusfat/views.py
 
 
 @login_required()
