@@ -366,7 +366,7 @@ def link_add(request):
 def link_create_click(request):
     if request.method == "POST":
         form = ClickFatForm(request.POST)
-        print(form.is_valid())
+
         if form.is_valid():
             hash = get_random_string(length=30)
             link = IFatLink()
@@ -425,7 +425,7 @@ def create_esi_fat(request):
     # "error": "The fleet does not exist or you don't have access to it!"
     form = FatLinkForm(request.POST)
     hash = get_random_string(length=30)
-    print('Creating FAT')
+
     if form.is_valid():
         link = IFatLink(fleet=form.cleaned_data['name'], creator=request.user, hash=hash)
         if (form.cleaned_data['type'] is not None):
