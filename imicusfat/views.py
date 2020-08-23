@@ -492,12 +492,14 @@ def stats_alliance(request, allianceid, month=None, year=None):
 
 @login_required()
 def links(request):
+
     msg = None
 
     if 'msg' in request.session:
         msg = request.session.pop('msg')
 
-    links = IFatLink.objects.all().order_by('-ifattime').annotate(number_of_fats=Count('ifat'))
+    links = IFatLink.objects.filter(ifat__deleted_at__isnull=True).order_by(
+        '-ifattime').annotate(number_of_fats=Count('ifat'))
 
     context = {
         'term': term,
