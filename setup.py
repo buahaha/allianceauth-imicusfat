@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
+
 from imicusfat import __version__
+
 
 install_requires = [
     'django-bootstrap-form',

@@ -1,7 +1,10 @@
-from . import urls
-from django.utils.translation import ugettext_lazy as _
+# -*- coding: utf-8 -*-
 from allianceauth import hooks
 from allianceauth.services.hooks import MenuItemHook, UrlHook
+
+from django.utils.translation import ugettext_lazy as _
+
+from . import urls
 
 
 @hooks.register('menu_item_hook')
