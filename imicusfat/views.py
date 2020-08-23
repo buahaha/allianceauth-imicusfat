@@ -635,6 +635,10 @@ def create_esi_fat(request):
                 link.link_type = IFatLinkType.objects.get(id=form.cleaned_data['type'])
         link.save()
         return redirect('imicusfat:link_create_esi', hash=hash)
+    else:
+        request.session['msg'] = ['danger', ('Something went wrong when attempting to submit your'
+                                             ' ESI {0}Link.'.format(term))]
+        return redirect('imicusfat:imicusfat_view')
 
 @login_required()
 @token_required(scopes=['esi-location.read_location.v1', 'esi-location.read_ship_type.v1'])
