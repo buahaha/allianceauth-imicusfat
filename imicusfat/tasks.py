@@ -1,14 +1,15 @@
-# from esi.clients import esi_client_factory
-from .providers import esi
+# -*- coding: utf-8 -*-
 from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
-import os
-from .models import IFat, IFatLink
+from allianceauth.services.hooks import get_extension_logger
 from celery import shared_task
-import logging
 
-logger = logging.getLogger(__name__)
+from . import __title__
+from .models import IFat, IFatLink
+from .providers import esi
+from .utils import LoggerAddTag
 
-# SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.json')
+
+logger = LoggerAddTag(get_extension_logger(__name__), __title__)
 
 
 class NoDataError(Exception):
@@ -27,8 +28,6 @@ def get_or_create_char(name: str=None, id: int=None):
     """
     if name:
         # If a name is passed we have to check it on ESI
-        # c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
-        # result = c.Search.get_search(categories=['character'], search=name, strict=True).result()
         result = esi.client.Search.get_search(categories=['character'], search=name, strict=True).result()
         if 'character' not in result:
             return None
@@ -44,6 +43,7 @@ def get_or_create_char(name: str=None, id: int=None):
         # Create Character
         character = EveCharacter.objects.create_character(id)
         character = EveCharacter.objects.get(pk=character.pk)
+
         # Make corp and alliance info objects for future sane
         if character.alliance_id is not None:
             test = EveAllianceInfo.objects.filter(alliance_id=character.alliance_id)
@@ -57,19 +57,30 @@ def get_or_create_char(name: str=None, id: int=None):
     else:
         character = qs[0]
 
+    logger.info(
+        'Processing information for character %s',
+        character.pk
+    )
+
     return character
+
 
 @shared_task
 def process_fats(list, type_, hash):
     """
     Due to the large possible size of fatlists, this process will be scheduled in order to process flat_lists.
     :param list: the list of character info to be processed.
-    :param type: flatlist or eve
+    :param type_: flatlist or eve
     :param hash: the hash from the fat link.
     :return:
     """
-    link = IFatLink.objects.get(hash=hash)
-    # c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
+    # link = IFatLink.objects.get(hash=hash)
+
+    logger.info(
+        'Processing FAT %s',
+        hash
+    )
+
     if type_ == 'flatlist':
         if len(list[0]) > 40:
             # Came from fleet comp
@@ -84,17 +95,21 @@ def process_fats(list, type_, hash):
         for char in list:
             process_character.delay(char, hash)
 
+
 @shared_task
 def process_line(line, type_, hash):
     link = IFatLink.objects.get(hash=hash)
+
     if type_ == 'comp':
         character = get_or_create_char(name=line[0].strip(" "))
         system = line[1].strip(" (Docked)")
         shiptype = line[2]
+
         if character is not None:
             ifat = IFat(ifatlink_id=link.pk, character=character, system=system, shiptype=shiptype).save()
     else:
         character = get_or_create_char(name=line.strip(" "))
+
         if character is not None:
             ifat = IFat(ifatlink_id=link.pk, character=character).save()
 
@@ -102,13 +117,10 @@ def process_line(line, type_, hash):
 @shared_task
 def process_character(char, hash):
     link = IFatLink.objects.get(hash=hash)
-    # c = esi_client_factory(spec_file=SWAGGER_SPEC_PATH)
+
     char_id = char['character_id']
     sol_id = char['solar_system_id']
     ship_id = char['ship_type_id']
-
-    # solar_system = c.Universe.get_universe_systems_system_id(system_id=sol_id).result()
-    # ship = c.Universe.get_universe_types_type_id(type_id=ship_id).result()
 
     solar_system = esi.client.Universe.get_universe_systems_system_id(system_id=sol_id).result()
     ship = esi.client.Universe.get_universe_types_type_id(type_id=ship_id).result()
@@ -118,3 +130,8 @@ def process_character(char, hash):
     character = get_or_create_char(id=char_id)
     link = IFatLink.objects.get(hash=hash)
     fat = IFat(ifatlink_id=link.pk, character=character, system=sol_name, shiptype=ship_name).save()
+
+    logger.info(
+        'Processing information for character with ID %s',
+        character
+    )

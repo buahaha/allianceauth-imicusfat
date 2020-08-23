@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from allianceauth.authentication.decorators import permissions_required
 from allianceauth.authentication.models import CharacterOwnership
 from allianceauth.eveonline.models import EveAllianceInfo, EveCharacter, EveCorporationInfo
@@ -26,6 +27,7 @@ from .tasks import get_or_create_char, process_fats
 from .utils import LoggerAddTag
 
 import random
+
 
 logger = LoggerAddTag(get_extension_logger(__name__), __title__)
 
@@ -56,9 +58,20 @@ def imicusfat_view(request):
         fats.append(char_1)
 
     links = IFatLink.objects.order_by('ifattime').reverse()[:10]
-    ctx = {'term': term, 'fats': fats, 'links': links, 'msg': msg}
 
-    return render(request, 'imicusfat/imicusfatview.html', ctx)
+    context = {
+        'term': term,
+        'fats': fats,
+        'links': links,
+        'msg': msg
+    }
+
+    logger.info(
+        'Module called by %s',
+        request.user
+    )
+
+    return render(request, 'imicusfat/imicusfatview.html', context)
 
 
 @login_required()
@@ -100,9 +113,19 @@ def stats(request):
         char_l.append(char.character.character_id)
         months.append(char_l)
 
-    ctx = {'term': term, 'data': data, 'charstats': months, 'year': datetime.now().year}
+    context = {
+        'term': term,
+        'data': data,
+        'charstats': months,
+        'year': datetime.now().year
+    }
 
-    return render(request, 'imicusfat/stats_main.html', ctx)
+    logger.info(
+        'Statistics overview called by %s',
+        request.user
+    )
+
+    return render(request, 'imicusfat/stats_main.html', context)
 
 
 @login_required()
@@ -148,10 +171,22 @@ def stats_char(request, charid, month=None, year=None):
     data_time = [list(data_time.keys()), list(data_time.values()),
                  ['rgba({}, {}, {}, 1)'.format(random.randint(0, 255),random.randint(0, 255), random.randint(0, 255))]]
 
-    ctx = {'term': term, 'character': character.character_name, 'month': month, 'year': year,
-           'data_ship_type': data_ship_type, 'data_time': data_time, 'fats': fats}
+    context = {
+        'term': term,
+        'character': character.character_name,
+        'month': month,
+        'year': year,
+        'data_ship_type': data_ship_type,
+        'data_time': data_time,
+        'fats': fats
+    }
 
-    return render(request, 'imicusfat/char_stat.html', ctx)
+    logger.info(
+        'Character statistics called by %s',
+        request.user
+    )
+
+    return render(request, 'imicusfat/char_stat.html', context)
 
 
 @login_required()
@@ -165,6 +200,7 @@ def stats_corp(request, corpid, month=None, year=None):
             return redirect('imicusfat:imicusfat_view')
 
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
+    corp_name = corp.corporation_name
 
     if not month and not year:
         year = datetime.now().year
@@ -176,9 +212,16 @@ def stats_corp(request, corpid, month=None, year=None):
             if corp_fats is not 0:
                 months.append((i, corp_fats))
 
-        ctx = {'term': term, 'corporation': corp.corporation_name, 'months': months, 'corpid': corpid, 'year': year,  'type': 0}
+        context = {
+            'term': term,
+            'corporation': corp.corporation_name,
+            'months': months,
+            'corpid': corpid,
+            'year': year,
+            'type': 0
+        }
 
-        return render(request, 'imicusfat/date_select.html', ctx)
+        return render(request, 'imicusfat/date_select.html', context)
 
     fats = IFat.objects.filter(ifatlink__ifattime__month=month, ifatlink__ifattime__year=year, character__corporation_id=corpid)
     characters = EveCharacter.objects.filter(corporation_id=corpid)
@@ -253,10 +296,24 @@ def stats_corp(request, corpid, month=None, year=None):
         fat_c = fats.filter(character_id=char.id).count()
         chars[char.character_name] = (fat_c, char.character_id)
 
-    ctx = {'term': term, 'corporation': corp.corporation_name, 'month': month, 'year': year,
-           'data_stacked': data_stacked, 'data_time': data_time, 'data_weekday': data_weekday, 'chars': chars}
+    context = {
+        'term': term,
+        'corporation': corp.corporation_name,
+        'month': month,
+        'year': year,
+        'data_stacked': data_stacked,
+        'data_time': data_time,
+        'data_weekday': data_weekday,
+        'chars': chars
+    }
 
-    return render(request, 'imicusfat/corp_stat.html', ctx)
+    logger.info(
+        'Corporation statistics for %s called by %s',
+        corp_name,
+        request.user
+    )
+
+    return render(request, 'imicusfat/corp_stat.html', context)
 
 
 @login_required()
@@ -267,10 +324,10 @@ def stats_alliance(request, allianceid, month=None, year=None):
 
     if allianceid is not None:
         ally = EveAllianceInfo.objects.get(alliance_id=allianceid)
-        name = ally.alliance_name
+        alliance_name = ally.alliance_name
     else:
         ally = None
-        name = "No Alliance"
+        alliance_name = "No Alliance"
 
     if not month and not year:
         year = datetime.now().year
@@ -282,9 +339,16 @@ def stats_alliance(request, allianceid, month=None, year=None):
             if ally_fats is not 0:
                 months.append((i, ally_fats))
 
-        ctx = {'term': term, 'corporation': name, 'months': months, 'corpid': allianceid, 'year': year, 'type': 1}
+        context = {
+            'term': term,
+            'alliance': alliance_name,
+            'months': months,
+            'corpid': allianceid,
+            'year': year,
+            'type': 1
+        }
 
-        return render(request, 'imicusfat/date_select.html', ctx)
+        return render(request, 'imicusfat/date_select.html', context)
 
     if not month or not year:
         request.session['msg'] = ('danger', 'Date information incomplete.')
@@ -404,28 +468,66 @@ def stats_alliance(request, allianceid, month=None, year=None):
 
     corps = OrderedDict(sorted(corps.items(), key=lambda x: x[1][2], reverse=True))
 
-    ctx = {'term': term, 'alliance': name, 'month': month, 'year': year, 'data_stacked': data_stacked,
-           'data_avgs': data_avgs, 'data_time': data_time, 'data_weekday': data_weekday, 'corps': corps,
-           'data_ship_type': data_ship_type}
+    context = {
+        'term': term,
+        'alliance': alliance_name,
+        'month': month,
+        'year': year,
+        'data_stacked': data_stacked,
+        'data_avgs': data_avgs,
+        'data_time': data_time,
+        'data_weekday': data_weekday,
+        'corps': corps,
+        'data_ship_type': data_ship_type
+    }
 
-    return render(request, 'imicusfat/ally_stat.html', ctx)
+    logger.info(
+        'Alliance statistics for %s called by %s',
+        alliance_name,
+        request.user
+    )
+
+    return render(request, 'imicusfat/ally_stat.html', context)
 
 
 @login_required()
 def links(request):
+
+    msg = None
+
+    if 'msg' in request.session:
+        msg = request.session.pop('msg')
+
     links = IFatLink.objects.filter(ifat__deleted_at__isnull=True).order_by(
         '-ifattime').annotate(number_of_fats=Count('ifat'))
-    ctx = {'term': term, 'links': links}
 
-    return render(request, 'imicusfat/fat_list.html', ctx)
+    context = {
+        'term': term,
+        'links': links,
+        'msg': msg
+    }
+
+    logger.info(
+        'FAT link list called by %s',
+        request.user
+    )
+
+    return render(request, 'imicusfat/fat_list.html', context)
 
 
 @login_required()
 @permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.add_ifatlink'))
 def link_add(request):
-    ctx = {'term': term}
+    context = {
+        'term': term
+    }
 
-    return render(request, 'imicusfat/addlink.html', ctx)
+    logger.info(
+        'Add FAT link view called by %s',
+        request.user
+    )
+
+    return render(request, 'imicusfat/addlink.html', context)
 
 
 @login_required()
@@ -447,6 +549,14 @@ def link_create_click(request):
             dur.save()
 
             request.session['{}-creation-code'.format(hash)] = 202
+
+            logger.info(
+                'FAT link %s with name %s and a duration of %s minutes was created by %s',
+                hash,
+                form.cleaned_data['name'],
+                form.cleaned_data['duration'],
+                request.user
+            )
 
             return redirect('imicusfat:link_edit', hash=hash)
         else:
@@ -471,7 +581,6 @@ def link_create_esi(request, token):
     link.save()
 
     # Check if there is a fleet
-    # c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
     try:
         requiredScopes = ['esi-fleets.read_fleet.v1']
         esiToken = Token.get_token(token.character_id, requiredScopes)
@@ -482,22 +591,25 @@ def link_create_esi(request, token):
         ).result()
 
         try:
-            # fleet = c.Fleets.get_fleets_fleet_id(fleet_id=f['fleet_id']).result()
-            # m = c.Fleets.get_fleets_fleet_id_members(fleet_id=f['fleet_id']).result()
-
             fleet = esi.client.Fleets.get_fleets_fleet_id(
-                fleet_id=f['fleet_id'],
+                fleet_id = f['fleet_id'],
                 token = esiToken.valid_access_token()
             ).result()
 
             m = esi.client.Fleets.get_fleets_fleet_id_members(
-                fleet_id=f['fleet_id'],
+                fleet_id = f['fleet_id'],
                 token = esiToken.valid_access_token()
             ).result()
 
             process_fats.delay(m, 'eve', hash)
 
             request.session['{}-creation-code'.format(hash)] = 200
+
+            logger.info(
+                'ESI FAT link %s created by %s',
+                hash,
+                request.user
+            )
 
             return redirect('imicusfat:link_edit', hash=hash)
         except Exception:
@@ -566,6 +678,13 @@ def click_link(request, token, hash=None):
                 request.session['msg'] = ['success', ('{} registered for {} at {}'.format(term,
                                                                                           character.character_name,
                                                                                           name))]
+
+                logger.info(
+                    'Fleetparticipation for fleet %s registered for pilot %s',
+                    name,
+                    character.character_name
+                )
+
                 return redirect('imicusfat:imicusfat_view')
             except Exception:
                 request.session['msg'] = ['warning', ('A {} already exists for the selected character ({}) and fleet'
@@ -648,10 +767,23 @@ def edit_link(request, hash=None):
 
         flatlist = "\r\n".join(flatlist)
 
-    ctx = {'term': term, 'form': FatLinkForm, 'msg': msg, 'link': link, 'fats': fats, 'flatlist': flatlist,
-           'debug': debug}
+    context = {
+        'term': term,
+        'form': FatLinkForm,
+        'msg': msg,
+        'link': link,
+        'fats': fats,
+        'flatlist': flatlist,
+        'debug': debug
+    }
 
-    return render(request, 'imicusfat/fleet_edit.html', ctx)
+    logger.info(
+        'FAT link %s edited by %s',
+        hash,
+        request.user
+    )
+
+    return render(request, 'imicusfat/fleet_edit.html', context)
 
 @login_required()
 @permissions_required(('imicusfat.manage_imicusfat', 'imicusfat.delete_ifatlink'))
@@ -673,7 +805,19 @@ def del_link(request, hash=None):
     DelLog(remover=request.user, deltype=0, string=link.__str__()).save()
     request.session['msg'] = ['success', 'The {0}Link ({1}) and all associated {0}s have been successfully deleted.'.format(term, hash)]
 
-    return redirect('imicusfat:imicusfat_view')
+    logger.info(
+        'FAT link %s deleted by %s',
+        hash,
+        request.user
+    )
+
+    context = {
+        'msg': request.session['msg']
+    }
+
+    # return render(request, 'imicusfat/fat_list.html', context)
+
+    return redirect('imicusfat:links')
 
 
 @login_required()
@@ -697,5 +841,11 @@ def del_fat(request, hash, fat):
 
     DelLog(remover=request.user, deltype=1, string=fat.__str__())
     request.session['msg'] = ['success', 'The {0} for {0} from link {1} has been successfully deleted.'.format(term, hash)]
+
+    logger.info(
+        'FAT %s deleted by %s',
+        fat,
+        request.user
+    )
 
     return redirect('imicusfat:imicusfat_view')
