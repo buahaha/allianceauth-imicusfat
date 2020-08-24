@@ -606,9 +606,11 @@ def link_create_click(request):
             hash = get_random_string(length=30)
             link = IFatLink()
             link.fleet = form.cleaned_data["name"]
-            if form.cleaned_data["type"] is not None and form.cleaned_data["type"] != -1:
-                link.link_type = IFatLinkType.objects.get(
-                    id=form.cleaned_data["type"])
+            if (
+                form.cleaned_data["type"] is not None
+                and form.cleaned_data["type"] != -1
+            ):
+                link.link_type = IFatLinkType.objects.get(id=form.cleaned_data["type"])
 
             link.creator = request.user
             link.hash = hash
@@ -700,8 +702,7 @@ def create_esi_fat(request):
             fleet=form.cleaned_data["name"], creator=request.user, hash=hash
         )
         if form.cleaned_data["type"] is not None and form.cleaned_data["type"] != -1:
-                link.link_type = IFatLinkType.objects.get(
-                    id=form.cleaned_data["type"])
+            link.link_type = IFatLinkType.objects.get(id=form.cleaned_data["type"])
         link.save()
         return redirect("imicusfat:link_create_esi", hash=hash)
     else:
