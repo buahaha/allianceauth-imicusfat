@@ -13,7 +13,7 @@ from collections import OrderedDict
 
 from datetime import datetime, timedelta
 
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
@@ -574,7 +574,7 @@ def links(request):
     links = (
         IFatLink.objects.all()
         .order_by("-ifattime")
-        .annotate(number_of_fats=Count("ifat"))
+        .annotate(number_of_fats=Count("ifat", filter=Q(ifat__deleted_at__isnull=True)))
     )
 
     context = {"term": term, "links": links, "msg": msg}
