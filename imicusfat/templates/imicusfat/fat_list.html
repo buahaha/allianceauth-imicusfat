@@ -24,6 +24,7 @@
         <table class="table" id="link-list">
             <thead>
                 <th>Fleet Name</th>
+                <th>Fleet Type</th>
                 <th>Creator</th>
                 <th>EVE Time</th>
                 <th># of {{ term }}s</th>
@@ -34,7 +35,20 @@
             <tbody>
                 {% for link in links %}
                     <tr>
-                        <td>{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}</td>
+                        <td>
+                            {% if link.fleet %}
+                                {{ link.fleet }}
+                            {% else %}
+                                {{ link.hash }}
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if link.link_type %}
+                                {{ link.link_type.name }}
+                            {% endif %}
+                        </td>
+
                         <td>{{ link.creator.profile.main_character.character_name }}</td>
                         <td>{{ link.ifattime|date:"Y-M-d, H:i" }}</td>
                         <td>{{ link.number_of_fats }}</td>
