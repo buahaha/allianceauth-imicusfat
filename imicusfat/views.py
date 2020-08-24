@@ -13,7 +13,7 @@ from collections import OrderedDict
 
 from datetime import datetime, timedelta
 
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
@@ -574,7 +574,7 @@ def links(request):
     links = (
         IFatLink.objects.all()
         .order_by("-ifattime")
-        .annotate(number_of_fats=Count("ifat"))
+        .annotate(number_of_fats=Count("ifat", filter=Q(ifat__deleted_at__isnull=True)))
     )
 
     context = {"term": term, "links": links, "msg": msg}
@@ -606,7 +606,10 @@ def link_create_click(request):
             hash = get_random_string(length=30)
             link = IFatLink()
             link.fleet = form.cleaned_data["name"]
-            if form.cleaned_data["type"] is not None:
+            if (
+                form.cleaned_data["type"] is not None
+                and form.cleaned_data["type"] != -1
+            ):
                 link.link_type = IFatLinkType.objects.get(id=form.cleaned_data["type"])
 
             link.creator = request.user
@@ -698,7 +701,7 @@ def create_esi_fat(request):
         link = IFatLink(
             fleet=form.cleaned_data["name"], creator=request.user, hash=hash
         )
-        if form.cleaned_data["type"] is not None:
+        if form.cleaned_data["type"] is not None and form.cleaned_data["type"] != -1:
             link.link_type = IFatLinkType.objects.get(id=form.cleaned_data["type"])
         link.save()
         return redirect("imicusfat:link_create_esi", hash=hash)
