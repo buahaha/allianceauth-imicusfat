@@ -5,6 +5,6 @@ from . import __version__
 
 
 class ImicusfatConfig(AppConfig):
-    name = 'imicusfat'
+    name = "imicusfat"
     label = "imicusfat"
     verbose_name = f"ImicusFAT v{__version__}"

@@ -6,22 +6,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('imicusfat', '0004_clickfatduration'),
+        ("imicusfat", "0004_clickfatduration"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ifatlink',
-            options={'ordering': ('-ifattime',), 'permissions': (('manage_imicusfat', 'Can manage the imicusfat module'), ('stats_corp_own', 'Can see own corp stats'), ('stats_corp_other', 'Can see stats of other corps.'), ('stats_char_other', 'Can see stats of characters not associated with current user.'))},
+            name="ifatlink",
+            options={
+                "ordering": ("-ifattime",),
+                "permissions": (
+                    ("manage_imicusfat", "Can manage the imicusfat module"),
+                    ("stats_corp_own", "Can see own corp stats"),
+                    ("stats_corp_other", "Can see stats of other corps."),
+                    (
+                        "stats_char_other",
+                        "Can see stats of characters not associated with current user.",
+                    ),
+                ),
+            },
         ),
         migrations.AddField(
-            model_name='ifat',
-            name='deleted_at',
+            model_name="ifat",
+            name="deleted_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='ifatlink',
-            name='deleted_at',
+            model_name="ifatlink",
+            name="deleted_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]
