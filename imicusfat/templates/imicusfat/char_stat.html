@@ -92,7 +92,7 @@
                                 </td>
                                 <td>{{ fat.system }}</td>
                                 <td>{{ fat.shiptype }}</td>
-                                <td data-sort='{{ link.ifattime|date:"Y-m-d H:i" }}'>{{ fat.ifatlink.ifattime|date:"Y-M-d, H:i" }}</td>
+                                <td data-sort='{{ fat.ifatlink.ifattime|date:"Y-m-d H:i" }}'>{{ fat.ifatlink.ifattime|date:"Y-M-d, H:i" }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -133,7 +133,7 @@
         $.fn.dataTable.moment('YYYY-MMM-D, HH:mm');
 
         $('#raw-data').DataTable({
-            "order": [[ 3, "desc" ]]
+            "order": [[ 4, "desc" ]]
         });
     });
 {% endblock %}
