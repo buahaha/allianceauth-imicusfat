@@ -1,20 +1,28 @@
-from django.db import models
-from django.contrib.auth.models import User
+# -*- coding: utf-8 -*-
 from allianceauth.eveonline.models import EveCharacter
-from django.utils import timezone
+from allianceauth.services.hooks import get_extension_logger
+
+from django.contrib.auth.models import User
+from django.db import models
 from django.db.models.query import QuerySet
+from django.utils import timezone
+
+from . import __title__
+from .utils import LoggerAddTag
+
+
+logger = LoggerAddTag(get_extension_logger(__name__), __title__)
+
 
 # Create your models here.
-
-
 def get_sentinel_user():
-    return User.objects.get_or_create(username='deleted')[0]
+    return User.objects.get_or_create(username="deleted")[0]
 
 
-#Abstract model to allow for soft deletion
+# Abstract model to allow for soft deletion
 class SoftDeletionManager(models.Manager):
     def __init__(self, *args, **kwargs):
-        self.alive_only = kwargs.pop('alive_only', True)
+        self.alive_only = kwargs.pop("alive_only", True)
         super(SoftDeletionManager, self).__init__(*args, **kwargs)
 
     def get_queryset(self):
@@ -57,6 +65,16 @@ class SoftDeletionQuerySet(QuerySet):
         return self.exclude(deleted_at=None)
 
 
+# Fat Link type (StratOp, ADM, HD etc)
+class IFatLinkType(SoftDeletionModel):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=254)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return "{} - {}".format(self.id, self.name)
+
+
 # FatLink Model
 class IFatLink(SoftDeletionModel):
     ifattime = models.DateTimeField(default=timezone.now)
@@ -64,16 +82,22 @@ class IFatLink(SoftDeletionModel):
     hash = models.CharField(max_length=254)
     creator = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
     deleted_at = models.DateTimeField(blank=True, null=True)
+    link_type = models.ForeignKey(IFatLinkType, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.hash[6:]
 
     class Meta:
-        permissions = (('manage_imicusfat', 'Can manage the imicusfat module'),
-                       ('stats_corp_own', 'Can see own corp stats'),
-                       ('stats_corp_other', 'Can see stats of other corps.'),
-                       ('stats_char_other', 'Can see stats of characters not associated with current user.'))
-        ordering = ('-ifattime',)
+        permissions = (
+            ("manage_imicusfat", "Can manage the imicusfat module"),
+            ("stats_corp_own", "Can see own corp stats"),
+            ("stats_corp_other", "Can see stats of other corps."),
+            (
+                "stats_char_other",
+                "Can see stats of characters not associated with current user.",
+            ),
+        )
+        ordering = ("-ifattime",)
 
 
 # Clickable Link Duration Model
@@ -91,8 +115,8 @@ class IFat(SoftDeletionModel):
     deleted_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        unique_together = (('character', 'ifatlink'),)
-        
+        unique_together = (("character", "ifatlink"),)
+
     def __str__(self):
         return "{} - {}".format(self.ifatlink, self.character)
 
@@ -102,7 +126,7 @@ class ManualIFat(models.Model):
     creator = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
     ifatlink = models.ForeignKey(IFatLink, on_delete=models.CASCADE)
     character = models.ForeignKey(EveCharacter, on_delete=models.CASCADE)
-    
+
     # Add property for getting the user for a character.
 
     def __str__(self):
@@ -118,9 +142,9 @@ class DelLog(models.Model):
 
     def delt_to_str(self):
         if self.deltype == 0:
-            return 'IFatLink'
+            return "IFatLink"
         else:
-            return 'IFat'
+            return "IFat"
 
     def __str__(self):
-        return '{}/{} - {}'.format(self.delt_to_str(), self.string, self.remover)
+        return "{}/{} - {}".format(self.delt_to_str(), self.string, self.remover)

@@ -9,19 +9,45 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('eveonline', '0010_alliance_ticker'),
+        ("eveonline", "0010_alliance_ticker"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('imicusfat', '0001_initial'),
+        ("imicusfat", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ManualIFat',
+            name="ManualIFat",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('character', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='eveonline.EveCharacter')),
-                ('creator', models.ForeignKey(on_delete=models.SET(imicusfat.models.get_sentinel_user), to=settings.AUTH_USER_MODEL)),
-                ('ifatlink', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='imicusfat.IFatLink')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "character",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="eveonline.EveCharacter",
+                    ),
+                ),
+                (
+                    "creator",
+                    models.ForeignKey(
+                        on_delete=models.SET(imicusfat.models.get_sentinel_user),
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "ifatlink",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="imicusfat.IFatLink",
+                    ),
+                ),
             ],
         ),
     ]

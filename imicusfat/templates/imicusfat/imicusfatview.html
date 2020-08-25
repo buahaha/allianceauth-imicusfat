@@ -53,6 +53,7 @@
                                         <table class="table">
                                             <thead>
                                                 <th>Fleet Name</th>
+                                                <th>Fleet Type</th>
                                                 <th>Location</th>
                                                 <th>Ship</th>
                                                 <th>EVE Time</th>
@@ -60,7 +61,18 @@
                                             <tbody>
                                                 {% for ifat in char|slice:"1:" %}
                                                     <tr>
-                                                        <td>{% if ifat.ifatlink.fleet %}{{ ifat.ifatlink.fleet }}{% else %}{{ ifat.ifatlink.hash }}{% endif %}</td>
+                                                        <td>
+                                                            {% if ifat.ifatlink.fleet %}
+                                                                {{ ifat.ifatlink.fleet }}
+                                                            {% else %}
+                                                                {{ ifat.ifatlink.hash }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if ifat.ifatlink.link_type %}
+                                                                {{ ifat.ifatlink.link_type.name }}
+                                                            {% endif %}
+                                                        </td>
                                                         <td>{{ ifat.system }}</td>
                                                         <td>{{ ifat.shiptype }}</td>
                                                         <td>{{ ifat.ifatlink.ifattime|date:"Y-M-d, H:i" }}</td>
@@ -127,7 +139,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -143,7 +155,7 @@
         var button = $(event.relatedTarget) // Button that triggered the modal
         var url = button.data('url') // Extract info from data-* attributes
         var name = button.data('name');
-       
+
         var modal = $(this)
         modal.find('#fat-link').attr("href", url)
         modal.find('.modal-body').text('Are you sure you want to delete ' + name + '?');

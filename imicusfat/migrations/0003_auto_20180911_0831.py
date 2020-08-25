@@ -9,44 +9,62 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('imicusfat', '0002_manualfat'),
+        ("imicusfat", "0002_manualfat"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='DelLog',
+            name="DelLog",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('deltype', models.BooleanField(default=0)),
-                ('string', models.CharField(max_length=100)),
-                ('remover', models.ForeignKey(on_delete=models.SET(imicusfat.models.get_sentinel_user), to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("deltype", models.BooleanField(default=0)),
+                ("string", models.CharField(max_length=100)),
+                (
+                    "remover",
+                    models.ForeignKey(
+                        on_delete=models.SET(imicusfat.models.get_sentinel_user),
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AlterModelOptions(
-            name='ifatlink',
-            options={'permissions': (('manage_imicusfat', 'Can manage the imicusfat module'), ('stats_corp_own', 'Can see own corp stats'), ('stats_corp_other', 'Can see stats of other corps.'), ('stats_char_other', 'Can see stats of characters not associated with current user.'))},
+            name="ifatlink",
+            options={
+                "permissions": (
+                    ("manage_imicusfat", "Can manage the imicusfat module"),
+                    ("stats_corp_own", "Can see own corp stats"),
+                    ("stats_corp_other", "Can see stats of other corps."),
+                    (
+                        "stats_char_other",
+                        "Can see stats of characters not associated with current user.",
+                    ),
+                )
+            },
         ),
-        migrations.RemoveField(
-            model_name='ifat',
-            name='station',
-        ),
-        migrations.RemoveField(
-            model_name='ifat',
-            name='user',
-        ),
+        migrations.RemoveField(model_name="ifat", name="station",),
+        migrations.RemoveField(model_name="ifat", name="user",),
         migrations.AlterField(
-            model_name='ifat',
-            name='shiptype',
+            model_name="ifat",
+            name="shiptype",
             field=models.CharField(max_length=100, null=True),
         ),
         migrations.AlterField(
-            model_name='ifat',
-            name='system',
+            model_name="ifat",
+            name="system",
             field=models.CharField(max_length=100, null=True),
         ),
         migrations.AlterField(
-            model_name='ifatlink',
-            name='fleet',
+            model_name="ifatlink",
+            name="fleet",
             field=models.CharField(max_length=254, null=True),
         ),
     ]

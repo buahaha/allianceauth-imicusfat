@@ -75,6 +75,7 @@
                     <table class="table" id="raw-data">
                         <thead>
                             <th>Name</th>
+                            <th>Fleet Type</th>
                             <th>Location</th>
                             <th>Ship</th>
                             <th>EVE Time</th>
@@ -84,9 +85,14 @@
                         {% for fat in fats %}
                             <tr>
                                 <td>{% if fat.ifatlink.fleet %}{{ fat.ifatlink.fleet }}{% else %}{{ fat.ifatlink.hash }}{% endif %}</td>
+                                <td>
+                                    {% if fat.ifatlink.link_type %}
+                                        {{ fat.ifatlink.link_type.name }}
+                                    {% endif %}
+                                </td>
                                 <td>{{ fat.system }}</td>
                                 <td>{{ fat.shiptype }}</td>
-                                <td>{{ fat.ifatlink.ifattime|date:"Y-M-d, H:i" }}</td>
+                                <td data-sort='{{ fat.ifatlink.ifattime|date:"Y-m-d H:i" }}'>{{ fat.ifatlink.ifattime|date:"Y-M-d, H:i" }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -127,7 +133,7 @@
         $.fn.dataTable.moment('YYYY-MMM-D, HH:mm');
 
         $('#raw-data').DataTable({
-            "order": [[ 2, "desc" ]]
+            "order": [[ 4, "desc" ]]
         });
     });
 {% endblock %}

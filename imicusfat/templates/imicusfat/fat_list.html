@@ -11,9 +11,20 @@
         {% include "imicusfat/menu.html" %}
         <h2>{% trans "All" %} {{ term }}{% trans "Links" %}</h2>
 
+        {% if msg %}
+            <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                    <span aria-hidden="true">&times</span>
+                </button>
+                {% if msg.0 != 'warning' %}<h4>{% if msg.0 == 'danger' %}Oh No!{% elif msg.0 == 'success' %}Success!{% endif %}</h4>{% endif %}
+                <p>{{ msg.1 }}</p>
+            </div>
+        {% endif %}
+
         <table class="table" id="link-list">
             <thead>
                 <th>Fleet Name</th>
+                <th>Fleet Type</th>
                 <th>Creator</th>
                 <th>EVE Time</th>
                 <th># of {{ term }}s</th>
@@ -24,17 +35,38 @@
             <tbody>
                 {% for link in links %}
                     <tr>
-                        <td>{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}</td>
-                        <td>{{ link.creator.profile.main_character.character_name }}</td>
-                        <td>{{ link.ifattime|date:"Y-M-d, H:i" }}</td>
-                        <td>{{ link.number_of_fats }}</td>
-                        <td>{% if perms.imicusfat.change_ifatlink %}<a class="btn btn-info"
-                                href="{% url 'imicusfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}
+                        <td>
+                            {% if link.fleet %}
+                                {{ link.fleet }}
+                            {% else %}
+                                {{ link.hash }}
+                            {% endif %}
                         </td>
-                        <td>{% if perms.imicusfat.delete_ifatlink %}<a class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"
+
+                        <td>
+                            {% if link.link_type %}
+                                {{ link.link_type.name }}
+                            {% endif %}
+                        </td>
+
+                        <td>{{ link.creator.profile.main_character.character_name }}</td>
+                        <td data-sort='{{ link.ifattime|date:"Y-m-d H:i" }}'>{{ link.ifattime|date:"Y-M-d, H:i" }}</td>
+                        <td>{{ link.number_of_fats }}</td>
+                        <td>
+                            {% if perms.imicusfat.change_ifatlink %}
+                            <a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if perms.imicusfat.delete_ifatlink %}
+                            <a class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"
                                 data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_delete' link.hash %}"
                                 data-name="{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}">
-                                <span class="glyphicon glyphicon-trash"></span></a>{% endif %}
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -44,8 +76,7 @@
 
 
     <!-- Delete FAT link Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle"
-        aria-hidden="true">
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -55,7 +86,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -97,7 +128,7 @@
         $.fn.dataTable.moment('YYYY-MMM-D, HH:mm');
 
         $('#link-list').DataTable( {
-            "order": [[ 2, "desc" ]]
+            "order": [[ 3, "desc" ]]
         } );
     });
 
@@ -105,7 +136,7 @@
         var button = $(event.relatedTarget) // Button that triggered the modal
         var url = button.data('url') // Extract info from data-* attributes
         var name = button.data('name');
-       
+
         var modal = $(this)
         modal.find('#fat-link').attr("href", url)
         modal.find('.modal-body').text('Are you sure you want to delete ' + name + '?');
