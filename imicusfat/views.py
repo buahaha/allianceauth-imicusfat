@@ -885,12 +885,16 @@ def edit_link(request, hash=None):
         else:
             request.session["{}-task-code".format(hash)] = 0
 
-    msg = None
+    msg_code = None
+    message = None
 
-    if "{}-creation-code".format(hash) in request.session:
-        msg = request.session.pop("{}-creation-code".format(hash))
+    if "msg" in request.session:
+        msg_code = 999
+        message = request.session.pop("msg")
+    elif "{}-creation-code".format(hash) in request.session:
+        msg_code = request.session.pop("{}-creation-code".format(hash))
     elif "{}-task-code".format(hash) in request.session:
-        msg = request.session.pop("{}-task-code".format(hash))
+        msg_code = request.session.pop("{}-task-code".format(hash))
 
     fats = IFat.objects.filter(ifatlink=link)
     flatlist = None
@@ -907,7 +911,8 @@ def edit_link(request, hash=None):
     context = {
         "term": term,
         "form": FatLinkForm,
-        "msg": msg,
+        "msg_code": msg_code,
+        "message": message,
         "link": link,
         "fats": fats,
         "flatlist": flatlist,
@@ -949,10 +954,6 @@ def del_link(request, hash=None):
 
     logger.info("FAT link %s deleted by %s", hash, request.user)
 
-    context = {"msg": request.session["msg"]}
-
-    # return render(request, 'imicusfat/fat_list.html', context)
-
     return redirect("imicusfat:links")
 
 
@@ -984,11 +985,9 @@ def del_fat(request, hash, fat):
     DelLog(remover=request.user, deltype=1, string=fat.__str__())
     request.session["msg"] = [
         "success",
-        "The {0} for {0} from link {1} has been successfully deleted.".format(
-            term, hash
-        ),
+        "The {0} from link {1} has been successfully deleted.".format(term, hash),
     ]
 
     logger.info("FAT %s deleted by %s", fat, request.user)
 
-    return redirect("imicusfat:imicusfat_view")
+    return redirect("imicusfat:link_edit", hash=hash)

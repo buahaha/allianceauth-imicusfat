@@ -10,140 +10,178 @@
         <div class="col-lg-12">
             <br>
             {% include "imicusfat/menu.html" %}
-            {% if msg == 200 %}
+
+            {% if msg_code == 200 %}
                 <div class="alert alert-success alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
                         <span aria-hidden="true">&times</span>
                     </button>
+
                     <h4>Success!</h4>
+
                     <p>&#9642; {{ term }}Link Created!</p>
                     <p>&#9642; {{ term }}s have been queued, they may take a few mins to show up.</p>
                 </div>
-            {% elif msg == 403 %}
+            {% elif msg_code == 403 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
                         <span aria-hidden="true">&times</span>
                     </button>
+
                     <h4>Not Fleet Boss!</h4>
+
                     <p>&#9642; {{ term }}Link created. Please upload a flatlist using the flatlist tab to generate {{ term }}s for fleet members.</p>
                 </div>
-            {% elif msg == 404 %}
+            {% elif msg_code == 404 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
                         <span aria-hidden="true">&times</span>
                     </button>
+
                     <h4>Not in Fleet!</h4>
+
                     <p>&#9642; {{ term }}Link created. The character used to create this {{ term }}Link is not in a fleet. In order to generate {{ term }}s for fleet members, please upload a flatlist using the flatlist tab.</p>
                 </div>
-            {% elif msg == 0 %}
+            {% elif msg_code == 0 %}
             <div class="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times</span>
                 </button>
+
                 <h4>Oh No!</h4>
+
                 <p>Something went wrong!</p>
             </div>
-            {% elif msg == 202 %}
+            {% elif msg_code == 202 %}
             <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times</span>
                 </button>
+
                 <h4>Success!</h4>
+
                 <p>&#9642; Clickable {{ term }}Link Created!</p>
                 <p>&#9642; Make sure to give your fleet members the following link to click so that they get credit for this fleet. </p>
                 <p>&#9642;
                     Link:
-                    <i>{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}
+                    <i>
+                        {{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}
                         <a id="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
                     </i>
-                    <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title="Copied!"
-                        data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}">
+
+                    <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title="Copied!" data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}">
                         Copy me!
                     </button>
                 </p>
             </div>
-            {% elif msg == 1 %}
+            {% elif msg_code == 1 %}
             <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times</span>
                 </button>
+
                 <h4>Success!</h4>
+
                 <p>Fleet name successfully changed.</p>
             </div>
-            {% elif msg == 2 %}
+            {% elif msg_code == 2 %}
             <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times</span>
                 </button>
+
                 <h4>Success!</h4>
+
                 <p>&#9642; {{ term }}s successfully queued from flatlist.</p>
                 <p>&#9642; {{ term }}s may take a few mins to show up.</p>
             </div>
-            {% elif msg == 3 %}
+            {% elif msg_code == 3 %}
                 <div class="alert alert-success alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
                         <span aria-hidden="true">&times</span>
                     </button>
+
                     <h4>Success!</h4>
+
                     <p>Manual {{ term }} processed.</p>
                 </div>
-            {% elif msg == 4 %}
+            {% elif msg_code == 4 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
                         <span aria-hidden="true">&times</span>
                     </button>
+
                     <h4>Oh No!</h4>
+
                     <p>Manual {{ term }} processing failed! The character name you entered was not found.</p>
                 </div>
+            {% elif msg_code == 999 %}
+                <div class="alert alert-{{ message.0 }} alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                        <span aria-hidden="true">&times</span>
+                    </button>
+                    {% if message.0 != 'warning' %}<h4>{% if message.0 == 'danger' %}Oh No!{% elif message.0 == 'success' %}Success!{% endif %}</h4>{% endif %}
+                    <p>{{ message.1 }}</p>
+                </div>
             {% endif %}
+
             {% if debug %}
                 <div class="alert alert-success alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
                         <span aria-hidden="true">&times</span>
                     </button>
+
                     <p>{{ debug }}</p>
                 </div>
             {% endif %}
+
             <h2>{% trans "Edit" %} {{ term }}{% trans "Link" %}</h2>
-                <div class="col-md-12">
-                    <div class="row">
-                        <form class="form" role="form" action="" method="POST">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Name" name="fleet" id="fleet" {% if link.fleet %}value="{{ link.fleet }}" {% endif %}>
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-primary" type="submit" name="set_name">Set Name</button>
-                                        </span>
-                                    </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <form class="form" role="form" action="" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Name" name="fleet" id="fleet" {% if link.fleet %}value="{{ link.fleet }}" {% endif %}>
+
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="submit" name="set_name">Set Name</button>
+                                    </span>
                                 </div>
                             </div>
-                        </form>
-                        <div class="col-md-2">Creator: {{ link.creator.profile.main_character.character_name }}</div>
-                        <div class="col-md-2 col-md-offset-8">Time: {{ link.ifattime }}</div>
-                        <div class="col-md-10">
-                            <p>Link:
-                                <i>{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}
-                                    <a id="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
-                                </i>
-                                <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title="Copied!"
-                                    data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}">
-                                    Copy me!
-                                </button>
-                            </p>
                         </div>
+                    </form>
+
+                    <div class="col-md-2">Creator: {{ link.creator.profile.main_character.character_name }}</div>
+                    <div class="col-md-2 col-md-offset-8">Time: {{ link.ifattime }}</div>
+
+                    <div class="col-md-10">
+                        <p>Link:
+                            <i>{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}
+                                <a id="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
+                            </i>
+
+                            <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title="Copied!"
+                                data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}">
+                                Copy me!
+                            </button>
+                        </p>
                     </div>
                 </div>
+            </div>
+
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" class="tab" href="#{{ term }}s">{{ term }}s</a></li>
                 <li><a data-toggle="tab" class="tab" href="#flatlist">Flat List</a></li>
                 <li>{% if perms.imicusfat.add_ifat %}<a data-toggle="tab" class="tab" href="#manualfat">Manual {{ term }}</a>{% endif %}</li>
             </ul>
+
             <div class="tab-content">
                 <div id="{{ term }}s" class="tab-pane fade in active panel-default">
                     <div class="panel-body">
                          <h4>{{ term }}s for this {{ term }}Link</h4>
+
                          <table class="table" id="fat-chars">
                              <thead>
                                 <th>Character</th>
@@ -151,30 +189,45 @@
                                 <th>Ship Type</th>
                                 <th>Utilities</th>
                              </thead>
+
                              <tbody>
                                 {% for fat in fats %}
                                     <tr>
                                         <td>{{ fat.character.character_name }}</td>
                                         <td>{{ fat.system }}</td>
                                         <td>{{ fat.shiptype }}</td>
-                                        <td>{% if perms.imicusfat.delete_fat %}<a class="btn btn-danger" href="{% url 'imicusfat:fat_delete' link.hash fat.id %}"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
+                                        <td>
+                                            {% if perms.imicusfat.delete_fat %}
+                                            <a class="btn btn-danger"
+                                                data-toggle="modal" data-target="#deleteModal"
+                                                data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:fat_delete' link.hash fat.id %}"
+                                                data-name="{% if fat.character.character_name %}{{ fat.character.character_name }}{% else %}this pilot{% endif %}">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </a>
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                 {% endfor %}
                              </tbody>
                          </table>
                     </div>
                 </div>
+
                 <div id="flatlist" class="tab-pane fade in panel-default">
                     <div class="panel-body">
                         <h4>Flat List Input</h4>
+
                         <p> Please keep in mind that processing flat lists may take a few minutes.</p>
+
                         {% if fats|length == 0 %}
                         <form class="form-signin" role="form" action="" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
                                 <textarea class="form-control" name="flatlist" rows="10" id="flatlist" required></textarea>
                             </div>
+
                             <br />
+
                             <button class="btn btn-primary btn-block" type="submit" name="submit_flatlist">Submit Flat List</button>
                         </form>
                         {% else %}
@@ -182,18 +235,25 @@
                             <div class="form-group">
                                 <textarea class="form-control" name="flatlist" rows="10" id="flatlist" readonly>{{ flatlist }}</textarea>
                             </div>
+
                             <br />
+
                             <button class="btn btn-primary btn-block disabled" type="button">Submit Flat List</button>
                         </form>
                         {% endif %}
                     </div>
                 </div>
+
                 <div id="manualfat" class="tab-pane fade in panel-default">
                     <div class="panel-body">
                         <h4>Manual {{ term }}</h4>
+
                         <p> Is someone missing from the list of {{ term }}s? Use this form to add them.
+
                         <br />
+
                         <strong>Note:</strong> This action is logged!</p>
+
                         <form class="form" role="form" action="" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
@@ -203,16 +263,19 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" id="location" name="system" placeholder="System">
                                     </div>
+
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" id="shiptype" name="shiptype" placeholder="Ship Type">
                                     </div>
                                 </div>
                             </div>
+
                             <button class="btn btn-primary btn-block" type="submit" name="manual_fat">Add Manual {{ term }}</button>
                         </form>
                     </div>
@@ -221,8 +284,29 @@
         </div>
     </div>
 
+    <!-- Delete FAT Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLongTitle">Delete FAT</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
 
+                <div class="modal-body"></div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+                    <a id="fat-link" class="btn btn-danger" role="button" href="">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
+
 {% block extra_javascript %}
     {% include 'bundles/datatables-js.html' %}
 
@@ -241,6 +325,16 @@
 
         clipboard.on('success', function(e) {
             $('.copy-btn').tooltip('show');
+        });
+
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var url = button.data('url') // Extract info from data-* attributes
+            var name = button.data('name');
+
+            var modal = $(this)
+            modal.find('#fat-link').attr("href", url)
+            modal.find('.modal-body').text('Are you sure you want to delete ' + name + '?');
         });
     });
 {% endblock %}
