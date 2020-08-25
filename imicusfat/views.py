@@ -35,10 +35,7 @@ import random
 
 logger = LoggerAddTag(get_extension_logger(__name__), __title__)
 
-if hasattr(settings, "FAT_AS_PAP"):
-    term = "PAP"
-else:
-    term = "FAT"
+term = "FAT"
 
 
 # Create your views here.
