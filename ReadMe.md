@@ -1,11 +1,11 @@
 # ImicusFAT
 
-An Improved FAT/PAP System for [Alliance Auth](https://gitlab.com/allianceauth/allianceauth).
+An Improved FAT/PAP System for [Alliance Auth](https://gitlab.com/allianceauth/allianceauth).<br>
+ImicusFAT will work alongside the built-in AA FAT System and bFAT. <br>
+Data does not share, however you can migrate their data to ImicusFAT, more information below.
 
 
 ## Installation
-
-ImicusFAT will work alongside the built-in AA FAT System.
 
 `pip install git+https://gitlab.com/evictus.iou/allianceauth-imicusfat.git`
 
@@ -41,12 +41,6 @@ For instructions, please see this link: https://dev.mysql.com/doc/refman/5.5/en/
 Restart Alliance Auth.
 
 
-## Alliance Auth Settings (local.py)
-#### PAPs vs. FATs... which do you prefer?
-Add the following line to your local.py settings if you would like to use PAP instead of FAT.
-```py
-FAT_AS_PAP = True
-```
 
 ## Credits
-• ImicusFAT • Developed and Maintained by @Aproia with @exiom and @ppfeufer • Based on [allianceauth-bfat](https://gitlab.com/colcrunch/allianceauth-bfat) by @colcrunch •
+• ImicusFAT • Developed and Maintained by @exiom with @Aproia and @ppfeufer • Based on [allianceauth-bfat](https://gitlab.com/colcrunch/allianceauth-bfat) by @colcrunch •
