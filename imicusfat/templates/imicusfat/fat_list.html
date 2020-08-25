@@ -9,7 +9,7 @@
     <div class="col-lg-12">
         <br>
         {% include "imicusfat/menu.html" %}
-        <h2>{% trans "All" %} {{ term }}{% trans "Links" %}</h2>
+        <h2>{% trans "All" %} FAT {% trans "Links" %}</h2>
 
         {% if msg %}
             <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
@@ -27,7 +27,7 @@
                 <th>Fleet Type</th>
                 <th>Creator</th>
                 <th>EVE Time</th>
-                <th># of {{ term }}s</th>
+                <th># of FATs</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </thead>

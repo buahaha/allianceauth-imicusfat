@@ -19,8 +19,8 @@
 
                     <h4>Success!</h4>
 
-                    <p>&#9642; {{ term }}Link Created!</p>
-                    <p>&#9642; {{ term }}s have been queued, they may take a few mins to show up.</p>
+                    <p>&#9642; FAT Link Created!</p>
+                    <p>&#9642; FATs have been queued, they may take a few mins to show up.</p>
                 </div>
             {% elif msg_code == 403 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
@@ -30,7 +30,7 @@
 
                     <h4>Not Fleet Boss!</h4>
 
-                    <p>&#9642; {{ term }}Link created. Please upload a flatlist using the flatlist tab to generate {{ term }}s for fleet members.</p>
+                    <p>&#9642; FAT Link created. Please upload a flatlist using the flatlist tab to generate FATs for fleet members.</p>
                 </div>
             {% elif msg_code == 404 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
@@ -40,7 +40,7 @@
 
                     <h4>Not in Fleet!</h4>
 
-                    <p>&#9642; {{ term }}Link created. The character used to create this {{ term }}Link is not in a fleet. In order to generate {{ term }}s for fleet members, please upload a flatlist using the flatlist tab.</p>
+                    <p>&#9642; FAT Link created. The character used to create this FAT Link is not in a fleet. In order to generate FATs for fleet members, please upload a flatlist using the flatlist tab.</p>
                 </div>
             {% elif msg_code == 0 %}
             <div class="alert alert-danger alert-dismissible" role="alert">
@@ -60,7 +60,7 @@
 
                 <h4>Success!</h4>
 
-                <p>&#9642; Clickable {{ term }}Link Created!</p>
+                <p>&#9642; Clickable FAT Link Created!</p>
                 <p>&#9642; Make sure to give your fleet members the following link to click so that they get credit for this fleet. </p>
                 <p>&#9642;
                     Link:
@@ -92,8 +92,8 @@
 
                 <h4>Success!</h4>
 
-                <p>&#9642; {{ term }}s successfully queued from flatlist.</p>
-                <p>&#9642; {{ term }}s may take a few mins to show up.</p>
+                <p>&#9642; FATs successfully queued from flatlist.</p>
+                <p>&#9642; FATs may take a few mins to show up.</p>
             </div>
             {% elif msg_code == 3 %}
                 <div class="alert alert-success alert-dismissible" role="alert">
@@ -103,7 +103,7 @@
 
                     <h4>Success!</h4>
 
-                    <p>Manual {{ term }} processed.</p>
+                    <p>Manual FAT processed.</p>
                 </div>
             {% elif msg_code == 4 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
@@ -113,7 +113,7 @@
 
                     <h4>Oh No!</h4>
 
-                    <p>Manual {{ term }} processing failed! The character name you entered was not found.</p>
+                    <p>Manual FAT processing failed! The character name you entered was not found.</p>
                 </div>
             {% elif msg_code == 999 %}
                 <div class="alert alert-{{ message.0 }} alert-dismissible" role="alert">
@@ -135,7 +135,7 @@
                 </div>
             {% endif %}
 
-            <h2>{% trans "Edit" %} {{ term }}{% trans "Link" %}</h2>
+            <h2>{% trans "Edit" %} FAT {% trans "Link" %}</h2>
             <div class="col-md-12">
                 <div class="row">
                     <form class="form" role="form" action="" method="POST">
@@ -172,15 +172,15 @@
             </div>
 
             <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" class="tab" href="#{{ term }}s">{{ term }}s</a></li>
+                <li class="active"><a data-toggle="tab" class="tab" href="#FATs">FATs</a></li>
                 <li><a data-toggle="tab" class="tab" href="#flatlist">Flat List</a></li>
-                <li>{% if perms.imicusfat.add_ifat %}<a data-toggle="tab" class="tab" href="#manualfat">Manual {{ term }}</a>{% endif %}</li>
+                <li>{% if perms.imicusfat.add_ifat %}<a data-toggle="tab" class="tab" href="#manualfat">Manual FAT</a>{% endif %}</li>
             </ul>
 
             <div class="tab-content">
-                <div id="{{ term }}s" class="tab-pane fade in active panel-default">
+                <div id="FATs" class="tab-pane fade in active panel-default">
                     <div class="panel-body">
-                         <h4>{{ term }}s for this {{ term }}Link</h4>
+                         <h4>FATs for this FAT Link</h4>
 
                          <table class="table" id="fat-chars">
                              <thead>
@@ -246,9 +246,9 @@
 
                 <div id="manualfat" class="tab-pane fade in panel-default">
                     <div class="panel-body">
-                        <h4>Manual {{ term }}</h4>
+                        <h4>Manual FAT</h4>
 
-                        <p> Is someone missing from the list of {{ term }}s? Use this form to add them.
+                        <p> Is someone missing from the list of FATs? Use this form to add them.
 
                         <br />
 
@@ -276,7 +276,7 @@
                                 </div>
                             </div>
 
-                            <button class="btn btn-primary btn-block" type="submit" name="manual_fat">Add Manual {{ term }}</button>
+                            <button class="btn btn-primary btn-block" type="submit" name="manual_fat">Add Manual FAT</button>
                         </form>
                     </div>
                 </div>

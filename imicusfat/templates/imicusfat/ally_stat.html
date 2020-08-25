@@ -23,16 +23,16 @@
             <div id="graphs" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
                     <ul class="nav nav-pills">
-                        <li class="active"><a data-toggle="tab" href="#fatsbyship">{{ term }}s By Ship Type</a></li>
+                        <li class="active"><a data-toggle="tab" href="#fatsbyship">FATs By Ship Type</a></li>
                         <li><a data-toggle="tab" href="#avgfats">Corporation Performance</a></li>
-                        <li><a data-toggle="tab" href="#fatsbytime">{{ term }}s By Time</a></li>
-                        <li><a data-toggle="tab" href="#fatsbyweek">{{ term }}s By Weekday</a></li>
+                        <li><a data-toggle="tab" href="#fatsbytime">FATs By Time</a></li>
+                        <li><a data-toggle="tab" href="#fatsbyweek">FATs By Weekday</a></li>
                     </ul>
 
                     <div class="tab-content">
                         <div class="tab-pane fade in active panel-default" id="fatsbyship">
                             <div class="panel-body">
-                                <h3>{{ term }}s By Ship Type</h3>
+                                <h3>FATs By Ship Type</h3>
 
                                 <canvas id="ship-pie" width="800" height="500"></canvas>
                                 <script>
@@ -55,7 +55,7 @@
 
                         <div id="fatsbytime" class="tab-pane fade in panel-default">
                             <div class="panel-body">
-                                <h3>{{ term }}s By Time</h3>
+                                <h3>FATs By Time</h3>
 
                                 <canvas id="time-line" width="800" height="500"></canvas>
                                 <script>
@@ -63,7 +63,7 @@
                                         type: 'line',
                                         data: {
                                             datasets: [{
-                                                label: '# of {{ term }}s',
+                                                label: '# of FATs',
                                                 backgroundColor: {{ data_time.2|safe }},
                                                 data: {{ data_time.1 }}
                                             }],
@@ -79,7 +79,7 @@
 
                         <div class="tab-pane fade in panel-default" id="fatsbyweek">
                             <div class="panel-body">
-                                <h3>{{ term }}s By Weekday</h3>
+                                <h3>FATs By Weekday</h3>
 
                                 <canvas id="weekday-line" width="800" height="500"></canvas>
                                 <script>
@@ -87,7 +87,7 @@
                                         type: 'line',
                                         data:{
                                             datasets: [{
-                                                label: '# of {{ term }}s',
+                                                label: '# of FATs',
                                                 backgroundColor: {{ data_weekday.2|safe }},
                                                 data: {{ data_weekday.1 }}
                                             }],
@@ -103,7 +103,7 @@
 
                         <div class="tab-pane fade in panel-default" id="avgfats">
                             <div class="panel-body">
-                                <h3>Average {{ term }}s By Corporation</h3>
+                                <h3>Average FATs By Corporation</h3>
 
                                 <canvas id="avgs" width="1000" height="700"></canvas>
                                 <script>
@@ -111,7 +111,7 @@
                                         type: 'horizontalBar',
                                         data:{
                                             datasets: [{
-                                                label: 'Average # of {{ term }}s',
+                                                label: 'Average # of FATs',
                                                 backgroundColor: '{{ data_avgs.2|safe }}',
                                                 data: {{ data_avgs.1 }}
                                             }],
@@ -147,8 +147,8 @@
                     <table class="table" id="member-corps">
                         <thead>
                             <th>Corporation</th>
-                            <th>{{ term }}s</th>
-                            <th>Avg {{ term }}s</th>
+                            <th>FATs</th>
+                            <th>Avg FATs</th>
                             <th>Corporation Stats</th>
                         </thead>
 

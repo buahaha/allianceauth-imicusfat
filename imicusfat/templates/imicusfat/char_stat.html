@@ -24,7 +24,7 @@
             <div id="graphs" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
                     <div class="col-md-4">
-                        <h4>{{ term }}s by Ship Type</h4>
+                        <h4>FATs by Ship Type</h4>
                         <canvas style="width: 400px; max-width: 100%; height: 400px;" id="pie-ship"></canvas>
 
                         <script>
@@ -45,15 +45,15 @@
                     </div>
 
                     <div class="col-md-8">
-                        <h4>{{ term }}s by Time of Day</h4>
+                        <h4>FATs by Time of Day</h4>
                         <canvas style="width: 100%; height: 400px;" id="line-time"></canvas>
 
                         <script>
-                            var {{ term }}LineChart = new Chart(document.getElementById("line-time"),{
+                            var FATLineChart = new Chart(document.getElementById("line-time"),{
                                 type: "line",
                                 data: {
                                     datasets: [{
-                                        label: "# of {{ term }}s",
+                                        label: "# of FATs",
                                         data: {{ data_time.1|safe }},
                                         backgroundColor: {{ data_time.2|safe }}
                                     }],
@@ -70,7 +70,7 @@
 
             <div id="rawdata" class="tab-pane fade active panel-default">
                 <div class="panel-body">
-                    <h4> {{ term }}s for {{ character }}</h4>
+                    <h4> FATs for {{ character }}</h4>
 
                     <table class="table" id="raw-data">
                         <thead>

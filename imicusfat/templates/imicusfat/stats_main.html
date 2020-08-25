@@ -33,7 +33,7 @@
                 <div class="panel-body">
                     <h4> Months </h4>
 
-                    <p> Only months with {{ term }} data in the last 12 months are shown.</p>
+                    <p> Only months with FAT data in the last 12 months are shown.</p>
 
                     <ul class="nav nav-pills">
                         {% for char in charstats %}
@@ -57,7 +57,7 @@
                                     <table class="table">
                                         <thead>
                                             <th>Month</th>
-                                            <th>{{ term }} Count</th>
+                                            <th>FAT Count</th>
                                             <th></th>
                                         </thead>
 
@@ -73,7 +73,7 @@
                                     </table>
                                 {% else %}
                                     <div class="alert alert-warning" role="alert">
-                                        <p>No {{ term }}s for {{ char.0 }}</p>
+                                        <p>No FATs for {{ char.0 }}</p>
                                     </div>
                                 {% endif %}
                                 </div>
