@@ -6,37 +6,44 @@
     <div class="col-lg-12">
         <br>
         {% include "imicusfat/menu.html" %}
-        <h2>{% trans "Create a " %}{{ term }}{% trans "Link" %}</h2>
+        <h2>{% trans "Create a FAT Link" %}</h2>
         {% if msg %}
-            <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                        <span aria-hidden="true">&times</span>
-                    </button>
-                    {% if msg.0 != 'warning' %}<h4>{% if msg.0 == 'danger' %}Oh No!{% elif msg.0 == 'success' %}Success!{% endif %}</h4>{% endif %}
-                    <p>{{ msg.1 }}</p>
-                </div>
+        <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                <span aria-hidden="true">&times</span>
+            </button>
+            <h4>
+                {% if msg.0 == 'danger' %}
+                    {% trans "Oh No!" %}
+                {% elif msg.0 == 'success' %}
+                    {% trans "Success!" %}
+                {% endif %}
+            </h4>
+            <p>{{ msg.1 }}</p>
+        </div>
         {% endif %}
+
         <div class="row">
             <div class="col-md-6 mr-md-1">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Create link using ESI</h3>
+                        <h3 class="panel-title">{% trans "Create link using ESI" %}</h3>
                     </div>
                     <div class="panel-body">
-                        <p> This option will automatically register the entire fleet without member clicks. Use this if you <b>are</b> Fleet Boss, otherwise please use the clickable FATLink option.</p>
+                        <p>{% trans "This option will automatically register the entire fleet without member clicks. Use this if you <b>are</b> Fleet Boss, otherwise please use the clickable FATLink option." %}</p>
 
                         <form class="form" role="form" action="{% url 'imicusfat:create_esi_fat' %}" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
-                                <label for="name">Fleet name</label>
-                                <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="Enter fleet name" required>
+                                <label for="name">{% trans "Fleet name" %}</label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder='{% trans "Enter fleet name" %}' required>
                             </div>
                             {% if link_types %}
                                 <div class="form-group">
-                                    <label for="type">Fleet Type</label>
+                                    <label for="type">{% trans "Fleet Type" %}</label>
+
                                     <select id="type" class="form-control" name="type">
-                                        <option value="-1">Please select a fleet type</option>
+                                        <option value="-1">{% trans "Please select a fleet type" %}</option>
                                         {% for type in link_types %}
                                             <option value="{{type.id}}">{{type.name}}</option>
                                         {% endfor %}
@@ -44,8 +51,10 @@
                                 </div>
                             {% endif %}
                             <div class="form-group text-right">
-                                <button class="btn btn-primary" type="submit" name="submit_click" id="submit_click"><span
-                                        class="fa fa-plus fa-fw"></span>Add ESI Link</button>
+                                <button class="btn btn-primary" type="submit" name="submit_click" id="submit_click">
+                                    <span class="fa fa-plus fa-fw"></span>
+                                    {% trans "Add ESI Link" %}
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -55,48 +64,51 @@
             <div class="col-md-6 ml-md-2">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Create a clickable {{ term }}Link</h3>
+                        <h3 class="panel-title">{% trans "Create a clickable FAT Link" %}</h3>
                     </div>
-            
+
                     <div class="panel-body">
-                        <p>This option will create a clickable like just like that created by the standard FAT module.</p>
+                        <p>{% trans "This option will create a clickable like just like that created by the standard FAT module." %}</p>
                         <p>
                             {{ form.errors }}
                             {{ form.non_field_errors }}
                         </p>
+
                         <!-- Form Goes Here -->
                         <form class="form" role="form" action="{% url 'imicusfat:link_create_click' %}" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
-                                <label for="name">Fleet name</label>
-                                <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="Enter fleet name" required>
+                                <label for="name">{% trans "Fleet name" %}</label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder='{% trans "Enter fleet name" %}' required>
                             </div>
+
                             {% if link_types %}
                                 <div class="form-group">
-                                    <label for="type">Fleet Type</label>
+                                    <label for="type">{% trans "Fleet Type" %}</label>
+
                                     <select id="type" class="form-control" name="type">
-                                        <option value="-1">Please select a fleet type</option>
+                                        <option value="-1">{% trans "Please select a fleet type" %}</option>
                                         {% for type in link_types %}
                                             <option value="{{type.id}}">{{type.name}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                             {% endif %}
+
                             <div class="form-group">
-                                <label for="duration">FAT expiry in minutes</label>
-                                <input type="number" class="form-control" name="duration" id="duration" value="30"
-                                    placeholder="Expiry Time in Minutes" required>
+                                <label for="duration">{% trans "FAT expiry in minutes" %}</label>
+                                <input type="number" class="form-control" name="duration" id="duration" value="30" placeholder='{% trans "Expiry Time in Minutes" %}' required>
                             </div>
                             <div class="form-group text-right">
-                                <button class="btn btn-primary" type="submit" name="submit_click" id="submit_click"><span
-                                    class="fa fa-plus fa-fw"></span>Create Link</button>
+                                <button class="btn btn-primary" type="submit" name="submit_click" id="submit_click">
+                                    <span class="fa fa-plus fa-fw"></span>
+                                    {% trans "Create Link" %}
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
+        </div>
     </div>
-
-
 {% endblock %}

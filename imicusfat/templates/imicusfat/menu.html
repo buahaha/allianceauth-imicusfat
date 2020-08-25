@@ -21,11 +21,11 @@
                     <a href="{% url 'imicusfat:stats' %}">{% trans "Statistics" %}</a>
                 </li>
                 <li class="{% navactive request 'imicusfat:links imicusfat:link_edit' %}">
-                    <a href="{% url 'imicusfat:links' %}">{{ term }} {% trans "Links" %}</a>
+                    <a href="{% url 'imicusfat:links' %}">{% trans "FAT Links" %}</a>
                 </li>
                 {% if perms.imicusfat.manage_imicusfat or perms.imicusfat.add_fatlink %}
                     <li class="{% navactive request 'imicusfat:link_add' %}">
-                        <a href="{% url 'imicusfat:link_add' %}">Add {{ term }}Link</a>
+                        <a href="{% url 'imicusfat:link_add' %}">{% trans "Add FAT Link" %}</a>
                     </li>
                 {% endif %}
             </ul>
