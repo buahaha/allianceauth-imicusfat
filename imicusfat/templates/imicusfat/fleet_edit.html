@@ -17,10 +17,10 @@
                         <span aria-hidden="true">&times</span>
                     </button>
 
-                    <h4>Success!</h4>
+                    <h4>{% trans "Success!" %}</h4>
 
-                    <p>&#9642; FAT Link Created!</p>
-                    <p>&#9642; FATs have been queued, they may take a few mins to show up.</p>
+                    <p>&#9642; {% trans "FAT Link Created!" %}</p>
+                    <p>&#9642; {% trans "FATs have been queued, they may take a few mins to show up." %}</p>
                 </div>
             {% elif msg_code == 403 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
@@ -28,9 +28,9 @@
                         <span aria-hidden="true">&times</span>
                     </button>
 
-                    <h4>Not Fleet Boss!</h4>
+                    <h4>{% trans "Not Fleet Boss!" %}</h4>
 
-                    <p>&#9642; FAT Link created. Please upload a flatlist using the flatlist tab to generate FATs for fleet members.</p>
+                    <p>&#9642; {% trans "FAT Link created. Please upload a flatlist using the flatlist tab to generate FATs for fleet members." %}</p>
                 </div>
             {% elif msg_code == 404 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
@@ -38,72 +38,72 @@
                         <span aria-hidden="true">&times</span>
                     </button>
 
-                    <h4>Not in Fleet!</h4>
+                    <h4>{% trans "Not in Fleet!" %}</h4>
 
-                    <p>&#9642; FAT Link created. The character used to create this FAT Link is not in a fleet. In order to generate FATs for fleet members, please upload a flatlist using the flatlist tab.</p>
+                    <p>&#9642; {% trans "FAT Link created. The character used to create this FAT Link is not in a fleet. In order to generate FATs for fleet members, please upload a flatlist using the flatlist tab." %}</p>
                 </div>
             {% elif msg_code == 0 %}
-            <div class="alert alert-danger alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                    <span aria-hidden="true">&times</span>
-                </button>
-
-                <h4>Oh No!</h4>
-
-                <p>Something went wrong!</p>
-            </div>
-            {% elif msg_code == 202 %}
-            <div class="alert alert-success alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                    <span aria-hidden="true">&times</span>
-                </button>
-
-                <h4>Success!</h4>
-
-                <p>&#9642; Clickable FAT Link Created!</p>
-                <p>&#9642; Make sure to give your fleet members the following link to click so that they get credit for this fleet. </p>
-                <p>&#9642;
-                    Link:
-                    <i>
-                        {{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}
-                        <a id="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
-                    </i>
-
-                    <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title="Copied!" data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}">
-                        Copy me!
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                        <span aria-hidden="true">&times</span>
                     </button>
-                </p>
-            </div>
+
+                    <h4>{% trans "Oh No!" %}</h4>
+
+                    <p>{% trans "Something went wrong!" %}</p>
+                </div>
+            {% elif msg_code == 202 %}
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                        <span aria-hidden="true">&times</span>
+                    </button>
+
+                    <h4>{% trans "Success!" %}</h4>
+
+                    <p>&#9642; {% trans "Clickable FAT Link Created!" %}</p>
+                    <p>&#9642; {% trans "Make sure to give your fleet members the following link to click so that they get credit for this fleet." %}"</p>
+                    <p>&#9642;
+                        Link:
+                        <i>
+                            {{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}
+                            <a id="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
+                        </i>
+
+                        <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title="Copied!" data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}">
+                            Copy me!
+                        </button>
+                    </p>
+                </div>
             {% elif msg_code == 1 %}
-            <div class="alert alert-success alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                    <span aria-hidden="true">&times</span>
-                </button>
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                        <span aria-hidden="true">&times</span>
+                    </button>
 
-                <h4>Success!</h4>
+                    <h4>{% trans "Success!" %}</h4>
 
-                <p>Fleet name successfully changed.</p>
-            </div>
+                    <p>{% trans "Fleet name successfully changed." %}</p>
+                </div>
             {% elif msg_code == 2 %}
-            <div class="alert alert-success alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                    <span aria-hidden="true">&times</span>
-                </button>
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                        <span aria-hidden="true">&times</span>
+                    </button>
 
-                <h4>Success!</h4>
+                    <h4>{% trans "Success!" %}</h4>
 
-                <p>&#9642; FATs successfully queued from flatlist.</p>
-                <p>&#9642; FATs may take a few mins to show up.</p>
-            </div>
+                    <p>&#9642; {% trans "FATs successfully queued from flatlist." %}</p>
+                    <p>&#9642; {% trans "FATs may take a few mins to show up." %}</p>
+                </div>
             {% elif msg_code == 3 %}
                 <div class="alert alert-success alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
                         <span aria-hidden="true">&times</span>
                     </button>
 
-                    <h4>Success!</h4>
+                    <h4>{% trans "Success!" %}</h4>
 
-                    <p>Manual FAT processed.</p>
+                    <p>{% trans "Manual FAT processed." %}</p>
                 </div>
             {% elif msg_code == 4 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
@@ -111,16 +111,22 @@
                         <span aria-hidden="true">&times</span>
                     </button>
 
-                    <h4>Oh No!</h4>
+                    <h4>{% trans "Oh No!" %}</h4>
 
-                    <p>Manual FAT processing failed! The character name you entered was not found.</p>
+                    <p>{% trans "Manual FAT processing failed! The character name you entered was not found." %}</p>
                 </div>
             {% elif msg_code == 999 %}
                 <div class="alert alert-{{ message.0 }} alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
                         <span aria-hidden="true">&times</span>
                     </button>
-                    {% if message.0 != 'warning' %}<h4>{% if message.0 == 'danger' %}Oh No!{% elif message.0 == 'success' %}Success!{% endif %}</h4>{% endif %}
+                    <h4>
+                        {% if msg.0 == 'danger' %}
+                            {% trans "Oh No!" %}
+                        {% elif msg.0 == 'success' %}
+                            {% trans "Success!" %}
+                        {% endif %}
+                    </h4>
                     <p>{{ message.1 }}</p>
                 </div>
             {% endif %}
@@ -135,7 +141,7 @@
                 </div>
             {% endif %}
 
-            <h2>{% trans "Edit" %} FAT {% trans "Link" %}</h2>
+            <h2>{% trans "Edit FAT Link" %}</h2>
             <div class="col-md-12">
                 <div class="row">
                     <form class="form" role="form" action="" method="POST">
@@ -143,28 +149,28 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Name" name="fleet" id="fleet" {% if link.fleet %}value="{{ link.fleet }}" {% endif %}>
+                                    <input type="text" class="form-control" placeholder='{% trans "Fleet Name" %}' name="fleet" id="fleet" {% if link.fleet %}value="{{ link.fleet }}" {% endif %}>
 
                                     <span class="input-group-btn">
-                                        <button class="btn btn-primary" type="submit" name="set_name">Set Name</button>
+                                        <button class="btn btn-primary" type="submit" name="set_name">{% trans "Set Name" %}</button>
                                     </span>
                                 </div>
                             </div>
                         </div>
                     </form>
 
-                    <div class="col-md-2">Creator: {{ link.creator.profile.main_character.character_name }}</div>
-                    <div class="col-md-2 col-md-offset-8">Time: {{ link.ifattime }}</div>
+                    <div class="col-md-2">{% trans "Creator:" %} {{ link.creator.profile.main_character.character_name }}</div>
+                    <div class="col-md-2 col-md-offset-8">{% trans "Time:" %} {{ link.ifattime }}</div>
 
                     <div class="col-md-10">
                         <p>Link:
-                            <i>{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}
+                            <i>
+                                {{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}
                                 <a id="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
                             </i>
 
-                            <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title="Copied!"
-                                data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}">
-                                Copy me!
+                            <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title='{% trans "Copied!" %}' data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}">
+                                {% trans "Copy me!" %}
                             </button>
                         </p>
                     </div>
@@ -172,22 +178,22 @@
             </div>
 
             <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" class="tab" href="#FATs">FATs</a></li>
-                <li><a data-toggle="tab" class="tab" href="#flatlist">Flat List</a></li>
-                <li>{% if perms.imicusfat.add_ifat %}<a data-toggle="tab" class="tab" href="#manualfat">Manual FAT</a>{% endif %}</li>
+                <li class="active"><a data-toggle="tab" class="tab" href="#FATs">{% trans "FATs" %}</a></li>
+                <li><a data-toggle="tab" class="tab" href="#flatlist">{% trans "Flat List" %}</a></li>
+                <li>{% if perms.imicusfat.add_ifat %}<a data-toggle="tab" class="tab" href="#manualfat">{% trans "Manual FAT" %}</a>{% endif %}</li>
             </ul>
 
             <div class="tab-content">
                 <div id="FATs" class="tab-pane fade in active panel-default">
                     <div class="panel-body">
-                         <h4>FATs for this FAT Link</h4>
+                         <h4>{% trans "FATs for this FAT Link" %}</h4>
 
                          <table class="table" id="fat-chars">
                              <thead>
-                                <th>Character</th>
-                                <th>Location</th>
-                                <th>Ship Type</th>
-                                <th>Utilities</th>
+                                <th>{% trans "Character" %}</th>
+                                <th>{% trans "Location" %}</th>
+                                <th>{% trans "Ship Type" %}</th>
+                                <th>{% trans "Utilities" %}</th>
                              </thead>
 
                              <tbody>
@@ -215,51 +221,51 @@
 
                 <div id="flatlist" class="tab-pane fade in panel-default">
                     <div class="panel-body">
-                        <h4>Flat List Input</h4>
+                        <h4>{% trans "Flat List Input" %}</h4>
 
-                        <p> Please keep in mind that processing flat lists may take a few minutes.</p>
+                        <p>{% trans "Please keep in mind that processing flat lists may take a few minutes." %}</p>
 
                         {% if fats|length == 0 %}
-                        <form class="form-signin" role="form" action="" method="POST">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <textarea class="form-control" name="flatlist" rows="10" id="flatlist" required></textarea>
-                            </div>
+                            <form class="form-signin" role="form" action="" method="POST">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <textarea class="form-control" name="flatlist" rows="10" id="flatlist" required></textarea>
+                                </div>
 
-                            <br />
+                                <br />
 
-                            <button class="btn btn-primary btn-block" type="submit" name="submit_flatlist">Submit Flat List</button>
-                        </form>
+                                <button class="btn btn-primary btn-block" type="submit" name="submit_flatlist">{% trans "Submit Flat List" %}</button>
+                            </form>
                         {% else %}
-                        <form class="form-signin" role="form">
-                            <div class="form-group">
-                                <textarea class="form-control" name="flatlist" rows="10" id="flatlist" readonly>{{ flatlist }}</textarea>
-                            </div>
+                            <form class="form-signin" role="form">
+                                <div class="form-group">
+                                    <textarea class="form-control" name="flatlist" rows="10" id="flatlist" readonly>{{ flatlist }}</textarea>
+                                </div>
 
-                            <br />
+                                <br />
 
-                            <button class="btn btn-primary btn-block disabled" type="button">Submit Flat List</button>
-                        </form>
+                                <button class="btn btn-primary btn-block disabled" type="button">{% trans "Submit Flat List" %}</button>
+                            </form>
                         {% endif %}
                     </div>
                 </div>
 
                 <div id="manualfat" class="tab-pane fade in panel-default">
                     <div class="panel-body">
-                        <h4>Manual FAT</h4>
+                        <h4>{% trans "Manual FAT" %}</h4>
 
-                        <p> Is someone missing from the list of FATs? Use this form to add them.
-
-                        <br />
-
-                        <strong>Note:</strong> This action is logged!</p>
+                        <p>
+                            {% trans "Is someone missing from the list of FATs? Use this form to add them." %}
+                            <br />
+                            <strong>{% trans "Note:" %}</strong> {% trans "This action is logged!" %}
+                        </p>
 
                         <form class="form" role="form" action="" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <input type="text" class="form-control" id="character_name" name="character" placeholder="Character Name" required>
+                                        <input type="text" class="form-control" id="character_name" name="character" placeholder='{% trans "Character Name" %}' required>
                                     </div>
                                 </div>
                             </div>
@@ -267,16 +273,16 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" id="location" name="system" placeholder="System">
+                                        <input type="text" class="form-control" id="location" name="system" placeholder='{% trans "System" %}'>
                                     </div>
 
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" id="shiptype" name="shiptype" placeholder="Ship Type">
+                                        <input type="text" class="form-control" id="shiptype" name="shiptype" placeholder='{% trans "Ship Type" %}'>
                                     </div>
                                 </div>
                             </div>
 
-                            <button class="btn btn-primary btn-block" type="submit" name="manual_fat">Add Manual FAT</button>
+                            <button class="btn btn-primary btn-block" type="submit" name="manual_fat">{% trans "Add Manual FAT" %}</button>
                         </form>
                     </div>
                 </div>
@@ -289,7 +295,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLongTitle">Delete FAT</h5>
+                    <h5 class="modal-title" id="modalLongTitle">{% trans "Delete FAT" %}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -298,9 +304,9 @@
                 <div class="modal-body"></div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
 
-                    <a id="fat-link" class="btn btn-danger" role="button" href="">Delete</a>
+                    <a id="fat-link" class="btn btn-danger" role="button" href="">{% trans "Delete" %}</a>
                 </div>
             </div>
         </div>
@@ -334,7 +340,7 @@
 
             var modal = $(this)
             modal.find('#fat-link').attr("href", url)
-            modal.find('.modal-body').text('Are you sure you want to delete ' + name + '?');
+            modal.find('.modal-body').text('{% trans "Are you sure you want to delete" %} ' + name + '?');
         });
     });
 {% endblock %}

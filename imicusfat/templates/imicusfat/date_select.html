@@ -9,13 +9,14 @@
     <div class="col-lg-12">
         <br>
         {% include "imicusfat/menu.html" %}
+
         <h2>{{ corporation }} {% trans "Fleet Activity" %}</h2>
-        <h4>Only months with FAT data in the last 12 months are shown.</h4>
+        <h4>{% trans "Only months with FAT data in the last 12 months are shown." %}</h4>
 
         <table class="table">
             <thead>
-                <th>Month</th>
-                <th>FATs</th>
+                <th>{% trans "Month" %}</th>
+                <th>{% trans "FATs" %}</th>
                 <th></th>
             </thead>
 
@@ -24,7 +25,11 @@
                     <tr>
                         <td>{{ month.0|month }}</td>
                         <td>{{ month.1 }}</td>
-                        <td><a href="/imicusfat/stats/{% if type == 0 %}corp{% elif type == 1 %}ally{% endif %}/{% if corporation == 'No Alliance' %}000{% else %}{{ corpid }}{% endif %}/{{ month.0 }}/{{ year }}/" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+                        <td>
+                            <a href="/imicusfat/stats/{% if type == 0 %}corp{% elif type == 1 %}ally{% endif %}/{% if corporation == 'No Alliance' %}000{% else %}{{ corpid }}{% endif %}/{{ month.0 }}/{{ year }}/" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                            </a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>

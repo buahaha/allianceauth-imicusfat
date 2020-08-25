@@ -15,24 +15,24 @@
         <h4>{{ month|month }} {{ year }}</h4>
 
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#graphs">Graphs</a></li>
-            <li><a data-toggle="tab" href="#members">Corporations</a></li>
+            <li class="active"><a data-toggle="tab" href="#graphs">{% trans "Graphs" %}</a></li>
+            <li><a data-toggle="tab" href="#members">{% trans "Corporations" %}</a></li>
         </ul>
 
         <div class="tab-content">
             <div id="graphs" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
                     <ul class="nav nav-pills">
-                        <li class="active"><a data-toggle="tab" href="#fatsbyship">FATs By Ship Type</a></li>
-                        <li><a data-toggle="tab" href="#avgfats">Corporation Performance</a></li>
-                        <li><a data-toggle="tab" href="#fatsbytime">FATs By Time</a></li>
-                        <li><a data-toggle="tab" href="#fatsbyweek">FATs By Weekday</a></li>
+                        <li class="active"><a data-toggle="tab" href="#fatsbyship">{% trans "FATs By Ship Type" %}</a></li>
+                        <li><a data-toggle="tab" href="#avgfats">{% trans "Corporation Performance" %}</a></li>
+                        <li><a data-toggle="tab" href="#fatsbytime">{% trans "FATs By Time" %}</a></li>
+                        <li><a data-toggle="tab" href="#fatsbyweek">{% trans "FATs By Weekday" %}</a></li>
                     </ul>
 
                     <div class="tab-content">
                         <div class="tab-pane fade in active panel-default" id="fatsbyship">
                             <div class="panel-body">
-                                <h3>FATs By Ship Type</h3>
+                                <h3>{% trans "FATs By Ship Type" %}</h3>
 
                                 <canvas id="ship-pie" width="800" height="500"></canvas>
                                 <script>
@@ -55,7 +55,7 @@
 
                         <div id="fatsbytime" class="tab-pane fade in panel-default">
                             <div class="panel-body">
-                                <h3>FATs By Time</h3>
+                                <h3>{% trans "FATs By Time" %}</h3>
 
                                 <canvas id="time-line" width="800" height="500"></canvas>
                                 <script>
@@ -79,7 +79,7 @@
 
                         <div class="tab-pane fade in panel-default" id="fatsbyweek">
                             <div class="panel-body">
-                                <h3>FATs By Weekday</h3>
+                                <h3>{% trans "FATs By Weekday" %}</h3>
 
                                 <canvas id="weekday-line" width="800" height="500"></canvas>
                                 <script>
@@ -103,7 +103,7 @@
 
                         <div class="tab-pane fade in panel-default" id="avgfats">
                             <div class="panel-body">
-                                <h3>Average FATs By Corporation</h3>
+                                <h3>{% trans "Average FATs By Corporation" %}</h3>
 
                                 <canvas id="avgs" width="1000" height="700"></canvas>
                                 <script>
@@ -142,14 +142,14 @@
 
             <div class="tab-pane fade in panel-default" id="members">
                 <div class="panel-body">
-                    <h3>{{ alliance }} Member Corps</h3>
+                    <h3>{{ alliance }} {% trans "Member Corps" %}</h3>
 
                     <table class="table" id="member-corps">
                         <thead>
-                            <th>Corporation</th>
-                            <th>FATs</th>
-                            <th>Avg FATs</th>
-                            <th>Corporation Stats</th>
+                            <th>{% trans "Corporation" %}</th>
+                            <th>{% trans "FATs" %}</th>
+                            <th>{% trans "Avg FATs" %}</th>
+                            <th>{% trans "Corporation Stats" %}</th>
                         </thead>
 
                         <tbody>
@@ -158,7 +158,11 @@
                                     <td>{{ key }}</td>
                                     <td>{{ value.1 }}</td>
                                     <td>{{ value.2 }}</td>
-                                    <td><a class="btn btn-primary" href="/imicusfat/stats/corp/{{ value.0 }}/{{ month }}/{{ year }}/"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+                                    <td>
+                                        <a class="btn btn-primary" href="/imicusfat/stats/corp/{{ value.0 }}/{{ month }}/{{ year }}/">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                        </a>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>

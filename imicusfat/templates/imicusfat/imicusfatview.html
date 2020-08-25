@@ -21,7 +21,8 @@
                     {% trans "Oh No!" %}
                 {% elif msg.0 == 'success' %}
                     {% trans "Success!" %}
-                {% endif %}</h4>
+                {% endif %}
+            </h4>
             {% endif %}
             <p>{{ msg.1 }}</p>
         </div>
@@ -106,9 +107,9 @@
                     <table class="table">
                         <thead>
                             <th>{% trans "Fleet Name" %}</th>
-                            <th>Creator</th>
-                            <th>EVE Time</th>
-                            <th>Utils</th>
+                            <th>{% trans "Creator" %}</th>
+                            <th>{% trans "EVE Time" %}</th>
+                            <th>{% trans "Utils" %}</th>
                         </thead>
 
                         <tbody>
@@ -117,14 +118,24 @@
                                     <td>{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}</td>
                                     <td>{{ link.creator.profile.main_character.character_name }}</td>
                                     <td>{{ link.ifattime|date:"Y-M-d, H:i" }}</td>
-                                    <td>{% if perms.imicusfat.change_ifatlink %}<a class="btn btn-info"
-                                        href="{% url 'imicusfat:link_edit' link.hash %}"><span class="glyphicon glyphicon-pencil"></span></a>{% endif %}
-                                </td>
-                                <td>{% if perms.imicusfat.delete_ifatlink %}<a class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"
-                                        data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_delete' link.hash %}"
-                                        data-name="{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}">
-                                        <span class="glyphicon glyphicon-trash"></span></a>{% endif %}
-                                </td>
+                                    <td>
+                                        {% if perms.imicusfat.change_ifatlink %}
+                                        <a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}">
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if perms.imicusfat.delete_ifatlink %}
+                                        <a class="btn btn-danger"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_delete' link.hash %}"
+                                            data-name="{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </a>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -140,7 +151,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLongTitle">Delete FAT Link</h5>
+                    <h5 class="modal-title" id="modalLongTitle">{% trans "Delete FAT Link" %}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -149,8 +160,8 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <a id="fat-link" class="btn btn-danger" role="button" href="">Delete</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+                    <a id="fat-link" class="btn btn-danger" role="button" href="">{% trans "Delete" %}</a>
                 </div>
             </div>
         </div>
@@ -165,6 +176,6 @@
 
         var modal = $(this)
         modal.find('#fat-link').attr("href", url)
-        modal.find('.modal-body').text('Are you sure you want to delete ' + name + '?');
+        modal.find('.modal-body').text('{% trans "Are you sure you want to delete" %} ' + name + '?');
     });
 {% endblock %}

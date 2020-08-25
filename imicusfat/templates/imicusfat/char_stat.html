@@ -16,15 +16,15 @@
         <h4>{{ month|month }} {{ year }}</h4>
 
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#graphs">Graphs</a></li>
-            <li><a data-toggle="tab" href="#rawdata">Raw Data</a></li>
+            <li class="active"><a data-toggle="tab" href="#graphs">{% trans "Graphs" %}</a></li>
+            <li><a data-toggle="tab" href="#rawdata">{% trans "Raw Data" %}</a></li>
         </ul>
 
         <div class="tab-content">
             <div id="graphs" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
                     <div class="col-md-4">
-                        <h4>FATs by Ship Type</h4>
+                        <h4>{% trans "FATs by Ship Type" %}</h4>
                         <canvas style="width: 400px; max-width: 100%; height: 400px;" id="pie-ship"></canvas>
 
                         <script>
@@ -45,7 +45,7 @@
                     </div>
 
                     <div class="col-md-8">
-                        <h4>FATs by Time of Day</h4>
+                        <h4>{% trans "FATs by Time of Day" %}</h4>
                         <canvas style="width: 100%; height: 400px;" id="line-time"></canvas>
 
                         <script>
@@ -70,21 +70,27 @@
 
             <div id="rawdata" class="tab-pane fade active panel-default">
                 <div class="panel-body">
-                    <h4> FATs for {{ character }}</h4>
+                    <h4>{% trans "FATs for" %} {{ character }}</h4>
 
                     <table class="table" id="raw-data">
                         <thead>
-                            <th>Name</th>
-                            <th>Fleet Type</th>
-                            <th>Location</th>
-                            <th>Ship</th>
-                            <th>EVE Time</th>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Fleet Type" %}</th>
+                            <th>{% trans "Location" %}</th>
+                            <th>{% trans "Ship" %}</th>
+                            <th>{% trans "EVE Time" %}</th>
                         </thead>
 
                         <tbody>
                         {% for fat in fats %}
                             <tr>
-                                <td>{% if fat.ifatlink.fleet %}{{ fat.ifatlink.fleet }}{% else %}{{ fat.ifatlink.hash }}{% endif %}</td>
+                                <td>
+                                    {% if fat.ifatlink.fleet %}
+                                        {{ fat.ifatlink.fleet }}
+                                    {% else %}
+                                        {{ fat.ifatlink.hash }}
+                                    {% endif %}
+                                </td>
                                 <td>
                                     {% if fat.ifatlink.link_type %}
                                         {{ fat.ifatlink.link_type.name }}
