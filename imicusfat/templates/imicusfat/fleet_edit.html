@@ -179,8 +179,8 @@
 
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" class="tab" href="#FATs">{% trans "FATs" %}</a></li>
-                <li><a data-toggle="tab" class="tab" href="#flatlist">{% trans "Flat List" %}</a></li>
                 <li>{% if perms.imicusfat.add_ifat %}<a data-toggle="tab" class="tab" href="#manualfat">{% trans "Manual FAT" %}</a>{% endif %}</li>
+                <li><a data-toggle="tab" class="tab" href="#flatlist">{% trans "Raw Data" %}</a></li>
             </ul>
 
             <div class="tab-content">
@@ -221,32 +221,10 @@
 
                 <div id="flatlist" class="tab-pane fade in panel-default">
                     <div class="panel-body">
-                        <h4>{% trans "Flat List Input" %}</h4>
-
-                        <p>{% trans "Please keep in mind that processing flat lists may take a few minutes." %}</p>
-
-                        {% if fats|length == 0 %}
-                            <form class="form-signin" role="form" action="" method="POST">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <textarea class="form-control" name="flatlist" rows="10" id="flatlist" required></textarea>
-                                </div>
-
-                                <br />
-
-                                <button class="btn btn-primary btn-block" type="submit" name="submit_flatlist">{% trans "Submit Flat List" %}</button>
-                            </form>
-                        {% else %}
-                            <form class="form-signin" role="form">
-                                <div class="form-group">
-                                    <textarea class="form-control" name="flatlist" rows="10" id="flatlist" readonly>{{ flatlist }}</textarea>
-                                </div>
-
-                                <br />
-
-                                <button class="btn btn-primary btn-block disabled" type="button">{% trans "Submit Flat List" %}</button>
-                            </form>
-                        {% endif %}
+                        <h4>{% trans "FAT Link Raw Data" %}</h4>
+                        <div class="form-group">
+                            <textarea class="form-control" name="flatlist" rows="10" id="flatlist" readonly>{% if flatlist %}{{ flatlist }}{% endif %}</textarea>
+                        </div>
                     </div>
                 </div>
 
