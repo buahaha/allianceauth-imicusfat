@@ -98,7 +98,7 @@
             {% if perms.imicusfat.stats_corp_own or perms.imicusfat.stats_corp_other %}
             <div id="corps" class="tab-panel fade active panel-default">
                 <div class="panel-body">
-                    <h4>{% trans "Corporations (Click Alliance Name to See Corps)" %}"</h4>
+                    <h4>{% trans "Corporations (Click Alliance Name to See Corps)" %}</h4>
                     {% if perms.imicusfat.stats_corp_other %}
                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                             {% for key, value in data.items %}
