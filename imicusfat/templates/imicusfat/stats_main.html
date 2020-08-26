@@ -1,7 +1,8 @@
 {% extends 'allianceauth/base.html' %}
 
-{% load i18n %}
+{% load evelinks %}
 {% load filters %}
+{% load i18n %}
 
 {% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
 
@@ -9,6 +10,7 @@
     <div class="col-lg-12">
         <br>
         {% include "imicusfat/menu.html" %}
+
         <h2>{% trans "Statistics" %}</h2>
 
         {% if msg %}
@@ -44,9 +46,9 @@
                     <ul class="nav nav-pills">
                         {% for char in charstats %}
                             {% if forloop.first %}
-                                <li class="active"><a data-toggle="tab" href="#{{ char.2 }}"><img class="img-circle" src="https://images.evetech.net/characters/{{ char.2 }}/portrait?size=32"/>  {{ char.0 }}</a></li>
+                                <li class="active"><a data-toggle="tab" href="#{{ char.2 }}"><img class="img-circle" src="{{ char.2|character_portrait_url:32 }}"/>  {{ char.0 }}</a></li>
                             {% else %}
-                                <li><a data-toggle="tab" href="#{{ char.2 }}"><img class="img-circle" src="https://images.evetech.net/characters/{{ char.2 }}/portrait?size=32"/>  {{ char.0 }}</a></li>
+                                <li><a data-toggle="tab" href="#{{ char.2 }}"><img class="img-circle" src="{{ char.2|character_portrait_url:32 }}"/>  {{ char.0 }}</a></li>
                             {% endif %}
                         {% endfor %}
                     </ul>
@@ -104,9 +106,9 @@
                                     <div class="panel-heading" role="tab" id="heading{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
                                         <h4 class="panel-title">
                                             {% if key == 'No Alliance' %}
-                                                <img src="https://images.evetech.net/alliances/1/logo?size=32" />
+                                                <img src="{{ 1|alliance_logo_url:32 }}" />
                                             {% else %}
-                                                <img src="https://images.evetech.net/alliances/{{ value.0 }}/logo?size=32" />
+                                                <img src="{{ value.0|alliance_logo_url:32 }}" />
                                             {% endif %}
 
                                             <a role="button" class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}" aria-expanded="false" aria-controls="{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
@@ -127,7 +129,7 @@
                                                     {% if forloop.first %}
                                                     {% else %}
                                                     <tr>
-                                                        <td><img src="https://images.evetech.net/corporations/{{ corp.0 }}/logo?size=32" /></td>
+                                                        <td><img src="{{ corp.0|corporation_logo_url:32 }}" /></td>
                                                         <td>{{ corp.1 }}</td>
                                                         <td>
                                                             <a class="btn btn-primary" href="/imicusfat/stats/corp/{{ corp.0 }}/">
@@ -147,7 +149,7 @@
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <td><img src="https://images.evetech.net/corporations/{{ data.0.0 }}/logo?size=32" /> </td>
+                                    <td><img src="{{ data.0.0|corporation_logo_url:32 }}" /> </td>
                                     <td>{{ data.0.1 }}</td>
                                     <td>
                                         <a class="btn btn-primary" href="/imicusfat/stats/corp/{{ data.0.0 }}/">
