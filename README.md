@@ -38,13 +38,11 @@ python manage.py collectstatic
 python manage.py migrate
 ```
 
-Restart your supervisor services for AA
+Restart your supervisor services for AA.
 
 ## Updating
 
-To update your existing installation of AA Time Zones first enable your virtual environment.
-
-Then run the following commands from your AA project directory (the one that contains `manage.py`).
+To update your existing installation of ImicusFAT, first enable your virtual environment (venv) of your Alliance Auth installation.
 
 ```bash
 pip install -U git+https://gitlab.com/evictus.iou/allianceauth-imicusfat.git
@@ -53,11 +51,11 @@ python manage.py collectstatic
 python manage.py migrate
 ```
 
-Finally restart your AA supervisor services.
+Finally restart your supervisor services for AA
 
 ## Data Migration from AA-FAT
 
-Right after the initial installation and once you ran migrations, you can import the data from Alliance Auth's own FAT system if you used it until now.
+Right after the initial installation and running migrations, you can import the data from Alliance Auth's own FAT system if you have used it until now.
 
 **!!Important!!**
 
