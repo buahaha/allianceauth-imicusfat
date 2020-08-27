@@ -177,7 +177,7 @@
 
 {% block extra_javascript %}
     {% include 'bundles/datatables-js.html' %}
-    <script type="text/javascript" src="{% static 'imicusfat/javascript/moment-js/moment.min.js' %}"></script>
+    {% include 'bundles/moment-js.html' %}
 {% endblock %}
 
 {% block extra_css %}
