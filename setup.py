@@ -14,7 +14,7 @@ testing_extras = []
 setup(
     name="allianceauth-imicusfat",
     version=__version__,
-    author="Aproia Raholan",
+    author="Exiom, Aproia, ppfeufer",
     author_email="evictus.iou@gmail.com",
     description="Alliance Auth FAT/PAP System for Evictus",
     install_requires=install_requires,
