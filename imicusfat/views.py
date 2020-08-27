@@ -173,7 +173,9 @@ def stats_char(request, charid, month=None, year=None):
         colors.append(bg_color_str)
 
     data_ship_type = [
-        list(data_ship_type.keys()),
+        list(
+            str(key) for key in data_ship_type.keys()
+        ),  # ship type can be None, so we need to convert to string here
         list(data_ship_type.values()),
         colors,
     ]
@@ -422,7 +424,9 @@ def stats_alliance(request, allianceid, month=None, year=None):
         colors.append(bg_color_str)
 
     data_ship_type = [
-        list(data_ship_type.keys()),
+        list(
+            str(key) for key in data_ship_type.keys()
+        ),  # ship type can be None, so we need to convert to string here
         list(data_ship_type.values()),
         colors,
     ]
