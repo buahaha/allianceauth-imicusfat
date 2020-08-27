@@ -24,7 +24,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     license="GPLv3",
-    description="Alliance Auth FAT/PAP System for Evictus",
+    description="Fleet Activity Tracking tool for Alliance Auth",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://gitlab.com/evictus.iou/allianceauth-imicusfat",
