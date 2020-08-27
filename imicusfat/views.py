@@ -14,7 +14,6 @@ from collections import OrderedDict
 from datetime import datetime, timedelta
 
 from django.db.models import Count, Q
-from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
 from django.utils import timezone
@@ -34,11 +33,6 @@ import random
 
 
 logger = LoggerAddTag(get_extension_logger(__name__), __title__)
-
-if hasattr(settings, "FAT_AS_PAP"):
-    term = "PAP"
-else:
-    term = "FAT"
 
 
 # Create your views here.
@@ -67,7 +61,7 @@ def imicusfat_view(request):
 
     links = IFatLink.objects.order_by("ifattime").reverse()[:10]
 
-    context = {"term": term, "fats": fats, "links": links, "msg": msg}
+    context = {"fats": fats, "links": links, "msg": msg}
 
     logger.info("Module called by %s", request.user)
 
@@ -123,7 +117,6 @@ def stats(request):
         months.append(char_l)
 
     context = {
-        "term": term,
         "data": data,
         "charstats": months,
         "year": datetime.now().year,
@@ -202,7 +195,6 @@ def stats_char(request, charid, month=None, year=None):
     ]
 
     context = {
-        "term": term,
         "character": character.character_name,
         "month": month,
         "year": year,
@@ -247,7 +239,6 @@ def stats_corp(request, corpid, month=None, year=None):
                 months.append((i, corp_fats))
 
         context = {
-            "term": term,
             "corporation": corp.corporation_name,
             "months": months,
             "corpid": corpid,
@@ -349,7 +340,6 @@ def stats_corp(request, corpid, month=None, year=None):
         chars[char.character_name] = (fat_c, char.character_id)
 
     context = {
-        "term": term,
         "corporation": corp.corporation_name,
         "month": month,
         "year": year,
@@ -392,7 +382,6 @@ def stats_alliance(request, allianceid, month=None, year=None):
                 months.append((i, ally_fats))
 
         context = {
-            "term": term,
             "alliance": alliance_name,
             "months": months,
             "corpid": allianceid,
@@ -547,7 +536,6 @@ def stats_alliance(request, allianceid, month=None, year=None):
     corps = OrderedDict(sorted(corps.items(), key=lambda x: x[1][2], reverse=True))
 
     context = {
-        "term": term,
         "alliance": alliance_name,
         "month": month,
         "year": year,
@@ -577,7 +565,7 @@ def links(request):
         .annotate(number_of_fats=Count("ifat", filter=Q(ifat__deleted_at__isnull=True)))
     )
 
-    context = {"term": term, "links": links, "msg": msg}
+    context = {"links": links, "msg": msg}
 
     logger.info("FAT link list called by %s", request.user)
 
@@ -589,7 +577,7 @@ def links(request):
 def link_add(request):
     link_types = IFatLinkType.objects.all()
 
-    context = {"term": term, "link_types": link_types}
+    context = {"link_types": link_types}
 
     logger.info("Add FAT link view called by %s", request.user)
 
@@ -636,7 +624,7 @@ def link_create_click(request):
                 "danger",
                 (
                     "Something went wrong when attempting to submit your"
-                    " clickable {0}Link.".format(term)
+                    " clickable FAT Link."
                 ),
             ]
             return redirect("imicusfat:imicusfat_view")
@@ -644,8 +632,8 @@ def link_create_click(request):
         request.session["msg"] = [
             "warning",
             (
-                'You must fill out the form on the "Add {0}Link" '
-                "page to create a clickable {0}Link".format(term)
+                'You must fill out the form on the "Add FAT Link" '
+                "page to create a clickable FAT Link"
             ),
         ]
 
@@ -708,10 +696,7 @@ def create_esi_fat(request):
     else:
         request.session["msg"] = [
             "danger",
-            (
-                "Something went wrong when attempting to submit your"
-                " ESI {0}Link.".format(term)
-            ),
+            ("Something went wrong when attempting to submit your" " ESI FAT Link."),
         ]
         return redirect("imicusfat:imicusfat_view")
 
@@ -722,7 +707,7 @@ def create_esi_fat(request):
 )
 def click_link(request, token, hash=None):
     if hash is None:
-        request.session["msg"] = ["warning", "No {}link hash provided.".format(term)]
+        request.session["msg"] = ["warning", "No FAT link hash provided."]
 
         return redirect("imicusfat:imicusfat_view")
 
@@ -741,8 +726,8 @@ def click_link(request, token, hash=None):
             request.session["msg"] = [
                 "warning",
                 (
-                    "Sorry, that {0}Link is expired. If you were on that fleet, "
-                    "contact your FC about having your {0} manually added.".format(term)
+                    "Sorry, that FAT Link is expired. If you were on that fleet, "
+                    "contact your FC about having your FAT manually added."
                 ),
             ]
             return redirect("imicusfat:imicusfat_view")
@@ -784,8 +769,8 @@ def click_link(request, token, hash=None):
                 request.session["msg"] = [
                     "success",
                     (
-                        "{} registered for {} at {}".format(
-                            term, character.character_name, name
+                        "FAT registered for {} at {}".format(
+                            character.character_name, name
                         )
                     ),
                 ]
@@ -801,8 +786,8 @@ def click_link(request, token, hash=None):
                 request.session["msg"] = [
                     "warning",
                     (
-                        "A {} already exists for the selected character ({}) and fleet"
-                        " combination.".format(term, character.character_name)
+                        "A FAT already exists for the selected character ({}) and fleet"
+                        " combination.".format(character.character_name)
                     ),
                 ]
                 return redirect("imicusfat:imicusfat_view")
@@ -818,7 +803,7 @@ def click_link(request, token, hash=None):
     except Exception:
         request.session["msg"] = [
             "warning",
-            "The hash provided is not for a clickable {}Link.".format(term),
+            "The hash provided is not for a clickable FAT Link.",
         ]
 
         return redirect("imicusfat:imicusfat_view")
@@ -834,7 +819,7 @@ def click_link(request, token, hash=None):
 )
 def edit_link(request, hash=None):
     if hash is None:
-        request.session["msg"] = ["warning", "No {}link hash provided.".format(term)]
+        request.session["msg"] = ["warning", "No FAT Link hash provided."]
 
         return redirect("imicusfat:imicusfat_view")
 
@@ -885,12 +870,16 @@ def edit_link(request, hash=None):
         else:
             request.session["{}-task-code".format(hash)] = 0
 
-    msg = None
+    msg_code = None
+    message = None
 
-    if "{}-creation-code".format(hash) in request.session:
-        msg = request.session.pop("{}-creation-code".format(hash))
+    if "msg" in request.session:
+        msg_code = 999
+        message = request.session.pop("msg")
+    elif "{}-creation-code".format(hash) in request.session:
+        msg_code = request.session.pop("{}-creation-code".format(hash))
     elif "{}-task-code".format(hash) in request.session:
-        msg = request.session.pop("{}-task-code".format(hash))
+        msg_code = request.session.pop("{}-task-code".format(hash))
 
     fats = IFat.objects.filter(ifatlink=link)
     flatlist = None
@@ -905,9 +894,9 @@ def edit_link(request, hash=None):
         flatlist = "\r\n".join(flatlist)
 
     context = {
-        "term": term,
         "form": FatLinkForm,
-        "msg": msg,
+        "msg_code": msg_code,
+        "message": message,
         "link": link,
         "fats": fats,
         "flatlist": flatlist,
@@ -923,7 +912,7 @@ def edit_link(request, hash=None):
 @permissions_required(("imicusfat.manage_imicusfat", "imicusfat.delete_ifatlink"))
 def del_link(request, hash=None):
     if hash is None:
-        request.session["msg"] = ["warning", "No {}link hash provided.".format(term)]
+        request.session["msg"] = ["warning", "No FAT Link hash provided."]
         return redirect("imicusfat:imicusfat_view")
 
     try:
@@ -942,16 +931,12 @@ def del_link(request, hash=None):
     DelLog(remover=request.user, deltype=0, string=link.__str__()).save()
     request.session["msg"] = [
         "success",
-        "The {0}Link ({1}) and all associated {0}s have been successfully deleted.".format(
-            term, hash
+        "The FAT Link ({0}) and all associated FATs have been successfully deleted.".format(
+            hash
         ),
     ]
 
     logger.info("FAT link %s deleted by %s", hash, request.user)
-
-    context = {"msg": request.session["msg"]}
-
-    # return render(request, 'imicusfat/fat_list.html', context)
 
     return redirect("imicusfat:links")
 
@@ -974,7 +959,7 @@ def del_fat(request, hash, fat):
     except Exception:
         request.session["msg"] = [
             "danger",
-            "The hash and {} ID do not match.".format(term),
+            "The hash and FAT ID do not match.",
         ]
 
         return redirect("imicusfat:imicusfat_view")
@@ -984,11 +969,9 @@ def del_fat(request, hash, fat):
     DelLog(remover=request.user, deltype=1, string=fat.__str__())
     request.session["msg"] = [
         "success",
-        "The {0} for {0} from link {1} has been successfully deleted.".format(
-            term, hash
-        ),
+        "The FAT from link {0} has been successfully deleted.".format(hash),
     ]
 
     logger.info("FAT %s deleted by %s", fat, request.user)
 
-    return redirect("imicusfat:imicusfat_view")
+    return redirect("imicusfat:link_edit", hash=hash)

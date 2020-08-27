@@ -1,7 +1,8 @@
 {% extends 'allianceauth/base.html' %}
 
-{% load i18n %}
+{% load evelinks %}
 {% load filters %}
+{% load i18n %}
 
 {% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
 
@@ -9,16 +10,23 @@
     <div class="col-lg-12">
         <br>
         {% include "imicusfat/menu.html" %}
+
         <h2>{% trans "Statistics" %}</h2>
 
         {% if msg %}
             <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                        <span aria-hidden="true">&times</span>
-                    </button>
-                    {% if msg.0 != 'warning' %}<h4>{% if msg.0 == 'danger' %}Oh No!{% elif msg.0 == 'success' %}Success!{% endif %}</h4>{% endif %}
-                    <p>{{ msg.1 }}</p>
-                </div>
+                <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                    <span aria-hidden="true">&times</span>
+                </button>
+                <h4>
+                    {% if msg.0 == 'danger' %}
+                        {% trans "Oh No!" %}
+                    {% elif msg.0 == 'success' %}
+                        {% trans "Success!" %}
+                    {% endif %}
+                </h4>
+                <p>{{ msg.1 }}</p>
+            </div>
         {% endif %}
 
         <ul class="nav nav-tabs">
@@ -31,16 +39,16 @@
         <div class="tab-content">
             <div id="mine" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
-                    <h4> Months </h4>
+                    <h4>{% trans "Months" %}</h4>
 
-                    <p> Only months with {{ term }} data in the last 12 months are shown.</p>
+                    <p>{% trans "Only months with FAT data in the last 12 months are shown." %}</p>
 
                     <ul class="nav nav-pills">
                         {% for char in charstats %}
                             {% if forloop.first %}
-                                <li class="active"><a data-toggle="tab" href="#{{ char.2 }}"><img class="img-circle" src="https://images.evetech.net/characters/{{ char.2 }}/portrait?size=32"/>  {{ char.0 }}</a></li>
+                                <li class="active"><a data-toggle="tab" href="#{{ char.2 }}"><img class="img-circle" src="{{ char.2|character_portrait_url:32 }}"/>  {{ char.0 }}</a></li>
                             {% else %}
-                                <li><a data-toggle="tab" href="#{{ char.2 }}"><img class="img-circle" src="https://images.evetech.net/characters/{{ char.2 }}/portrait?size=32"/>  {{ char.0 }}</a></li>
+                                <li><a data-toggle="tab" href="#{{ char.2 }}"><img class="img-circle" src="{{ char.2|character_portrait_url:32 }}"/>  {{ char.0 }}</a></li>
                             {% endif %}
                         {% endfor %}
                     </ul>
@@ -48,16 +56,16 @@
                     <div class="tab-content">
                         {% for char in charstats %}
                             {% if forloop.first %}
-                                <div id="{{ char.2 }}" class="tab-pane fade in active panel-default">
+                            <div id="{{ char.2 }}" class="tab-pane fade in active panel-default">
                             {% else %}
-                                <div id="{{ char.2 }}" class="tab-pane fade active panel-default">
+                            <div id="{{ char.2 }}" class="tab-pane fade active panel-default">
                             {% endif %}
                                 <div class="panel-body">
                                 {% if char.1|length > 0 %}
                                     <table class="table">
                                         <thead>
-                                            <th>Month</th>
-                                            <th>{{ term }} Count</th>
+                                            <th>{% trans "Month" %}</th>
+                                            <th>{% trans "FAT Count" %}</th>
                                             <th></th>
                                         </thead>
 
@@ -66,14 +74,18 @@
                                                 <tr>
                                                     <td>{{ key|month }}</td>
                                                     <td>{{ value }}</td>
-                                                    <td><a href="/imicusfat/stats/char/{{ char.2 }}/{{ key }}/{{ year }}/" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span> </a> </td>
+                                                    <td>
+                                                        <a href="/imicusfat/stats/char/{{ char.2 }}/{{ key }}/{{ year }}/" class="btn btn-primary">
+                                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
                                     </table>
                                 {% else %}
                                     <div class="alert alert-warning" role="alert">
-                                        <p>No {{ term }}s for {{ char.0 }}</p>
+                                        <p>{% trans "No FATs for" %} {{ char.0 }}</p>
                                     </div>
                                 {% endif %}
                                 </div>
@@ -86,34 +98,47 @@
             {% if perms.imicusfat.stats_corp_own or perms.imicusfat.stats_corp_other %}
             <div id="corps" class="tab-panel fade active panel-default">
                 <div class="panel-body">
-                    <h4> Corporations (Click Alliance Name to See Corps) </h4>
+                    <h4>{% trans "Corporations (Click Alliance Name to See Corps)" %}</h4>
                     {% if perms.imicusfat.stats_corp_other %}
                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                             {% for key, value in data.items %}
                                 <div class="panel panel-default">
                                     <div class="panel-heading" role="tab" id="heading{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
                                         <h4 class="panel-title">
-                                            {% if key == 'No Alliance' %}<img src="https://images.evetech.net/alliances/1/logo?size=32"/>{% else %}<img src="https://images.evetech.net/alliances/{{ value.0 }}/logo?size=32" />{% endif %}
+                                            {% if key == 'No Alliance' %}
+                                                <img src="{{ 1|alliance_logo_url:32 }}" />
+                                            {% else %}
+                                                <img src="{{ value.0|alliance_logo_url:32 }}" />
+                                            {% endif %}
+
                                             <a role="button" class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}" aria-expanded="false" aria-controls="{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
                                                 {{ key }}
                                             </a>
-                                            <a class="btn btn-primary btn-sm pull-right" href="/imicusfat/stats/ally/{% if key == 'No Alliance' %}000{% else %}{{ value.0 }}{% endif %}/" role="button"><span class="glyphicon glyphicon-eye-open" style="color: white"></span> </a>
+
+                                            <a class="btn btn-primary btn-sm pull-right" href="/imicusfat/stats/ally/{% if key == 'No Alliance' %}000{% else %}{{ value.0 }}{% endif %}/" role="button">
+                                                <span class="glyphicon glyphicon-eye-open" style="color: white"></span>
+                                            </a>
                                         </h4>
                                     </div>
+
                                     <div id="{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
                                         <div class="panel-body">
                                             <table class="table">
                                                 <tbody>
-                                            {% for corp in value %}
-                                                {% if forloop.first %}
-                                                {% else %}
-                                                        <tr>
-                                                            <td><img src="https://images.evetech.net/corporations/{{ corp.0 }}/logo?size=32" /></td>
-                                                            <td>{{ corp.1 }}</td>
-                                                            <td><a class="btn btn-primary" href="/imicusfat/stats/corp/{{ corp.0 }}/"><span class="glyphicon glyphicon-eye-open"></span></a></td>
-                                                        </tr>
-                                                {% endif %}
-                                            {% endfor %}
+                                                {% for corp in value %}
+                                                    {% if forloop.first %}
+                                                    {% else %}
+                                                    <tr>
+                                                        <td><img src="{{ corp.0|corporation_logo_url:32 }}" /></td>
+                                                        <td>{{ corp.1 }}</td>
+                                                        <td>
+                                                            <a class="btn btn-primary" href="/imicusfat/stats/corp/{{ corp.0 }}/">
+                                                                <span class="glyphicon glyphicon-eye-open"></span>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+                                                {% endfor %}
                                                 </tbody>
                                             </table>
                                         </div>
@@ -124,9 +149,13 @@
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <td><img src="https://images.evetech.net/corporations/{{ data.0.0 }}/logo?size=32" /> </td>
+                                    <td><img src="{{ data.0.0|corporation_logo_url:32 }}" /> </td>
                                     <td>{{ data.0.1 }}</td>
-                                    <td><a class="btn btn-primary" href="/imicusfat/stats/corp/{{ data.0.0 }}/"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+                                    <td>
+                                        <a class="btn btn-primary" href="/imicusfat/stats/corp/{{ data.0.0 }}/">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                        </a>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
