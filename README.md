@@ -29,7 +29,7 @@ ImicusFAT will work alongside the built-in AA-FAT System and bFAT*. However data
 Make sure you are in the virtual environment (venv) of your Alliance Auth installation. Then install the latest version:
 
 ```bash
-pip install git+https://gitlab.com/evictus.iou/allianceauth-imicusfat.git
+pip install allianceauth-imicusfat
 ```
 
 ### Step 2 - Update your AA settings
@@ -54,7 +54,7 @@ Restart your supervisor services for AA.
 To update your existing installation of ImicusFAT, first enable your virtual environment (venv) of your Alliance Auth installation.
 
 ```bash
-pip install -U git+https://gitlab.com/evictus.iou/allianceauth-imicusfat.git
+pip install -U allianceauth-imicusfat
 
 python manage.py collectstatic
 python manage.py migrate
