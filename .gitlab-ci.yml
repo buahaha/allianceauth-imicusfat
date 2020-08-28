@@ -1,3 +1,44 @@
+stages:
+- test
+- deploy
+
+before_script:
+- apt-get update && apt-get install redis-server -y
+- redis-server --daemonize yes
+- redis-cli ping
+- python -V
+- pip install wheel tox
+
+test-3.6-core:
+  image: python:3.6-buster
+  script:  
+  - tox -e py36-core
+
+test-3.7-core:
+  image: python:3.7-buster
+  script:  
+  - tox -e py37-core
+
+test-3.8-core:
+  image: python:3.8-buster
+  script:  
+  - tox -e py38-core
+
+test-3.6-all:
+  image: python:3.6-buster
+  script:  
+  - tox -e py36-all
+
+test-3.7-all:
+  image: python:3.7-buster
+  script:  
+  - tox -e py37-all
+
+test-3.8-all:
+  image: python:3.8-buster
+  script:  
+  - tox -e py38-all
+
 build-package:
   stage: deploy
   image: python:3.6
