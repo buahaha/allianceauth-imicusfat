@@ -79,6 +79,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterUniqueTogether(
-            name="ifat", unique_together={("character", "ifatlink")},
+            name="ifat",
+            unique_together={("character", "ifatlink")},
         ),
     ]

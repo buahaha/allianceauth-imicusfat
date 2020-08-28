@@ -1,10 +1,11 @@
 # ImicusFAT
 
+[![pipeline status](https://gitlab.com/evictus.iou/allianceauth-imicusfat/badges/master/pipeline.svg)](https://gitlab.com/evictus.iou/allianceauth-imicusfat/commits/master)
+[![version](https://img.shields.io/pypi/v/allianceauth-imicusfat?label=release)](https://pypi.org/project/allianceauth-imicusfat/)
 [![license](https://img.shields.io/badge/license-GPLv3-green)](https://pypi.org/project/allianceauth-imicusfat/)
 [![python](https://img.shields.io/pypi/pyversions/allianceauth-imicusfat)](https://pypi.org/project/allianceauth-imicusfat/)
 [![django](https://img.shields.io/pypi/djversions/allianceauth-imicusfat?label=django)](https://pypi.org/project/allianceauth-imicusfat/)
-[![version](https://img.shields.io/pypi/v/allianceauth-imicusfat?label=release)](https://pypi.org/project/allianceauth-imicusfat/)
-[![pipeline status](https://gitlab.com/evictus.iou/allianceauth-imicusfat/badges/master/pipeline.svg)](https://gitlab.com/evictus.iou/allianceauth-imicusfat/commits/master)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](http://black.readthedocs.io/en/latest/)
 
 An Improved FAT/PAP System for [Alliance Auth](https://gitlab.com/allianceauth/allianceauth). 
 
