@@ -50,8 +50,14 @@ class Migration(migrations.Migration):
                 )
             },
         ),
-        migrations.RemoveField(model_name="ifat", name="station",),
-        migrations.RemoveField(model_name="ifat", name="user",),
+        migrations.RemoveField(
+            model_name="ifat",
+            name="station",
+        ),
+        migrations.RemoveField(
+            model_name="ifat",
+            name="user",
+        ),
         migrations.AlterField(
             model_name="ifat",
             name="shiptype",

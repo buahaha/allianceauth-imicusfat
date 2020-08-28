@@ -26,7 +26,9 @@ class Migration(migrations.Migration):
                 ("name", models.CharField(max_length=254)),
                 ("deleted_at", models.DateTimeField(blank=True, null=True)),
             ],
-            options={"abstract": False,},
+            options={
+                "abstract": False,
+            },
         ),
         migrations.AddField(
             model_name="ifatlink",
