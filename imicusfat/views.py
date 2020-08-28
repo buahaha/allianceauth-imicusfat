@@ -56,12 +56,13 @@ def imicusfat_view(request):
 
         for f in fat:
             char_1.append(f)
+
         char_1.append(char.character.character_id)
         fats.append(char_1)
 
-    links = IFatLink.objects.order_by("ifattime").reverse()[:10]
+    fatlinks = IFatLink.objects.order_by("ifattime").reverse()[:10]
 
-    context = {"fats": fats, "links": links, "msg": msg}
+    context = {"fats": fats, "links": fatlinks, "msg": msg}
 
     logger.info("Module called by %s", request.user)
 
@@ -85,7 +86,6 @@ def stats(request):
                 data[corp.alliance.alliance_name].append(
                     (corp.corporation_id, corp.corporation_name)
                 )
-
     elif request.user.has_perm("imicusfat.stats_corp_own"):
         data = [
             (
@@ -173,9 +173,8 @@ def stats_char(request, charid, month=None, year=None):
         colors.append(bg_color_str)
 
     data_ship_type = [
-        list(
-            str(key) for key in data_ship_type.keys()
-        ),  # ship type can be None, so we need to convert to string here
+        # ship type can be None, so we need to convert to string here
+        list(str(key) for key in data_ship_type.keys()),
         list(data_ship_type.values()),
         colors,
     ]
@@ -255,6 +254,7 @@ def stats_corp(request, corpid, month=None, year=None):
         ifatlink__ifattime__year=year,
         character__corporation_id=corpid,
     )
+
     characters = EveCharacter.objects.filter(corporation_id=corpid)
 
     # Data for Stacked Bar Graph
@@ -424,9 +424,8 @@ def stats_alliance(request, allianceid, month=None, year=None):
         colors.append(bg_color_str)
 
     data_ship_type = [
-        list(
-            str(key) for key in data_ship_type.keys()
-        ),  # ship type can be None, so we need to convert to string here
+        # ship type can be None, so we need to convert to string here
+        list(str(key) for key in data_ship_type.keys()),
         list(data_ship_type.values()),
         colors,
     ]
@@ -470,6 +469,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
             )
         )
         stack.append([])
+
         data_ = stack[2]
 
         for corp in corps:
@@ -563,13 +563,13 @@ def links(request):
     if "msg" in request.session:
         msg = request.session.pop("msg")
 
-    links = (
+    fatlinks = (
         IFatLink.objects.all()
         .order_by("-ifattime")
         .annotate(number_of_fats=Count("ifat", filter=Q(ifat__deleted_at__isnull=True)))
     )
 
-    context = {"links": links, "msg": msg}
+    context = {"links": fatlinks, "msg": msg}
 
     logger.info("FAT link list called by %s", request.user)
 
@@ -595,9 +595,10 @@ def link_create_click(request):
         form = ClickFatForm(request.POST)
 
         if form.is_valid():
-            hash = get_random_string(length=30)
+            fatlinkhash = get_random_string(length=30)
             link = IFatLink()
             link.fleet = form.cleaned_data["name"]
+
             if (
                 form.cleaned_data["type"] is not None
                 and form.cleaned_data["type"] != -1
@@ -605,24 +606,25 @@ def link_create_click(request):
                 link.link_type = IFatLinkType.objects.get(id=form.cleaned_data["type"])
 
             link.creator = request.user
-            link.hash = hash
+            link.hash = fatlinkhash
             link.save()
+
             dur = ClickIFatDuration()
-            dur.fleet = IFatLink.objects.get(hash=hash)
+            dur.fleet = IFatLink.objects.get(hash=fatlinkhash)
             dur.duration = form.cleaned_data["duration"]
             dur.save()
 
-            request.session["{}-creation-code".format(hash)] = 202
+            request.session["{}-creation-code".format(fatlinkhash)] = 202
 
             logger.info(
                 "FAT link %s with name %s and a duration of %s minutes was created by %s",
-                hash,
+                fatlinkhash,
                 form.cleaned_data["name"],
                 form.cleaned_data["duration"],
                 request.user,
             )
 
-            return redirect("imicusfat:link_edit", hash=hash)
+            return redirect("imicusfat:link_edit", hash=fatlinkhash)
         else:
             request.session["msg"] = [
                 "danger",
@@ -650,23 +652,20 @@ def link_create_click(request):
 def link_create_esi(request, token, hash):
     # Check if there is a fleet
     try:
-        requiredScopes = ["esi-fleets.read_fleet.v1"]
-        esiToken = Token.get_token(token.character_id, requiredScopes)
+        required_scopes = ["esi-fleets.read_fleet.v1"]
+        esi_token = Token.get_token(token.character_id, required_scopes)
 
-        f = esi.client.Fleets.get_characters_character_id_fleet(
-            character_id=token.character_id, token=esiToken.valid_access_token()
+        fleet_from_esi = esi.client.Fleets.get_characters_character_id_fleet(
+            character_id=token.character_id, token=esi_token.valid_access_token()
         ).result()
 
         try:
-            fleet = esi.client.Fleets.get_fleets_fleet_id(
-                fleet_id=f["fleet_id"], token=esiToken.valid_access_token()
+            esi_fleet_member = esi.client.Fleets.get_fleets_fleet_id_members(
+                fleet_id=fleet_from_esi["fleet_id"],
+                token=esi_token.valid_access_token(),
             ).result()
 
-            m = esi.client.Fleets.get_fleets_fleet_id_members(
-                fleet_id=f["fleet_id"], token=esiToken.valid_access_token()
-            ).result()
-
-            process_fats.delay(m, "eve", hash)
+            process_fats.delay(esi_fleet_member, "eve", hash)
 
             request.session["{}-creation-code".format(hash)] = 200
 
@@ -687,21 +686,24 @@ def link_create_esi(request, token, hash):
 def create_esi_fat(request):
     # "error": "The fleet does not exist or you don't have access to it!"
     form = FatLinkForm(request.POST)
-    hash = get_random_string(length=30)
+    fat_link_hash = get_random_string(length=30)
 
     if form.is_valid():
         link = IFatLink(
-            fleet=form.cleaned_data["name"], creator=request.user, hash=hash
+            fleet=form.cleaned_data["name"], creator=request.user, hash=fat_link_hash
         )
+
         if form.cleaned_data["type"] is not None and form.cleaned_data["type"] != -1:
             link.link_type = IFatLinkType.objects.get(id=form.cleaned_data["type"])
         link.save()
-        return redirect("imicusfat:link_create_esi", hash=hash)
+
+        return redirect("imicusfat:link_create_esi", hash=fat_link_hash)
     else:
         request.session["msg"] = [
             "danger",
             ("Something went wrong when attempting to submit your" " ESI FAT Link."),
         ]
+
         return redirect("imicusfat:imicusfat_view")
 
 
@@ -739,29 +741,35 @@ def click_link(request, token, hash=None):
         character = EveCharacter.objects.get(character_id=token.character_id)
 
         try:
-            requiredScopes = [
+            required_scopes = [
                 "esi-location.read_location.v1",
                 "esi-location.read_ship_type.v1",
             ]
-            esiToken = Token.get_token(token.character_id, requiredScopes)
+            esi_token = Token.get_token(token.character_id, required_scopes)
 
+            # character location
             location = esi.client.Location.get_characters_character_id_location(
-                character_id=token.character_id, token=esiToken.valid_access_token()
+                character_id=token.character_id, token=esi_token.valid_access_token()
             ).result()
 
+            # current ship
             ship = esi.client.Location.get_characters_character_id_ship(
-                character_id=token.character_id, token=esiToken.valid_access_token()
+                character_id=token.character_id, token=esi_token.valid_access_token()
             ).result()
 
-            location = esi.client.Universe.get_universe_systems_system_id(
+            # system information
+            system = esi.client.Universe.get_universe_systems_system_id(
                 system_id=location["solar_system_id"]
             ).result()["name"]
 
-            ship = provider.get_itemtype(ship["ship_type_id"]).name
+            ship_name = provider.get_itemtype(ship["ship_type_id"]).name
 
             try:
                 fat = IFat(
-                    ifatlink=fleet, character=character, system=location, shiptype=ship
+                    ifatlink=fleet,
+                    character=character,
+                    system=system,
+                    shiptype=ship_name,
                 )
                 fat.save()
 
@@ -794,6 +802,7 @@ def click_link(request, token, hash=None):
                         " combination.".format(character.character_name)
                     ),
                 ]
+
                 return redirect("imicusfat:imicusfat_view")
         except Exception:
             request.session["msg"] = [
@@ -803,6 +812,7 @@ def click_link(request, token, hash=None):
                     " Please try again.".format(character.character_name)
                 ),
             ]
+
             return redirect("imicusfat:imicusfat_view")
     except Exception:
         request.session["msg"] = [
@@ -859,15 +869,17 @@ def edit_link(request, hash=None):
             character = get_or_create_char(name=character_name)
 
             if character is not None:
-                fat = IFat(
+                IFat(
                     ifatlink_id=link.pk,
                     character=character,
                     system=system,
                     shiptype=shiptype,
                 ).save()
+
                 ManualIFat(
                     ifatlink_id=link.pk, creator=creator, character=character
                 ).save()
+
                 request.session["{}-task-code".format(hash)] = 3
             else:
                 request.session["{}-task-code".format(hash)] = 4
@@ -917,6 +929,7 @@ def edit_link(request, hash=None):
 def del_link(request, hash=None):
     if hash is None:
         request.session["msg"] = ["warning", "No FAT Link hash provided."]
+
         return redirect("imicusfat:imicusfat_view")
 
     try:
@@ -929,10 +942,12 @@ def del_link(request, hash=None):
 
         return redirect("imicusfat:imicusfat_view")
 
-    fats = IFat.objects.filter(ifatlink_id=link.pk).delete()
+    IFat.objects.filter(ifatlink_id=link.pk).delete()
 
     link.delete()
+
     DelLog(remover=request.user, deltype=0, string=link.__str__()).save()
+
     request.session["msg"] = [
         "success",
         "The FAT Link ({0}) and all associated FATs have been successfully deleted.".format(
