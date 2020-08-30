@@ -79,23 +79,13 @@ def process_fats(list, type_, hash):
     """
     Due to the large possible size of fatlists, this process will be scheduled in order to process flat_lists.
     :param list: the list of character info to be processed.
-    :param type_: flatlist or eve
+    :param type_: only "eve" for now
     :param hash: the hash from the fat link.
     :return:
     """
     logger.info("Processing FAT %s", hash)
 
-    if type_ == "flatlist":
-        if len(list[0]) > 40:
-            # Came from fleet comp
-            for line in list:
-                data = line.split("\t")
-                process_line.delay(data, "comp", hash)
-        else:
-            # Came from chat window
-            for char in list:
-                process_line.delay(char, "chat", hash)
-    elif type_ == "eve":
+    if type_ == "eve":
         for char in list:
             process_character.delay(char, hash)
 
