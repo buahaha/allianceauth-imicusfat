@@ -927,6 +927,17 @@ def edit_link(request, hash=None):
 
         flatlist = "\r\n".join(flatlist)
 
+    # let's see if the link is still valid or has expired already
+    link_ongoing = True
+    try:
+        dur = ClickIFatDuration.objects.get(fleet=link)
+        now = timezone.now() - timedelta(minutes=dur.duration)
+
+        if now >= link.ifattime:
+            link_ongoing = False
+    except Exception:
+        link_ongoing = False
+
     context = {
         "form": FatLinkForm,
         "msg_code": msg_code,
@@ -934,6 +945,7 @@ def edit_link(request, hash=None):
         "link": link,
         "fats": fats,
         "flatlist": flatlist,
+        "link_ongoing": link_ongoing,
     }
 
     logger.info("FAT link %s edited by %s", hash, request.user)
