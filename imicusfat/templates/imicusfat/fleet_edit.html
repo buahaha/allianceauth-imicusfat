@@ -22,26 +22,6 @@
                     <p>&#9642; {% trans "FAT Link Created!" %}</p>
                     <p>&#9642; {% trans "FATs have been queued, they may take a few mins to show up." %}</p>
                 </div>
-            {% elif msg_code == 403 %}
-                <div class="alert alert-danger alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                        <span aria-hidden="true">&times</span>
-                    </button>
-
-                    <h4>{% trans "Not Fleet Boss!" %}</h4>
-
-                    <p>&#9642; {% trans "FAT Link created. Please upload a flatlist using the flatlist tab to generate FATs for fleet members." %}</p>
-                </div>
-            {% elif msg_code == 404 %}
-                <div class="alert alert-danger alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                        <span aria-hidden="true">&times</span>
-                    </button>
-
-                    <h4>{% trans "Not in Fleet!" %}</h4>
-
-                    <p>&#9642; {% trans "FAT Link created. The character used to create this FAT Link is not in a fleet. In order to generate FATs for fleet members, please upload a flatlist using the flatlist tab." %}</p>
-                </div>
             {% elif msg_code == 0 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
@@ -62,17 +42,19 @@
 
                     <p>&#9642; {% trans "Clickable FAT Link Created!" %}</p>
                     <p>&#9642; {% trans "Make sure to give your fleet members the following link to click so that they get credit for this fleet." %}</p>
+                    {% if link_ongoing %}
                     <p>&#9642;
                         Link:
                         <i>
                             {{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}
-                            <a id="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
+                            <a class="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
                         </i>
 
-                        <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title="Copied!" data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}">
+                        <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title="Copied!" data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}" style="margin-left: 1rem; background-color: rgba(255,255,255,0.3);">
                             Copy me!
                         </button>
                     </p>
+                    {% endif %}
                 </div>
             {% elif msg_code == 1 %}
                 <div class="alert alert-success alert-dismissible" role="alert">
@@ -83,17 +65,6 @@
                     <h4>{% trans "Success!" %}</h4>
 
                     <p>{% trans "Fleet name successfully changed." %}</p>
-                </div>
-            {% elif msg_code == 2 %}
-                <div class="alert alert-success alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                        <span aria-hidden="true">&times</span>
-                    </button>
-
-                    <h4>{% trans "Success!" %}</h4>
-
-                    <p>&#9642; {% trans "FATs successfully queued from flatlist." %}</p>
-                    <p>&#9642; {% trans "FATs may take a few mins to show up." %}</p>
                 </div>
             {% elif msg_code == 3 %}
                 <div class="alert alert-success alert-dismissible" role="alert">
@@ -131,16 +102,6 @@
                 </div>
             {% endif %}
 
-            {% if debug %}
-                <div class="alert alert-success alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                        <span aria-hidden="true">&times</span>
-                    </button>
-
-                    <p>{{ debug }}</p>
-                </div>
-            {% endif %}
-
             <h2>{% trans "Edit FAT Link" %}</h2>
             <div class="col-md-12">
                 <div class="row">
@@ -159,23 +120,29 @@
                         </div>
                     </form>
 
+                    <p>&nbsp;</p>
+
                     <div class="col-md-2">{% trans "Creator:" %} {{ link.creator.profile.main_character.character_name }}</div>
                     <div class="col-md-2 col-md-offset-8">{% trans "Time:" %} {{ link.ifattime }}</div>
 
+                    {% if link_ongoing %}
                     <div class="col-md-10">
                         <p>Link:
                             <i>
                                 {{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}
-                                <a id="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
+                                <a class="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
                             </i>
 
-                            <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title='{% trans "Copied!" %}' data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}">
+                            <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title='{% trans "Copied!" %}' data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}" style="margin-left: 1rem;">
                                 {% trans "Copy me!" %}
                             </button>
                         </p>
                     </div>
+                    {% endif %}
                 </div>
             </div>
+
+            <p>&nbsp;</p>
 
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" class="tab" href="#FATs">{% trans "FATs" %}</a></li>
@@ -223,7 +190,7 @@
                     <div class="panel-body">
                         <h4>{% trans "FAT Link Raw Data" %}</h4>
                         <div class="form-group">
-                            <textarea class="form-control" name="flatlist" rows="10" id="flatlist" readonly>{% if flatlist %}{{ flatlist }}{% endif %}</textarea>
+                            <textarea class="form-control" name="flatlist" rows="10" readonly>{% if flatlist %}{{ flatlist }}{% endif %}</textarea>
                         </div>
                     </div>
                 </div>
