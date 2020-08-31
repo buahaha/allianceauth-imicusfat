@@ -684,15 +684,15 @@ def link_create_esi(request, token, hash):
                 "You can create a clickable FAT link and share it, if you like.",
             ]
 
-            return redirect("afat:link_edit", hash=hash)
+            return redirect("imicusfat:link_edit", hash=hash)
 
             # since the FAT link has already been created, we need to remove it again
-            link = AFatLink.objects.get(hash=hash)
-            AFat.objects.filter(afatlink_id=link.pk).delete()
+            link = IFatLink.objects.get(hash=hash)
+            IFat.objects.filter(ifatlink_id=link.pk).delete()
             link.delete()
 
             # return to "Add FAT Link" view
-            return redirect("afat:link_add")
+            return redirect("imicusfat:link_add")
     except Exception:
         request.session["msg"] = [
             "warning",
@@ -701,12 +701,12 @@ def link_create_esi(request, token, hash):
         ]
 
         # since the FAT link has already been created, we need to remove it again
-        link = AFatLink.objects.get(hash=hash)
-        AFat.objects.filter(afatlink_id=link.pk).delete()
+        link = IFatLink.objects.get(hash=hash)
+        IFat.objects.filter(ifatlink_id=link.pk).delete()
         link.delete()
 
         # return to "Add FAT Link" view
-        return redirect("afat:link_add")
+        return redirect("imicusfat:link_add")
 
 
 @login_required()
