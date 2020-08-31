@@ -684,15 +684,15 @@ def link_create_esi(request, token, hash):
                 "You can create a clickable FAT link and share it, if you like.",
             ]
 
-            return redirect("afat:link_edit", hash=hash)
+            return redirect("imicusfat:link_edit", hash=hash)
 
             # since the FAT link has already been created, we need to remove it again
-            link = AFatLink.objects.get(hash=hash)
-            AFat.objects.filter(afatlink_id=link.pk).delete()
+            link = IFatLink.objects.get(hash=hash)
+            IFat.objects.filter(ifatlink_id=link.pk).delete()
             link.delete()
 
             # return to "Add FAT Link" view
-            return redirect("afat:link_add")
+            return redirect("imicusfat:link_add")
     except Exception:
         request.session["msg"] = [
             "warning",
@@ -701,12 +701,12 @@ def link_create_esi(request, token, hash):
         ]
 
         # since the FAT link has already been created, we need to remove it again
-        link = AFatLink.objects.get(hash=hash)
-        AFat.objects.filter(afatlink_id=link.pk).delete()
+        link = IFatLink.objects.get(hash=hash)
+        IFat.objects.filter(ifatlink_id=link.pk).delete()
         link.delete()
 
         # return to "Add FAT Link" view
-        return redirect("afat:link_add")
+        return redirect("imicusfat:link_add")
 
 
 @login_required()
@@ -927,6 +927,17 @@ def edit_link(request, hash=None):
 
         flatlist = "\r\n".join(flatlist)
 
+    # let's see if the link is still valid or has expired already
+    link_ongoing = True
+    try:
+        dur = ClickIFatDuration.objects.get(fleet=link)
+        now = timezone.now() - timedelta(minutes=dur.duration)
+
+        if now >= link.ifattime:
+            link_ongoing = False
+    except Exception:
+        link_ongoing = False
+
     context = {
         "form": FatLinkForm,
         "msg_code": msg_code,
@@ -934,6 +945,7 @@ def edit_link(request, hash=None):
         "link": link,
         "fats": fats,
         "flatlist": flatlist,
+        "link_ongoing": link_ongoing,
     }
 
     logger.info("FAT link %s edited by %s", hash, request.user)
