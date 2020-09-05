@@ -559,8 +559,15 @@ def stats_alliance(request, allianceid, month=None, year=None):
 
     context = {
         "alliance": alliance_name,
+        "ally": ally,
         "month": month,
+        "month_current": datetime.now().month,
+        "month_prev": int(month) - 1,
+        "month_next": int(month) + 1,
         "year": year,
+        "year_current": datetime.now().year,
+        "year_prev": int(year) - 1,
+        "year_next": int(year) + 1,
         "data_stacked": data_stacked,
         "data_avgs": data_avgs,
         "data_time": data_time,
