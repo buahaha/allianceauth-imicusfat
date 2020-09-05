@@ -201,10 +201,15 @@ def stats_char(request, charid, month=None, year=None):
     ]
 
     context = {
-        "character": character.character_name,
+        "character": character,
         "month": month,
+        "month_current": datetime.now().month,
+        "month_prev": int(month) - 1,
+        "month_next": int(month) + 1,
         "year": year,
-        "current_year": datetime.now().year,
+        "year_current": datetime.now().year,
+        "year_prev": int(year) - 1,
+        "year_next": int(year) + 1,
         "data_ship_type": data_ship_type,
         "data_time": data_time,
         "fats": fats,
