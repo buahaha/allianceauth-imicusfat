@@ -75,7 +75,7 @@
                                                     <td>{{ key|month }}</td>
                                                     <td>{{ value }}</td>
                                                     <td>
-                                                        <a href="/imicusfat/stats/char/{{ char.2 }}/{{ key }}/{{ year }}/" class="btn btn-primary">
+                                                        <a href="{% url 'imicusfat:stats_char' char.2 key year %}" class="btn btn-primary">
                                                             <span class="glyphicon glyphicon-eye-open"></span>
                                                         </a>
                                                     </td>
@@ -115,9 +115,11 @@
                                                 {{ key }}
                                             </a>
 
-                                            <a class="btn btn-primary btn-sm pull-right" href="/imicusfat/stats/ally/{% if key == 'No Alliance' %}000{% else %}{{ value.0 }}{% endif %}/" role="button">
+                                            {% if key != 'No Alliance' %}
+                                            <a class="btn btn-primary btn-sm pull-right" href="{% url 'imicusfat:stats_ally' value.0 %}" role="button">
                                                 <span class="glyphicon glyphicon-eye-open" style="color: white"></span>
                                             </a>
+                                            {% endif %}
                                         </h4>
                                     </div>
 
@@ -132,7 +134,7 @@
                                                         <td><img src="{{ corp.0|corporation_logo_url:32 }}" /></td>
                                                         <td>{{ corp.1 }}</td>
                                                         <td>
-                                                            <a class="btn btn-primary" href="/imicusfat/stats/corp/{{ corp.0 }}/">
+                                                            <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.0 %}">
                                                                 <span class="glyphicon glyphicon-eye-open"></span>
                                                             </a>
                                                         </td>
@@ -152,7 +154,7 @@
                                     <td><img src="{{ data.0.0|corporation_logo_url:32 }}" /> </td>
                                     <td>{{ data.0.1 }}</td>
                                     <td>
-                                        <a class="btn btn-primary" href="/imicusfat/stats/corp/{{ data.0.0 }}/">
+                                        <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' data.0.0 %}">
                                             <span class="glyphicon glyphicon-eye-open"></span>
                                         </a>
                                     </td>

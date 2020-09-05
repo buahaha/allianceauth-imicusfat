@@ -402,7 +402,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
                 months.append((i, ally_fats))
 
         context = {
-            "alliance": alliance_name,
+            "corporation": alliance_name,
             "months": months,
             "corpid": allianceid,
             "year": year,
