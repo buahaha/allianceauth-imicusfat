@@ -14,7 +14,24 @@
         {% include 'imicusfat/menu.html' %}
 
         <h2>{{ alliance }} {% trans "Statistics" %}</h2>
-        <h4>{{ month|month }} {{ year }}</h4>
+        <h4>
+            {% if month == '1' %}
+                <a class="btn btn-primary" href="/imicusfat/stats/ally/{{ ally.alliance_id }}/12/{{ year_prev }}/" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+            {% else %}
+                <a class="btn btn-primary" href="/imicusfat/stats/ally/{{ ally.alliance_id }}/{{ month_prev }}/{{ year }}/" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+            {% endif %}
+
+            {{ month|month }} {{ year }}
+
+            {% if month_next > month_current and year_next > year_current %}
+            {% elif month == '12' %}
+                <a class="btn btn-primary" href="/imicusfat/stats/ally/{{ ally.alliance_id }}/1/{{ year_next }}/" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="/imicusfat/stats/ally/{{ ally.alliance_id }}/{{ month_current }}/{{ year_current }}/" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+            {% else %}
+                <a class="btn btn-primary" href="/imicusfat/stats/ally/{{ ally.alliance_id }}/{{ month_next }}/{{ year }}/" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="/imicusfat/stats/ally/{{ ally.alliance_id }}/{{ month_current }}/{{ year_current }}/" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+            {% endif %}
+        </h4>
 
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#graphs">{% trans "Graphs" %}</a></li>
