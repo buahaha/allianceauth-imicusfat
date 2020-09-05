@@ -12,8 +12,26 @@
         <br>
         {% include 'imicusfat/menu.html' %}
 
-        <h2>{{ corporation }} {% trans "Statistics" %}</h2>
-        <h4>{{ month|month }} {{ year }}</h4>
+        <h2>{{ corp.corporation_name }} {% trans "Statistics" %}</h2>
+
+        <h4>
+            {% if month == '1' %}
+                <a class="btn btn-primary" href="/imicusfat/stats/corp/{{ corp.corporation_id }}/12/{{ year_prev }}/" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+            {% else %}
+                <a class="btn btn-primary" href="/imicusfat/stats/corp/{{ corp.corporation_id }}/{{ month_prev }}/{{ year }}/" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+            {% endif %}
+
+            {{ month|month }} {{ year }}
+
+            {% if month_next > month_current and year_next > year_current %}
+            {% elif month == '12' %}
+                <a class="btn btn-primary" href="/imicusfat/stats/corp/{{ corp.corporation_id }}/1/{{ year_next }}/" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="/imicusfat/stats/corp/{{ corp.corporation_id }}/{{ month_current }}/{{ year_current }}/" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+            {% else %}
+                <a class="btn btn-primary" href="/imicusfat/stats/corp/{{ corp.corporation_id }}/{{ month_next }}/{{ year }}/" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="/imicusfat/stats/corp/{{ corp.corporation_id }}/{{ month_current }}/{{ year_current }}/" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+            {% endif %}
+        </h4>
 
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#graphs">{% trans "Graphs" %}</a></li>
@@ -120,7 +138,7 @@
 
             <div class="tab-pane fade in panel-default" id="members">
                 <div class="panel-body">
-                    <h3>{{ corporation }} {% trans "Members" %}</h3>
+                    <h3>{{ corp.corporation_name }} {% trans "Members" %}</h3>
 
                     <table class="table" id="corp-members">
                         <thead>

@@ -52,6 +52,7 @@ def imicusfat_view(request):
             .order_by("ifatlink__ifattime")
             .reverse()[:30]
         )
+
         char_1 = [char.character.character_name]
 
         for f in fat:
@@ -70,7 +71,10 @@ def imicusfat_view(request):
 
 
 @login_required()
-def stats(request):
+def stats(request, year=None):
+    if year is None:
+        year = datetime.now().year
+
     if request.user.has_perm("imicusfat.stats_corp_other"):
         corps = EveCorporationInfo.objects.all()
         alliances = EveAllianceInfo.objects.all()
@@ -101,7 +105,7 @@ def stats(request):
 
     for char in chars:
         char_l = [char.character.character_name]
-        char_fats = IFat.objects.filter(ifatlink__ifattime__year=datetime.now().year)
+        char_fats = IFat.objects.filter(ifatlink__ifattime__year=year)
         char_stats = {}
 
         for i in range(1, 13):
@@ -119,7 +123,8 @@ def stats(request):
     context = {
         "data": data,
         "charstats": months,
-        "year": datetime.now().year,
+        "year": year,
+        "current_year": datetime.now().year,
     }
 
     logger.info("Statistics overview called by %s", request.user)
@@ -199,6 +204,7 @@ def stats_char(request, charid, month=None, year=None):
         "character": character.character_name,
         "month": month,
         "year": year,
+        "current_year": datetime.now().year,
         "data_ship_type": data_ship_type,
         "data_time": data_time,
         "fats": fats,
@@ -342,9 +348,16 @@ def stats_corp(request, corpid, month=None, year=None):
         chars[char.character_name] = (fat_c, char.character_id)
 
     context = {
+        "corp": corp,
         "corporation": corp.corporation_name,
         "month": month,
+        "month_current": datetime.now().month,
+        "month_prev": int(month) - 1,
+        "month_next": int(month) + 1,
         "year": year,
+        "year_current": datetime.now().year,
+        "year_prev": int(year) - 1,
+        "year_next": int(year) + 1,
         "data_stacked": data_stacked,
         "data_time": data_time,
         "data_weekday": data_weekday,
