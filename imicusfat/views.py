@@ -52,6 +52,7 @@ def imicusfat_view(request):
             .order_by("ifatlink__ifattime")
             .reverse()[:30]
         )
+
         char_1 = [char.character.character_name]
 
         for f in fat:
@@ -70,7 +71,10 @@ def imicusfat_view(request):
 
 
 @login_required()
-def stats(request):
+def stats(request, year=None):
+    if year is None:
+        year = datetime.now().year
+
     if request.user.has_perm("imicusfat.stats_corp_other"):
         corps = EveCorporationInfo.objects.all()
         alliances = EveAllianceInfo.objects.all()
@@ -101,7 +105,7 @@ def stats(request):
 
     for char in chars:
         char_l = [char.character.character_name]
-        char_fats = IFat.objects.filter(ifatlink__ifattime__year=datetime.now().year)
+        char_fats = IFat.objects.filter(ifatlink__ifattime__year=year)
         char_stats = {}
 
         for i in range(1, 13):
@@ -119,7 +123,8 @@ def stats(request):
     context = {
         "data": data,
         "charstats": months,
-        "year": datetime.now().year,
+        "year": year,
+        "current_year": datetime.now().year,
     }
 
     logger.info("Statistics overview called by %s", request.user)
@@ -196,9 +201,15 @@ def stats_char(request, charid, month=None, year=None):
     ]
 
     context = {
-        "character": character.character_name,
+        "character": character,
         "month": month,
+        "month_current": datetime.now().month,
+        "month_prev": int(month) - 1,
+        "month_next": int(month) + 1,
         "year": year,
+        "year_current": datetime.now().year,
+        "year_prev": int(year) - 1,
+        "year_next": int(year) + 1,
         "data_ship_type": data_ship_type,
         "data_time": data_time,
         "fats": fats,
@@ -342,9 +353,16 @@ def stats_corp(request, corpid, month=None, year=None):
         chars[char.character_name] = (fat_c, char.character_id)
 
     context = {
+        "corp": corp,
         "corporation": corp.corporation_name,
         "month": month,
+        "month_current": datetime.now().month,
+        "month_prev": int(month) - 1,
+        "month_next": int(month) + 1,
         "year": year,
+        "year_current": datetime.now().year,
+        "year_prev": int(year) - 1,
+        "year_next": int(year) + 1,
         "data_stacked": data_stacked,
         "data_time": data_time,
         "data_weekday": data_weekday,
@@ -384,7 +402,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
                 months.append((i, ally_fats))
 
         context = {
-            "alliance": alliance_name,
+            "corporation": alliance_name,
             "months": months,
             "corpid": allianceid,
             "year": year,
@@ -541,8 +559,15 @@ def stats_alliance(request, allianceid, month=None, year=None):
 
     context = {
         "alliance": alliance_name,
+        "ally": ally,
         "month": month,
+        "month_current": datetime.now().month,
+        "month_prev": int(month) - 1,
+        "month_next": int(month) + 1,
         "year": year,
+        "year_current": datetime.now().year,
+        "year_prev": int(year) - 1,
+        "year_next": int(year) + 1,
         "data_stacked": data_stacked,
         "data_avgs": data_avgs,
         "data_time": data_time,
@@ -584,7 +609,7 @@ def link_add(request):
     if "msg" in request.session:
         msg = request.session.pop("msg")
 
-    link_types = IFatLinkType.objects.all()
+    link_types = IFatLinkType.objects.all().order_by("name")
 
     context = {"link_types": link_types, "msg": msg}
 

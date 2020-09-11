@@ -3,17 +3,34 @@
 {% load i18n %}
 {% load static %}
 
-{% block page_title %}{{ character }} {% trans "Statistics" %}{% endblock %}
+{% block page_title %}{{ character.character_name }} {% trans "Statistics" %}{% endblock %}
 
 {% block content %}
-    <script type="text/javascript" src="{% static 'imicusfat/javascript/chart-js/Chart.min.js' %}"></script>
+    <script type="application/javascript" src="{% static 'imicusfat/javascript/chart-js/Chart.min.js' %}"></script>
 
     <div class="col-lg-12">
         <br>
         {% include 'imicusfat/menu.html' %}
 
-        <h2>{{ character }} {% trans "Statistics" %}</h2>
-        <h4>{{ month|month }} {{ year }}</h4>
+        <h2>{{ character.character_name }} {% trans "Statistics" %}</h2>
+        <h4>
+            {% if month == '1' %}
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id 12 year_prev %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+            {% else %}
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id month_prev year %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+            {% endif %}
+
+            {{ month|month }} {{ year }}
+
+            {% if month_next > month_current and year_next > year_current %}
+            {% elif month == '12' %}
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id 1 year_next %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id month_current year_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+            {% else %}
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id month_next year %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id month_current year_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+            {% endif %}
+        </h4>
 
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#graphs">{% trans "Graphs" %}</a></li>
@@ -70,7 +87,7 @@
 
             <div id="rawdata" class="tab-pane fade panel-default">
                 <div class="panel-body">
-                    <h4>{% trans "FATs for" %} {{ character }}</h4>
+                    <h4>{% trans "FATs for" %} {{ character.character_name }}</h4>
 
                     <table class="table" id="raw-data">
                         <thead>
