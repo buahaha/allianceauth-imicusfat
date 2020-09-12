@@ -626,6 +626,7 @@ def link_create_click(request):
 
         if form.is_valid():
             fatlinkhash = get_random_string(length=30)
+
             link = IFatLink()
             link.fleet = form.cleaned_data["name"]
 
@@ -709,8 +710,6 @@ def link_create_esi(request, token, hash):
                 "You can create a clickable FAT link and share it, if you like.",
             ]
 
-            return redirect("imicusfat:link_edit", hash=hash)
-
             # since the FAT link has already been created, we need to remove it again
             link = IFatLink.objects.get(hash=hash)
             IFat.objects.filter(ifatlink_id=link.pk).delete()
@@ -719,6 +718,7 @@ def link_create_esi(request, token, hash):
             # return to "Add FAT Link" view
             return redirect("imicusfat:link_add")
     except Exception:
+        # Not in fleet
         request.session["msg"] = [
             "warning",
             "To use the ESI function, you neeed to be in fleet and you need to be the fleet boss! "
@@ -746,13 +746,14 @@ def create_esi_fat(request):
 
         if form.cleaned_data["type"] is not None and form.cleaned_data["type"] != -1:
             link.link_type = IFatLinkType.objects.get(id=form.cleaned_data["type"])
+
         link.save()
 
         return redirect("imicusfat:link_create_esi", hash=fat_link_hash)
     else:
         request.session["msg"] = [
             "danger",
-            ("Something went wrong when attempting to submit your" " ESI FAT Link."),
+            "Something went wrong when attempting to submit your ESI FAT Link.",
         ]
 
         return redirect("imicusfat:imicusfat_view")
@@ -771,7 +772,7 @@ def click_link(request, token, hash=None):
     try:
         try:
             fleet = IFatLink.objects.get(hash=hash)
-        except Exception:
+        except IFatLink.DoesNotExist:
             request.session["msg"] = ["warning", "The hash provided is not valid."]
 
             return redirect("imicusfat:imicusfat_view")
@@ -787,6 +788,7 @@ def click_link(request, token, hash=None):
                     "contact your FC about having your FAT manually added."
                 ),
             ]
+
             return redirect("imicusfat:imicusfat_view")
 
         character = EveCharacter.objects.get(character_id=token.character_id)
@@ -890,7 +892,7 @@ def edit_link(request, hash=None):
 
     try:
         link = IFatLink.objects.get(hash=hash)
-    except Exception:
+    except IFatLink.DoesNotExist:
         request.session["msg"] = ["warning", "The hash provided is not valid."]
 
         return redirect("imicusfat:imicusfat_view")
@@ -959,8 +961,10 @@ def edit_link(request, hash=None):
         now = timezone.now() - timedelta(minutes=dur.duration)
 
         if now >= link.ifattime:
+            # link expired
             link_ongoing = False
-    except Exception:
+    except ClickIFatDuration.DoesNotExist:
+        # ESI link
         link_ongoing = False
 
     context = {
@@ -988,7 +992,7 @@ def del_link(request, hash=None):
 
     try:
         link = IFatLink.objects.get(hash=hash)
-    except Exception:
+    except IFatLink.DoesNotExist:
         request.session["msg"] = [
             "danger",
             "The hash provided is either invalid or has been deleted.",
@@ -1019,7 +1023,7 @@ def del_link(request, hash=None):
 def del_fat(request, hash, fat):
     try:
         link = IFatLink.objects.get(hash=hash)
-    except Exception:
+    except IFatLink.DoesNotExist:
         request.session["msg"] = [
             "danger",
             "The hash provided is either invalid or has been deleted.",
@@ -1029,7 +1033,7 @@ def del_fat(request, hash, fat):
 
     try:
         fat = IFat.objects.get(pk=fat, ifatlink_id=link.pk)
-    except Exception:
+    except IFat.DoesNotExist:
         request.session["msg"] = [
             "danger",
             "The hash and FAT ID do not match.",
