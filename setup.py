@@ -15,7 +15,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 install_requires = [
     "django-bootstrap-form",
-    "allianceauth>=2.7.2",
+    "allianceauth>=2.7.3",
 ]
 
 setup(
