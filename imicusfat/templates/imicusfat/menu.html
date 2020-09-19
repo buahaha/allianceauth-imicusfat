@@ -23,7 +23,7 @@
                 <li class="{% navactive request 'imicusfat:links imicusfat:link_edit' %}">
                     <a href="{% url 'imicusfat:links' %}">{% trans "FAT Links" %}</a>
                 </li>
-                {% if perms.imicusfat.manage_imicusfat or perms.imicusfat.add_fatlink %}
+                {% if perms.imicusfat.manage_imicusfat or perms.imicusfat.add_ifatlink %}
                     <li class="{% navactive request 'imicusfat:link_add' %}">
                         <a href="{% url 'imicusfat:link_add' %}">{% trans "Add FAT Link" %}</a>
                     </li>
