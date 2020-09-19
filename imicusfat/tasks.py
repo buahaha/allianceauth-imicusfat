@@ -216,7 +216,6 @@ def get_user_permissions(user):
 
     # can add fats
     if user.has_perm("imicusfat.add_ifat"):
-        can_manipulate_fat = True
         can_add_fat = True
 
     # can delete fats
