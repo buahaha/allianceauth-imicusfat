@@ -170,7 +170,7 @@
                                         <td>{{ fat.system }}</td>
                                         <td>{{ fat.shiptype }}</td>
                                         <td>
-                                            {% if perms.imicusfat.delete_fat %}
+                                            {% if perms.imicusfat.delete_ifat %}
                                             <a class="btn btn-danger"
                                                 data-toggle="modal" data-target="#deleteModal"
                                                 data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:fat_delete' link.hash fat.id %}"
