@@ -248,8 +248,8 @@ def get_user_permissions(user):
         "fats": {
             "has_permissions": has_fat_permissions,  # has any of the below
             "manage": can_manage,  # has all of the below
-            "manipulate": can_manipulate_fat,  # has any of the below
             "add": can_add_fat,
+            "manipulate": can_manipulate_fat,  # has any of the below
             "delete": can_delete_fat,
         },
         "stats": {
