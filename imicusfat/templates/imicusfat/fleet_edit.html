@@ -160,7 +160,9 @@
                                 <th>{% trans "Character" %}</th>
                                 <th>{% trans "Location" %}</th>
                                 <th>{% trans "Ship Type" %}</th>
-                                <th>{% trans "Utilities" %}</th>
+                                {% if perms.imicusfat.manage_imicusfat or perms.imicusfat.delete_ifat %}
+                                    <th>{% trans "Actions" %}</th>
+                                {% endif %}
                              </thead>
 
                              <tbody>
@@ -169,16 +171,16 @@
                                         <td>{{ fat.character.character_name }}</td>
                                         <td>{{ fat.system }}</td>
                                         <td>{{ fat.shiptype }}</td>
-                                        <td>
-                                            {% if perms.imicusfat.delete_ifat %}
-                                            <a class="btn btn-danger"
-                                                data-toggle="modal" data-target="#deleteModal"
-                                                data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:fat_delete' link.hash fat.id %}"
-                                                data-name="{% if fat.character.character_name %}{{ fat.character.character_name }}{% else %}this pilot{% endif %}">
-                                                <span class="glyphicon glyphicon-trash"></span>
-                                            </a>
-                                            {% endif %}
-                                        </td>
+                                        {% if perms.imicusfat.manage_imicusfat or perms.imicusfat.delete_ifat %}
+                                            <td>
+                                                <a class="btn btn-danger"
+                                                    data-toggle="modal" data-target="#deleteModal"
+                                                    data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:fat_delete' link.hash fat.id %}"
+                                                    data-name="{% if fat.character.character_name %}{{ fat.character.character_name }}{% else %}this pilot{% endif %}">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </a>
+                                            </td>
+                                        {% endif %}
                                     </tr>
                                 {% endfor %}
                              </tbody>
