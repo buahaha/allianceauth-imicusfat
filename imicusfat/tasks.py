@@ -135,3 +135,100 @@ def process_character(char, hash):
     ).save()
 
     logger.info("Processing information for character with ID %s", character)
+
+
+# checking permissions
+def get_user_permissions(user):
+    """
+    checking the users permissions
+
+    :param user:
+    :return:
+    """
+    # check if the user has any permissions to change fats and fatlinks
+    has_fatlink_permissions = False
+    if (
+        user.has_perm("imicusfat.manage_imicusfat")
+        or user.has_perm("imicusfat.add_ifatlink")
+        or user.has_perm("imicusfat.change_ifatlink")
+        or user.has_perm("imicusfat.delete_ifatlink")
+        or user.has_perm("imicusfat.delete_ifat")
+    ):
+        has_fatlink_permissions = True
+
+    has_fat_permissions = False
+    if user.has_perm("imicusfat.manage_imicusfat") or user.has_perm(
+        "imicusfat.delete_ifat"
+    ):
+        has_fat_permissions = True
+
+    # Now let's check whic permisions he has
+
+    # can manage the fat module
+    # meaning he can add, change and delete everything
+    can_manage = False
+    if user.has_perm("imicusfat.manage_imicusfat"):
+        can_manage = True
+
+    # can add fatlinks
+    can_add_fatlink = False
+    if user.has_perm("imicusfat.manage_imicusfat") or user.has_perm(
+        "imicusfat.add_ifatlink"
+    ):
+        can_add_fatlink = True
+
+    # Can edit fatlinks
+    can_change_fatlink = False
+    if user.has_perm("imicusfat.manage_imicusfat") or user.has_perm(
+        "imicusfat.change_ifatlink"
+    ):
+        can_change_fatlink = True
+
+    # can delete fatlinks
+    can_delete_fat = False
+    if user.has_perm("imicusfat.manage_imicusfat") or user.has_perm(
+        "imicusfat.delete_ifat"
+    ):
+        can_delete_fat = True
+
+    # can delete fats
+    can_delete_fatlink = False
+    if user.has_perm("imicusfat.manage_imicusfat") or user.has_perm(
+        "imicusfat.delete_ifatlink"
+    ):
+        can_delete_fatlink = True
+
+    # can view other corp stats
+    can_view_owncorpstats = False
+    if user.has_perm("imicusfat.stats_corp_own"):
+        can_view_owncorpstats = True
+
+    # can view other corp stats
+    can_view_other_corpstats = False
+    if user.has_perm("imicusfat.stats_corp_other"):
+        can_view_other_corpstats = True
+
+    # can view other character stats
+    can_view_other_charstats = False
+    if user.has_perm("imicusfat.stats_char_other"):
+        can_view_other_charstats = True
+
+    permissions = {
+        "fat_links": {
+            "has_permissions": has_fatlink_permissions,  # has any of the below
+            "manage_fatlinks": can_manage,  # has any of the below
+            "add_fatlink": can_add_fatlink,
+            "change_fatlink": can_change_fatlink,
+            "delete_fatlink": can_delete_fatlink,
+        },
+        "fats": {
+            "has_permissions": has_fat_permissions,  # has any of the below
+            "manage_fats": can_manage,  # has any of the below
+            "delete_fat": can_delete_fat,
+        },
+        "view_own_corpstats": can_view_owncorpstats,
+        "view_other_corpstats": can_view_other_corpstats,
+        "view_other_charstats": can_view_other_charstats,
+    }
+
+    return permissions

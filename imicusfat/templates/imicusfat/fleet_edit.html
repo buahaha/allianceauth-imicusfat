@@ -160,7 +160,7 @@
                                 <th>{% trans "Character" %}</th>
                                 <th>{% trans "Location" %}</th>
                                 <th>{% trans "Ship Type" %}</th>
-                                {% if perms.imicusfat.manage_imicusfat or perms.imicusfat.delete_ifat %}
+                                {% if permissions.fats.manage_fats %}
                                     <th>{% trans "Actions" %}</th>
                                 {% endif %}
                              </thead>
@@ -171,7 +171,7 @@
                                         <td>{{ fat.character.character_name }}</td>
                                         <td>{{ fat.system }}</td>
                                         <td>{{ fat.shiptype }}</td>
-                                        {% if perms.imicusfat.manage_imicusfat or perms.imicusfat.delete_ifat %}
+                                        {% if permissions.fats.delete_fat %}
                                             <td>
                                                 <a class="btn btn-danger"
                                                     data-toggle="modal" data-target="#deleteModal"

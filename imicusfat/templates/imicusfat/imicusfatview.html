@@ -111,7 +111,9 @@
                             <th>{% trans "Fleet Name" %}</th>
                             <th>{% trans "Creator" %}</th>
                             <th>{% trans "EVE Time" %}</th>
-                            <th>{% trans "Utils" %}</th>
+                            {% if permissions.fat_links.has_permissions %}
+                                <th>{% trans "Actions" %}</th>
+                            {% endif %}
                         </thead>
 
                         <tbody>
@@ -120,24 +122,26 @@
                                     <td>{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}</td>
                                     <td>{{ link.creator.profile.main_character.character_name }}</td>
                                     <td>{{ link.ifattime|date:"Y-M-d, H:i" }}</td>
-                                    <td>
-                                        {% if perms.imicusfat.change_ifatlink %}
-                                        <a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}">
-                                            <span class="glyphicon glyphicon-pencil"></span>
-                                        </a>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if perms.imicusfat.delete_ifatlink %}
-                                        <a class="btn btn-danger"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
-                                            data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_delete' link.hash %}"
-                                            data-name="{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}">
-                                            <span class="glyphicon glyphicon-trash"></span>
-                                        </a>
-                                        {% endif %}
-                                    </td>
+
+                                    {% if permissions.fat_links.has_permissions %}
+                                        <td>
+                                            {% if permissions.fat_links.change_fatlink %}
+                                                <a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}">
+                                                    <span class="glyphicon glyphicon-pencil"></span>
+                                                </a>
+                                            {% endif %}
+
+                                            {% if permissions.fat_links.delete_fatlink %}
+                                                <a class="btn btn-danger"
+                                                    data-toggle="modal"
+                                                    data-target="#deleteModal"
+                                                    data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_delete' link.hash %}"
+                                                    data-name="{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                         </tbody>

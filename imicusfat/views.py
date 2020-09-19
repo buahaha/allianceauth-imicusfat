@@ -26,7 +26,7 @@ from . import __title__
 from .forms import FatLinkForm, ManualFatForm, ClickFatForm
 from .models import IFat, ClickIFatDuration, IFatLink, ManualIFat, DelLog, IFatLinkType
 from .providers import esi
-from .tasks import get_or_create_char, process_fats
+from .tasks import get_or_create_char, process_fats, get_user_permissions
 from .utils import LoggerAddTag
 
 import random
@@ -63,7 +63,15 @@ def imicusfat_view(request):
 
     fatlinks = IFatLink.objects.order_by("ifattime").reverse()[:10]
 
-    context = {"fats": fats, "links": fatlinks, "msg": msg}
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
+    context = {
+        "fats": fats,
+        "links": fatlinks,
+        "msg": msg,
+        "permissions": permissions,
+    }
 
     logger.info("Module called by %s", request.user)
 
@@ -967,6 +975,9 @@ def edit_link(request, hash=None):
         # ESI link
         link_ongoing = False
 
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
     context = {
         "form": FatLinkForm,
         "msg_code": msg_code,
@@ -975,6 +986,7 @@ def edit_link(request, hash=None):
         "fats": fats,
         "flatlist": flatlist,
         "link_ongoing": link_ongoing,
+        "permissions": permissions,
     }
 
     logger.info("FAT link %s edited by %s", hash, request.user)
