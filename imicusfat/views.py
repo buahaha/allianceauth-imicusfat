@@ -128,11 +128,15 @@ def stats(request, year=None):
         char_l.append(char.character.character_id)
         months.append(char_l)
 
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
     context = {
         "data": data,
         "charstats": months,
         "year": year,
         "current_year": datetime.now().year,
+        "permissions": permissions,
     }
 
     logger.info("Statistics overview called by %s", request.user)
@@ -208,6 +212,9 @@ def stats_char(request, charid, month=None, year=None):
         ],
     ]
 
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
     context = {
         "character": character,
         "month": month,
@@ -221,6 +228,7 @@ def stats_char(request, charid, month=None, year=None):
         "data_ship_type": data_ship_type,
         "data_time": data_time,
         "fats": fats,
+        "permissions": permissions,
     }
 
     logger.info("Character statistics called by %s", request.user)
@@ -231,6 +239,9 @@ def stats_char(request, charid, month=None, year=None):
 @login_required()
 @permissions_required(("imicusfat.stats_corp_own", "imicusfat.stats_corp_other"))
 def stats_corp(request, corpid, month=None, year=None):
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
     # Check character has permission to view other corp stats
     if int(request.user.profile.main_character.corporation_id) != int(corpid):
         if not request.user.has_perm("imicusfat.stats_corp_other"):
@@ -264,6 +275,7 @@ def stats_corp(request, corpid, month=None, year=None):
             "corpid": corpid,
             "year": year,
             "type": 0,
+            "permissions": permissions,
         }
 
         return render(request, "imicusfat/date_select.html", context)
@@ -375,6 +387,7 @@ def stats_corp(request, corpid, month=None, year=None):
         "data_time": data_time,
         "data_weekday": data_weekday,
         "chars": chars,
+        "permissions": permissions,
     }
 
     logger.info("Corporation statistics for %s called by %s", corp_name, request.user)
@@ -385,6 +398,9 @@ def stats_corp(request, corpid, month=None, year=None):
 @login_required()
 @permission_required("imicusfat.stats_corp_other")
 def stats_alliance(request, allianceid, month=None, year=None):
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
     if allianceid == "000":
         allianceid = None
 
@@ -415,6 +431,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
             "corpid": allianceid,
             "year": year,
             "type": 1,
+            "permissions": permissions,
         }
 
         return render(request, "imicusfat/date_select.html", context)
@@ -582,6 +599,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
         "data_weekday": data_weekday,
         "corps": corps,
         "data_ship_type": data_ship_type,
+        "permissions": permissions,
     }
 
     logger.info("Alliance statistics for %s called by %s", alliance_name, request.user)
@@ -602,7 +620,10 @@ def links(request):
         .annotate(number_of_fats=Count("ifat", filter=Q(ifat__deleted_at__isnull=True)))
     )
 
-    context = {"links": fatlinks, "msg": msg}
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
+    context = {"links": fatlinks, "msg": msg, "permissions": permissions}
 
     logger.info("FAT link list called by %s", request.user)
 
@@ -619,7 +640,10 @@ def link_add(request):
 
     link_types = IFatLinkType.objects.all().order_by("name")
 
-    context = {"link_types": link_types, "msg": msg}
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
+    context = {"link_types": link_types, "msg": msg, "permissions": permissions}
 
     logger.info("Add FAT link view called by %s", request.user)
 

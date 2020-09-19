@@ -146,7 +146,7 @@
 
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" class="tab" href="#FATs">{% trans "FATs" %}</a></li>
-                <li>{% if perms.imicusfat.add_ifat %}<a data-toggle="tab" class="tab" href="#manualfat">{% trans "Manual FAT" %}</a>{% endif %}</li>
+                <li>{% if permissions.fats.add %}<a data-toggle="tab" class="tab" href="#manualfat">{% trans "Manual FAT" %}</a>{% endif %}</li>
                 <li><a data-toggle="tab" class="tab" href="#flatlist">{% trans "Raw Data" %}</a></li>
             </ul>
 
@@ -160,7 +160,7 @@
                                 <th>{% trans "Character" %}</th>
                                 <th>{% trans "Location" %}</th>
                                 <th>{% trans "Ship Type" %}</th>
-                                {% if permissions.fats.manage_fats %}
+                                {% if permissions.fats.manage %}
                                     <th>{% trans "Actions" %}</th>
                                 {% endif %}
                              </thead>
@@ -171,7 +171,7 @@
                                         <td>{{ fat.character.character_name }}</td>
                                         <td>{{ fat.system }}</td>
                                         <td>{{ fat.shiptype }}</td>
-                                        {% if permissions.fats.delete_fat %}
+                                        {% if permissions.fats.delete %}
                                             <td>
                                                 <a class="btn btn-danger"
                                                     data-toggle="modal" data-target="#deleteModal"

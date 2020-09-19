@@ -111,7 +111,7 @@
                             <th>{% trans "Fleet Name" %}</th>
                             <th>{% trans "Creator" %}</th>
                             <th>{% trans "EVE Time" %}</th>
-                            {% if permissions.fat_links.has_permissions %}
+                            {% if permissions.fat_links.manipulate %}
                                 <th>{% trans "Actions" %}</th>
                             {% endif %}
                         </thead>
@@ -123,15 +123,15 @@
                                     <td>{{ link.creator.profile.main_character.character_name }}</td>
                                     <td>{{ link.ifattime|date:"Y-M-d, H:i" }}</td>
 
-                                    {% if permissions.fat_links.has_permissions %}
+                                    {% if permissions.fat_links.manipulate %}
                                         <td>
-                                            {% if permissions.fat_links.change_fatlink %}
+                                            {% if permissions.fat_links.change %}
                                                 <a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}">
                                                     <span class="glyphicon glyphicon-pencil"></span>
                                                 </a>
                                             {% endif %}
 
-                                            {% if permissions.fat_links.delete_fatlink %}
+                                            {% if permissions.fat_links.delete %}
                                                 <a class="btn btn-danger"
                                                     data-toggle="modal"
                                                     data-target="#deleteModal"
