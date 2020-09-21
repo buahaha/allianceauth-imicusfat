@@ -37,23 +37,28 @@
                         <form class="form" role="form" action="{% url 'imicusfat:create_esi_fat' %}" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
-                                <label for="name">{% trans "Fleet Name" %}</label>
-                                <input type="text" class="form-control" id="name" name="name" placeholder='{% trans "Enter fleet name" %}' required>
+                                <label style="width: 100%; font-weight: normal;">
+                                    <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% trans "Fleet Name" %}</span>
+                                    <input type="text" class="form-control" name="name_esi" placeholder='{% trans "Enter fleet name" %}' required>
+                                </label>
                             </div>
+
                             {% if link_types %}
                                 <div class="form-group">
-                                    <label for="type">{% trans "Fleet Type (optional)" %}</label>
-
-                                    <select id="type" class="form-control" name="type">
-                                        <option value="-1">{% trans "Please select a fleet type" %}</option>
-                                        {% for type in link_types %}
-                                            <option value="{{type.id}}">{{type.name}}</option>
-                                        {% endfor %}
-                                    </select>
+                                    <label style="width: 100%; font-weight: normal;">
+                                        <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% trans "Fleet Type (optional)" %}</span>
+                                        <select class="form-control" name="type_esi">
+                                            <option value="-1">{% trans "Please select a fleet type" %}</option>
+                                            {% for type in link_types %}
+                                                <option value="{{type.id}}">{{type.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
                                 </div>
                             {% endif %}
+
                             <div class="form-group text-right">
-                                <button class="btn btn-primary" type="submit" name="submit_click" id="submit_click">
+                                <button class="btn btn-primary" type="submit" name="submit_click">
                                     <span class="fa fa-plus fa-fw"></span>
                                     {% trans "Add ESI Link" %}
                                 </button>
@@ -80,29 +85,35 @@
                         <form class="form" role="form" action="{% url 'imicusfat:link_create_click' %}" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
-                                <label for="name">{% trans "Fleet Name" %}</label>
-                                <input type="text" class="form-control" id="name" name="name" placeholder='{% trans "Enter fleet name" %}' required>
+                                <label style="width: 100%; font-weight: normal;">
+                                    <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% trans "Fleet Name" %}</span>
+                                    <input type="text" class="form-control" name="name" placeholder='{% trans "Enter fleet name" %}' required>
+                                </label>
                             </div>
 
                             {% if link_types %}
                                 <div class="form-group">
-                                    <label for="type">{% trans "Fleet Type (optional)" %}</label>
-
-                                    <select id="type" class="form-control" name="type">
-                                        <option value="-1">{% trans "Please select a fleet type" %}</option>
-                                        {% for type in link_types %}
-                                            <option value="{{type.id}}">{{type.name}}</option>
-                                        {% endfor %}
-                                    </select>
+                                    <label style="width: 100%; font-weight: normal;">
+                                        <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% trans "Fleet Type (optional)" %}</span>
+                                        <select class="form-control" name="type">
+                                            <option value="-1">{% trans "Please select a fleet type" %}</option>
+                                            {% for type in link_types %}
+                                                <option value="{{type.id}}">{{type.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
                                 </div>
                             {% endif %}
 
                             <div class="form-group">
-                                <label for="duration">{% trans "FAT expiry in minutes" %}</label>
-                                <input type="number" class="form-control" name="duration" id="duration" value="30" placeholder='{% trans "Expiry Time in Minutes" %}' required>
+                                <label style="width: 100%; font-weight: normal;">
+                                    <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% trans "FAT expiry in minutes" %}</span>
+                                    <input type="number" class="form-control" name="duration" id="duration" value="30" placeholder='{% trans "Expiry Time in Minutes" %}' required>
+                                </label>
                             </div>
+
                             <div class="form-group text-right">
-                                <button class="btn btn-primary" type="submit" name="submit_click" id="submit_click">
+                                <button class="btn btn-primary" type="submit" name="submit_click">
                                     <span class="fa fa-plus fa-fw"></span>
                                     {% trans "Create Link" %}
                                 </button>

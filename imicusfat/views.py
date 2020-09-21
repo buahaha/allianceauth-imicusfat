@@ -23,7 +23,7 @@ from esi.decorators import token_required
 from esi.models import Token
 
 from . import __title__
-from .forms import FatLinkForm, ManualFatForm, ClickFatForm
+from .forms import FatLinkForm, ManualFatForm, ClickFatForm, FatLinkEditForm
 from .models import IFat, ClickIFatDuration, IFatLink, ManualIFat, DelLog, IFatLinkType
 from .providers import esi
 from .tasks import get_or_create_char, process_fats, get_user_permissions
@@ -773,11 +773,16 @@ def create_esi_fat(request):
 
     if form.is_valid():
         link = IFatLink(
-            fleet=form.cleaned_data["name"], creator=request.user, hash=fat_link_hash
+            fleet=form.cleaned_data["name_esi"],
+            creator=request.user,
+            hash=fat_link_hash,
         )
 
-        if form.cleaned_data["type"] is not None and form.cleaned_data["type"] != -1:
-            link.link_type = IFatLinkType.objects.get(id=form.cleaned_data["type"])
+        if (
+            form.cleaned_data["type_esi"] is not None
+            and form.cleaned_data["type_esi"] != -1
+        ):
+            link.link_type = IFatLinkType.objects.get(id=form.cleaned_data["type_esi"])
 
         link.save()
 
@@ -930,18 +935,17 @@ def edit_link(request, hash=None):
         return redirect("imicusfat:imicusfat_view")
 
     if request.method == "POST":
-        f1 = FatLinkForm(request.POST)
+        f1 = FatLinkEditForm(request.POST)
         f3 = ManualFatForm(request.POST)
 
         if f1.is_valid():
-            link.fleet = request.POST["fleet"]
+            link.fleet = f1.cleaned_data["fleet"]
             link.save()
             request.session["{}-task-code".format(hash)] = 1
         elif f3.is_valid():
-            form = request.POST
-            character_name = form["character"]
-            system = form["system"]
-            shiptype = form["shiptype"]
+            character_name = f3.cleaned_data["character"]
+            system = f3.cleaned_data["system"]
+            shiptype = f3.cleaned_data["shiptype"]
             creator = request.user
             character = get_or_create_char(name=character_name)
 
