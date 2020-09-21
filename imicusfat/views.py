@@ -25,8 +25,9 @@ from esi.models import Token
 from . import __title__
 from .forms import FatLinkForm, ManualFatForm, ClickFatForm, FatLinkEditForm
 from .models import IFat, ClickIFatDuration, IFatLink, ManualIFat, DelLog, IFatLinkType
+from .permissions import get_user_permissions
 from .providers import esi
-from .tasks import get_or_create_char, process_fats, get_user_permissions
+from .tasks import get_or_create_char, process_fats
 from .utils import LoggerAddTag
 
 import random
