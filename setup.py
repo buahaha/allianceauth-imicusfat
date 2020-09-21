@@ -14,8 +14,8 @@ with open(os.path.join(this_directory, "README.md"), encoding="utf-8") as f:
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 install_requires = [
-    "django-bootstrap-form",
     "allianceauth>=2.7.3",
+    "django-bootstrap-form",
 ]
 
 
