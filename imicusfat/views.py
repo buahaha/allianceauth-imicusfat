@@ -935,17 +935,17 @@ def edit_link(request, hash=None):
         return redirect("imicusfat:imicusfat_view")
 
     if request.method == "POST":
-        f1 = FatLinkEditForm(request.POST)
-        f3 = ManualFatForm(request.POST)
+        fatlink_edit_form = FatLinkEditForm(request.POST)
+        manual_fat_form = ManualFatForm(request.POST)
 
-        if f1.is_valid():
-            link.fleet = f1.cleaned_data["fleet"]
+        if fatlink_edit_form.is_valid():
+            link.fleet = fatlink_edit_form.cleaned_data["fleet"]
             link.save()
             request.session["{}-task-code".format(hash)] = 1
-        elif f3.is_valid():
-            character_name = f3.cleaned_data["character"]
-            system = f3.cleaned_data["system"]
-            shiptype = f3.cleaned_data["shiptype"]
+        elif manual_fat_form.is_valid():
+            character_name = manual_fat_form.cleaned_data["character"]
+            system = manual_fat_form.cleaned_data["system"]
+            shiptype = manual_fat_form.cleaned_data["shiptype"]
             creator = request.user
             character = get_or_create_char(name=character_name)
 
