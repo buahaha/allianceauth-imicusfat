@@ -74,6 +74,11 @@ class IFatLinkType(SoftDeletionModel):
     def __str__(self):
         return "{} - {}".format(self.id, self.name)
 
+    class Meta:
+        verbose_name = "FAT Link Type"
+        verbose_name_plural = "FAT Link Types"
+        default_permissions = ()
+
 
 # IFatLink Model
 class IFatLink(SoftDeletionModel):
@@ -88,6 +93,8 @@ class IFatLink(SoftDeletionModel):
         return self.hash[6:]
 
     class Meta:
+        verbose_name = "FAT Link"
+        verbose_name_plural = "FAT Links"
         permissions = (
             ("manage_imicusfat", "Can manage the imicusfat module"),
             ("stats_corp_own", "Can see own corp stats"),
@@ -114,11 +121,13 @@ class IFat(SoftDeletionModel):
     shiptype = models.CharField(max_length=100, null=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
 
-    class Meta:
-        unique_together = (("character", "ifatlink"),)
-
     def __str__(self):
         return "{} - {}".format(self.ifatlink, self.character)
+
+    class Meta:
+        verbose_name = "FAT"
+        verbose_name_plural = "FATs"
+        unique_together = (("character", "ifatlink"),)
 
 
 # ManualIFat Model
@@ -148,3 +157,8 @@ class DelLog(models.Model):
 
     def __str__(self):
         return "{}/{} - {}".format(self.delt_to_str(), self.string, self.remover)
+
+    class Meta:
+        verbose_name = "Delete Log"
+        verbose_name_plural = "Delete Logs"
+        default_permissions = ()

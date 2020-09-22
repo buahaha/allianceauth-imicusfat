@@ -23,8 +23,9 @@ from esi.decorators import token_required
 from esi.models import Token
 
 from . import __title__
-from .forms import FatLinkForm, ManualFatForm, ClickFatForm
+from .forms import FatLinkForm, ManualFatForm, ClickFatForm, FatLinkEditForm
 from .models import IFat, ClickIFatDuration, IFatLink, ManualIFat, DelLog, IFatLinkType
+from .permissions import get_user_permissions
 from .providers import esi
 from .tasks import get_or_create_char, process_fats
 from .utils import LoggerAddTag
@@ -63,7 +64,15 @@ def imicusfat_view(request):
 
     fatlinks = IFatLink.objects.order_by("ifattime").reverse()[:10]
 
-    context = {"fats": fats, "links": fatlinks, "msg": msg}
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
+    context = {
+        "fats": fats,
+        "links": fatlinks,
+        "msg": msg,
+        "permissions": permissions,
+    }
 
     logger.info("Module called by %s", request.user)
 
@@ -120,11 +129,15 @@ def stats(request, year=None):
         char_l.append(char.character.character_id)
         months.append(char_l)
 
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
     context = {
         "data": data,
         "charstats": months,
         "year": year,
         "current_year": datetime.now().year,
+        "permissions": permissions,
     }
 
     logger.info("Statistics overview called by %s", request.user)
@@ -200,6 +213,9 @@ def stats_char(request, charid, month=None, year=None):
         ],
     ]
 
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
     context = {
         "character": character,
         "month": month,
@@ -213,6 +229,7 @@ def stats_char(request, charid, month=None, year=None):
         "data_ship_type": data_ship_type,
         "data_time": data_time,
         "fats": fats,
+        "permissions": permissions,
     }
 
     logger.info("Character statistics called by %s", request.user)
@@ -223,6 +240,9 @@ def stats_char(request, charid, month=None, year=None):
 @login_required()
 @permissions_required(("imicusfat.stats_corp_own", "imicusfat.stats_corp_other"))
 def stats_corp(request, corpid, month=None, year=None):
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
     # Check character has permission to view other corp stats
     if int(request.user.profile.main_character.corporation_id) != int(corpid):
         if not request.user.has_perm("imicusfat.stats_corp_other"):
@@ -256,6 +276,7 @@ def stats_corp(request, corpid, month=None, year=None):
             "corpid": corpid,
             "year": year,
             "type": 0,
+            "permissions": permissions,
         }
 
         return render(request, "imicusfat/date_select.html", context)
@@ -367,6 +388,7 @@ def stats_corp(request, corpid, month=None, year=None):
         "data_time": data_time,
         "data_weekday": data_weekday,
         "chars": chars,
+        "permissions": permissions,
     }
 
     logger.info("Corporation statistics for %s called by %s", corp_name, request.user)
@@ -377,6 +399,9 @@ def stats_corp(request, corpid, month=None, year=None):
 @login_required()
 @permission_required("imicusfat.stats_corp_other")
 def stats_alliance(request, allianceid, month=None, year=None):
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
     if allianceid == "000":
         allianceid = None
 
@@ -407,6 +432,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
             "corpid": allianceid,
             "year": year,
             "type": 1,
+            "permissions": permissions,
         }
 
         return render(request, "imicusfat/date_select.html", context)
@@ -574,6 +600,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
         "data_weekday": data_weekday,
         "corps": corps,
         "data_ship_type": data_ship_type,
+        "permissions": permissions,
     }
 
     logger.info("Alliance statistics for %s called by %s", alliance_name, request.user)
@@ -594,7 +621,10 @@ def links(request):
         .annotate(number_of_fats=Count("ifat", filter=Q(ifat__deleted_at__isnull=True)))
     )
 
-    context = {"links": fatlinks, "msg": msg}
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
+    context = {"links": fatlinks, "msg": msg, "permissions": permissions}
 
     logger.info("FAT link list called by %s", request.user)
 
@@ -611,7 +641,10 @@ def link_add(request):
 
     link_types = IFatLinkType.objects.all().order_by("name")
 
-    context = {"link_types": link_types, "msg": msg}
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
+    context = {"link_types": link_types, "msg": msg, "permissions": permissions}
 
     logger.info("Add FAT link view called by %s", request.user)
 
@@ -626,6 +659,7 @@ def link_create_click(request):
 
         if form.is_valid():
             fatlinkhash = get_random_string(length=30)
+
             link = IFatLink()
             link.fleet = form.cleaned_data["name"]
 
@@ -709,8 +743,6 @@ def link_create_esi(request, token, hash):
                 "You can create a clickable FAT link and share it, if you like.",
             ]
 
-            return redirect("imicusfat:link_edit", hash=hash)
-
             # since the FAT link has already been created, we need to remove it again
             link = IFatLink.objects.get(hash=hash)
             IFat.objects.filter(ifatlink_id=link.pk).delete()
@@ -719,6 +751,7 @@ def link_create_esi(request, token, hash):
             # return to "Add FAT Link" view
             return redirect("imicusfat:link_add")
     except Exception:
+        # Not in fleet
         request.session["msg"] = [
             "warning",
             "To use the ESI function, you neeed to be in fleet and you need to be the fleet boss! "
@@ -741,18 +774,24 @@ def create_esi_fat(request):
 
     if form.is_valid():
         link = IFatLink(
-            fleet=form.cleaned_data["name"], creator=request.user, hash=fat_link_hash
+            fleet=form.cleaned_data["name_esi"],
+            creator=request.user,
+            hash=fat_link_hash,
         )
 
-        if form.cleaned_data["type"] is not None and form.cleaned_data["type"] != -1:
-            link.link_type = IFatLinkType.objects.get(id=form.cleaned_data["type"])
+        if (
+            form.cleaned_data["type_esi"] is not None
+            and form.cleaned_data["type_esi"] != -1
+        ):
+            link.link_type = IFatLinkType.objects.get(id=form.cleaned_data["type_esi"])
+
         link.save()
 
         return redirect("imicusfat:link_create_esi", hash=fat_link_hash)
     else:
         request.session["msg"] = [
             "danger",
-            ("Something went wrong when attempting to submit your" " ESI FAT Link."),
+            "Something went wrong when attempting to submit your ESI FAT Link.",
         ]
 
         return redirect("imicusfat:imicusfat_view")
@@ -771,7 +810,7 @@ def click_link(request, token, hash=None):
     try:
         try:
             fleet = IFatLink.objects.get(hash=hash)
-        except Exception:
+        except IFatLink.DoesNotExist:
             request.session["msg"] = ["warning", "The hash provided is not valid."]
 
             return redirect("imicusfat:imicusfat_view")
@@ -787,6 +826,7 @@ def click_link(request, token, hash=None):
                     "contact your FC about having your FAT manually added."
                 ),
             ]
+
             return redirect("imicusfat:imicusfat_view")
 
         character = EveCharacter.objects.get(character_id=token.character_id)
@@ -890,24 +930,23 @@ def edit_link(request, hash=None):
 
     try:
         link = IFatLink.objects.get(hash=hash)
-    except Exception:
+    except IFatLink.DoesNotExist:
         request.session["msg"] = ["warning", "The hash provided is not valid."]
 
         return redirect("imicusfat:imicusfat_view")
 
     if request.method == "POST":
-        f1 = FatLinkForm(request.POST)
-        f3 = ManualFatForm(request.POST)
+        fatlink_edit_form = FatLinkEditForm(request.POST)
+        manual_fat_form = ManualFatForm(request.POST)
 
-        if f1.is_valid():
-            link.fleet = request.POST["fleet"]
+        if fatlink_edit_form.is_valid():
+            link.fleet = fatlink_edit_form.cleaned_data["fleet"]
             link.save()
             request.session["{}-task-code".format(hash)] = 1
-        elif f3.is_valid():
-            form = request.POST
-            character_name = form["character"]
-            system = form["system"]
-            shiptype = form["shiptype"]
+        elif manual_fat_form.is_valid():
+            character_name = manual_fat_form.cleaned_data["character"]
+            system = manual_fat_form.cleaned_data["system"]
+            shiptype = manual_fat_form.cleaned_data["shiptype"]
             creator = request.user
             character = get_or_create_char(name=character_name)
 
@@ -959,9 +998,14 @@ def edit_link(request, hash=None):
         now = timezone.now() - timedelta(minutes=dur.duration)
 
         if now >= link.ifattime:
+            # link expired
             link_ongoing = False
-    except Exception:
+    except ClickIFatDuration.DoesNotExist:
+        # ESI link
         link_ongoing = False
+
+    # get users permissions
+    permissions = get_user_permissions(request.user)
 
     context = {
         "form": FatLinkForm,
@@ -971,6 +1015,7 @@ def edit_link(request, hash=None):
         "fats": fats,
         "flatlist": flatlist,
         "link_ongoing": link_ongoing,
+        "permissions": permissions,
     }
 
     logger.info("FAT link %s edited by %s", hash, request.user)
@@ -988,7 +1033,7 @@ def del_link(request, hash=None):
 
     try:
         link = IFatLink.objects.get(hash=hash)
-    except Exception:
+    except IFatLink.DoesNotExist:
         request.session["msg"] = [
             "danger",
             "The hash provided is either invalid or has been deleted.",
@@ -1019,7 +1064,7 @@ def del_link(request, hash=None):
 def del_fat(request, hash, fat):
     try:
         link = IFatLink.objects.get(hash=hash)
-    except Exception:
+    except IFatLink.DoesNotExist:
         request.session["msg"] = [
             "danger",
             "The hash provided is either invalid or has been deleted.",
@@ -1029,7 +1074,7 @@ def del_fat(request, hash, fat):
 
     try:
         fat = IFat.objects.get(pk=fat, ifatlink_id=link.pk)
-    except Exception:
+    except IFat.DoesNotExist:
         request.session["msg"] = [
             "danger",
             "The hash and FAT ID do not match.",
