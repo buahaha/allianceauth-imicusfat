@@ -35,7 +35,7 @@
                 <th>{% trans "Creator" %}</th>
                 <th>{% trans "EVE Time" %}</th>
                 <th>{% trans "# of FATs" %}</th>
-                {% if perms.imicusfat.change_ifatlink or perms.imicusfat.delete_ifatlink %}
+                {% if permissions.fatlinks.manipulate %}
                     <th>{% trans "Actions" %}</th>
                 {% endif %}
             </thead>
@@ -60,22 +60,23 @@
                         <td>{{ link.creator.profile.main_character.character_name }}</td>
                         <td data-sort='{{ link.ifattime|date:"Y-m-d H:i" }}'>{{ link.ifattime|date:"Y-M-d, H:i" }}</td>
                         <td>{{ link.number_of_fats }}</td>
-                        {% if perms.imicusfat.change_ifatlink or perms.imicusfat.delete_ifatlink %}
+
+                        {% if permissions.fatlinks.manipulate %}
                         <td class="no-sort">
-                            {% if perms.imicusfat.change_ifatlink %}
-                            <a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}">
-                                <span class="glyphicon glyphicon-pencil"></span>
-                            </a>
+                            {% if permissions.fatlinks.change %}
+                                <a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                </a>
                             {% endif %}
 
-                            {% if perms.imicusfat.delete_ifatlink %}
-                            <a class="btn btn-danger"
-                                data-toggle="modal"
-                                data-target="#deleteModal"
-                                data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_delete' link.hash %}"
-                                data-name="{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </a>
+                            {% if permissions.fatlinks.delete %}
+                                <a class="btn btn-danger"
+                                    data-toggle="modal"
+                                    data-target="#deleteModal"
+                                    data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_delete' link.hash %}"
+                                    data-name="{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </a>
                             {% endif %}
                         </td>
                         {% endif %}
@@ -138,7 +139,7 @@
 
         $('#link-list').DataTable({
             "order": [[ 3, "desc" ]],
-            {% if perms.imicusfat.change_ifatlink or perms.imicusfat.delete_ifatlink %}
+            {% if permissions.fatlinks.manipulate %}
             "columnDefs": [{
                 "targets": 5,
                 "orderable": false,

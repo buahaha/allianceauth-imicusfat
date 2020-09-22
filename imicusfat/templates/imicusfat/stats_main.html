@@ -31,7 +31,7 @@
 
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#mine">{% trans "My Stats" %}</a></li>
-            {% if perms.imicusfat.stats_corp_own or perms.imicusfat.stats_corp_other %}
+            {% if permissions.stats.corp.view_own or permissions.stats.corp.view_other %}
                 <li><a data-toggle="tab" href="#corps">{% trans "Corps" %}</a></li>
             {% endif %}
         </ul>
@@ -95,11 +95,11 @@
                 </div>
             </div>
 
-            {% if perms.imicusfat.stats_corp_own or perms.imicusfat.stats_corp_other %}
+            {% if permissions.stats.corp.view_own or permissions.stats.corp.view_other %}
             <div id="corps" class="tab-pane fade panel-default">
                 <div class="panel-body">
                     <h4>{% trans "Corporations (Click Alliance Name to See Corps)" %}</h4>
-                    {% if perms.imicusfat.stats_corp_other %}
+                    {% if permissions.stats.corp.view_other %}
                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                             {% for key, value in data.items %}
                                 <div class="panel panel-default">
@@ -147,7 +147,7 @@
                                     </div>
                                 </div>
                         {% endfor %}
-                    {% elif perms.imicusfat.stats_corp_own %}
+                    {% elif permissions.stats.corp.view_own %}
                         <table class="table">
                             <tbody>
                                 <tr>
