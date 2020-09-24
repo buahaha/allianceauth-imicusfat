@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
+
+"""
+tasks
+"""
+
+from celery import shared_task
+
 from allianceauth.eveonline.models import (
     EveAllianceInfo,
     EveCharacter,
     EveCorporationInfo,
 )
 from allianceauth.services.hooks import get_extension_logger
-from celery import shared_task
 
 from . import __title__
 from .models import IFat, IFatLink
@@ -17,6 +23,10 @@ logger = LoggerAddTag(get_extension_logger(__name__), __title__)
 
 
 class NoDataError(Exception):
+    """
+    NoDataError
+    """
+
     def __init__(self, msg):
         Exception.__init__(self, msg)
 
@@ -30,6 +40,7 @@ def get_or_create_char(name: str = None, id: int = None):
     :param id: int (optional)
     :returns character: EveCharacter
     """
+
     if name:
         # If a name is passed we have to check it on ESI
         result = esi.client.Search.get_search(
@@ -40,14 +51,14 @@ def get_or_create_char(name: str = None, id: int = None):
             return None
 
         id = result["character"][0]
-        qs = EveCharacter.objects.filter(character_id=id)
+        eve_character = EveCharacter.objects.filter(character_id=id)
     elif id:
         # If an ID is passed we can just check the db for it.
-        qs = EveCharacter.objects.filter(character_id=id)
+        eve_character = EveCharacter.objects.filter(character_id=id)
     elif not name and not id:
         raise NoDataError("No character name or id provided.")
 
-    if len(qs) == 0:
+    if len(eve_character) == 0:
         # Create Character
         character = EveCharacter.objects.create_character(id)
         character = EveCharacter.objects.get(pk=character.pk)
@@ -67,7 +78,7 @@ def get_or_create_char(name: str = None, id: int = None):
                 EveCorporationInfo.objects.create_corporation(character.corporation_id)
 
     else:
-        character = qs[0]
+        character = eve_character[0]
 
     logger.info("Processing information for character %s", character.pk)
 
@@ -92,6 +103,15 @@ def process_fats(list, type_, hash):
 
 @shared_task
 def process_line(line, type_, hash):
+    """
+    process_line
+    processing every single character on its own
+    :param line:
+    :param type_:
+    :param hash:
+    :return:
+    """
+
     link = IFatLink.objects.get(hash=hash)
 
     if type_ == "comp":
@@ -115,6 +135,13 @@ def process_line(line, type_, hash):
 
 @shared_task
 def process_character(char, hash):
+    """
+    process_character
+    :param char:
+    :param hash:
+    :return:
+    """
+
     link = IFatLink.objects.get(hash=hash)
 
     char_id = char["character_id"]

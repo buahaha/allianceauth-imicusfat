@@ -1,8 +1,14 @@
+# coding=utf-8
+
+"""
+url configuration
+"""
+
 from django.conf.urls import url
 
 from . import views
 
-app_name = "imicusfat"
+app_name: str = "imicusfat"
 
 urlpatterns = [
     url(r"^$", views.imicusfat_view, name="imicusfat_view"),
