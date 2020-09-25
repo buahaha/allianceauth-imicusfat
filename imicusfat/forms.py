@@ -45,4 +45,4 @@ class FatLinkEditForm(forms.Form):
     used in edit view to change teh fatlink name
     """
 
-    name = forms.CharField(label=_("Fleet Name"), max_length=50)
+    fleet = forms.CharField(label=_("Fleet Name"), max_length=50)

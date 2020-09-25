@@ -1015,6 +1015,9 @@ def edit_link(request, hash=None):
     :return:
     """
 
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
     if hash is None:
         request.session["msg"] = ["warning", "No FAT Link hash provided."]
 
@@ -1095,9 +1098,6 @@ def edit_link(request, hash=None):
     except ClickIFatDuration.DoesNotExist:
         # ESI link
         link_ongoing = False
-
-    # get users permissions
-    permissions = get_user_permissions(request.user)
 
     context = {
         "form": FatLinkForm,
