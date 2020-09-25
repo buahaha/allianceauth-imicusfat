@@ -49,6 +49,10 @@
                             {% else %}
                                 {{ link.hash }}
                             {% endif %}
+
+                            {% if link.is_esilink %}
+                                <i>[via ESI]</i>
+                            {% endif %}
                         </td>
 
                         <td>

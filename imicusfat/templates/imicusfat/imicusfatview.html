@@ -77,6 +77,10 @@
                                                             {% else %}
                                                                 {{ ifat.ifatlink.hash }}
                                                             {% endif %}
+
+                                                            {% if ifat.ifatlink.is_esilink %}
+                                                                <i>[via ESI]</i>
+                                                            {% endif %}
                                                         </td>
                                                         <td>
                                                             {% if ifat.ifatlink.link_type %}
@@ -119,7 +123,17 @@
                         <tbody>
                             {% for link in links %}
                                 <tr>
-                                    <td>{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}</td>
+                                    <td>
+                                        {% if link.fleet %}
+                                            {{ link.fleet }}
+                                        {% else %}
+                                            {{ link.hash }}
+                                        {% endif %}
+
+                                        {% if link.is_esilink %}
+                                            <i>[via ESI]</i>
+                                        {% endif %}
+                                    </td>
                                     <td>{{ link.creator.profile.main_character.character_name }}</td>
                                     <td>{{ link.ifattime|date:"Y-M-d, H:i" }}</td>
 

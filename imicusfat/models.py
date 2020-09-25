@@ -165,6 +165,7 @@ class IFatLink(SoftDeletionModel):
     creator = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
     deleted_at = models.DateTimeField(blank=True, null=True)
     link_type = models.ForeignKey(IFatLinkType, on_delete=models.CASCADE, null=True)
+    is_esilink = models.BooleanField(default=False)
 
     def __str__(self):
         return self.hash[6:]
