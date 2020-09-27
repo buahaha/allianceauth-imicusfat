@@ -73,5 +73,72 @@ class IFatLinkTypeAdmin(admin.ModelAdmin):
     config for fatlinktype model
     """
 
-    list_display = ("id", "name")
+    list_display = (
+        "id",
+        "_name",
+        "_is_enabled",
+    )
+
+    list_filter = ("is_enabled",)
+
     ordering = ("name",)
+
+    def _name(self, obj):
+        return obj.name
+
+    _name.short_description = "Fleet Type"
+    _name.admin_order_field = "name"
+
+    def _is_enabled(self, obj):
+        return obj.is_enabled
+
+    _is_enabled.boolean = True
+    _is_enabled.short_description = "Is Enabled"
+    _is_enabled.admin_order_field = "is_enabled"
+
+    actions = (
+        "mark_as_active",
+        "mark_as_inactive",
+    )
+
+    def mark_as_active(self, request, queryset):
+        """
+        Mark fleet type as active
+        :param request:
+        :param queryset:
+        """
+
+        notifications_count = 0
+
+        for obj in queryset:
+            obj.is_enabled = True
+            obj.save()
+
+            notifications_count += 1
+
+        self.message_user(
+            request, "{} fleet types marked as active".format(notifications_count)
+        )
+
+    mark_as_active.short_description = "Activate selected fleet type(s)"
+
+    def mark_as_inactive(self, request, queryset):
+        """
+        Mark fleet type as inactive
+        :param request:
+        :param queryset:
+        """
+
+        notifications_count = 0
+
+        for obj in queryset:
+            obj.is_enabled = False
+            obj.save()
+
+            notifications_count += 1
+
+        self.message_user(
+            request, "{} fleet types marked as inactive".format(notifications_count)
+        )
+
+    mark_as_inactive.short_description = "Deactivate selected fleet type(s)"

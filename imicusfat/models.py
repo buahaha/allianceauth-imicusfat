@@ -138,6 +138,10 @@ class IFatLinkType(SoftDeletionModel):
 
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=254)
+    is_enabled = models.BooleanField(
+        default=True,
+        db_index=True,
+    )
     deleted_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):

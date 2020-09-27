@@ -696,7 +696,9 @@ def link_add(request):
     if "msg" in request.session:
         msg = request.session.pop("msg")
 
-    link_types = IFatLinkType.objects.all().order_by("name")
+    link_types = IFatLinkType.objects.filter(
+        is_enabled=True,
+    ).order_by("name")
 
     # get users permissions
     permissions = get_user_permissions(request.user)
