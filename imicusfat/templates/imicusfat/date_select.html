@@ -11,7 +11,17 @@
         {% include "imicusfat/menu.html" %}
 
         <h2>{{ corporation }} {% trans "Fleet Activity" %}</h2>
-        <h4>{% trans "Only months with FAT data of the current year are shown." %}</h4>
+
+        <h4>
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats' %}{% if type == 0 %}corporation{% elif type == 1 %}alliance{% endif %}/{{ corpid }}/{{ year_prev }}/" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+
+            {{ year }}
+
+            {% if year_next <= year_current %}
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats' %}{% if type == 0 %}corporation{% elif type == 1 %}alliance{% endif %}/{{ corpid }}/{{ year_next }}/" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats' %}{% if type == 0 %}corporation{% elif type == 1 %}alliance{% endif %}/{{ corpid }}/{{ year_current }}/" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+            {% endif %}
+        </h4>
 
         <table class="table">
             <thead>

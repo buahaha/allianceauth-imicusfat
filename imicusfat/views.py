@@ -281,6 +281,9 @@ def stats_corp(request, corpid, year=None, month=None):
     # get users permissions
     permissions = get_user_permissions(request.user)
 
+    if not year:
+        year = datetime.now().year
+
     # Check character has permission to view other corp stats
     if int(request.user.profile.main_character.corporation_id) != int(corpid):
         if not request.user.has_perm("imicusfat.stats_corp_other"):
@@ -294,8 +297,7 @@ def stats_corp(request, corpid, year=None, month=None):
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
     corp_name = corp.corporation_name
 
-    if not month and not year:
-        year = datetime.now().year
+    if not month:
         months = []
 
         for i in range(1, 13):
@@ -313,6 +315,9 @@ def stats_corp(request, corpid, year=None, month=None):
             "months": months,
             "corpid": corpid,
             "year": year,
+            "year_current": datetime.now().year,
+            "year_prev": int(year) - 1,
+            "year_next": int(year) + 1,
             "type": 0,
             "permissions": permissions,
         }

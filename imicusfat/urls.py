@@ -23,6 +23,11 @@ urlpatterns = [
         name="stats_corp",
     ),
     url(
+        r"^statistic/corporation/(?P<corpid>[0-9]+)/(?P<year>[0-9]+)/$",
+        views.stats_corp,
+        name="stats_corp",
+    ),
+    url(
         r"^statistic/corporation/(?P<corpid>[0-9]+)/(?P<year>[0-9]+)/(?P<month>[0-9]+)/$",
         views.stats_corp,
         name="stats_corp",

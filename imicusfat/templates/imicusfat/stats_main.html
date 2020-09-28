@@ -145,7 +145,7 @@
                                                         <td><img src="{{ corp.0|corporation_logo_url:32 }}" /></td>
                                                         <td>{{ corp.1 }}</td>
                                                         <td>
-                                                            <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.0 %}">
+                                                            <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.0 year %}">
                                                                 <span class="glyphicon glyphicon-eye-open"></span>
                                                             </a>
                                                         </td>
@@ -165,7 +165,7 @@
                                     <td><img src="{{ data.0.0|corporation_logo_url:32 }}" /> </td>
                                     <td>{{ data.0.1 }}</td>
                                     <td>
-                                        <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' data.0.0 %}">
+                                        <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' data.0.0 year %}">
                                             <span class="glyphicon glyphicon-eye-open"></span>
                                         </a>
                                     </td>
