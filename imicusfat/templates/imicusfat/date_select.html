@@ -27,7 +27,7 @@
                         <td>{{ month.1 }}</td>
                         <td>
                             {% if corporation != 'No Alliance' %}
-                            <a href="{% url 'imicusfat:stats' %}{% if type == 0 %}corp{% elif type == 1 %}ally{% endif %}/{{ corpid }}/{{ month.0 }}/{{ year }}/" class="btn btn-primary">
+                            <a href="{% url 'imicusfat:stats' %}{% if type == 0 %}corporation{% elif type == 1 %}alliance{% endif %}/{{ corpid }}/{{ year }}/{{ month.0 }}/" class="btn btn-primary">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </a>
                             {% endif %}
