@@ -52,6 +52,11 @@ urlpatterns = [
         name="stats_ally",
     ),
     url(
+        r"^statistic/alliance/(?P<allianceid>[0-9]+)/(?P<year>[0-9]+)/$",
+        views.stats_alliance,
+        name="stats_ally",
+    ),
+    url(
         r"^statistic/alliance/(?P<allianceid>[0-9]+)/(?P<year>[0-9]+)/(?P<month>[0-9]+)/$",
         views.stats_alliance,
         name="stats_ally",

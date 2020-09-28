@@ -454,6 +454,9 @@ def stats_alliance(request, allianceid, year=None, month=None):
     # get users permissions
     permissions = get_user_permissions(request.user)
 
+    if not year:
+        year = datetime.now().year
+
     if allianceid == "000":
         allianceid = None
 
@@ -464,8 +467,7 @@ def stats_alliance(request, allianceid, year=None, month=None):
         ally = None
         alliance_name = "No Alliance"
 
-    if not month and not year:
-        year = datetime.now().year
+    if not month:
         months = []
 
         for i in range(1, 13):
@@ -483,6 +485,9 @@ def stats_alliance(request, allianceid, year=None, month=None):
             "months": months,
             "corpid": allianceid,
             "year": year,
+            "year_current": datetime.now().year,
+            "year_prev": int(year) - 1,
+            "year_next": int(year) + 1,
             "type": 1,
             "permissions": permissions,
         }
