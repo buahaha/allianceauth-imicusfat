@@ -53,6 +53,7 @@ urlpatterns = [
     ),
     # fat links
     url(r"^links/$", views.links, name="links"),
+    url(r"^links/(?P<year>[0-9]+)/$", views.links, name="links"),
     url(
         r"^links/create/esi/(?P<hash>[a-zA-Z0-9]+)/$",
         views.link_create_esi,

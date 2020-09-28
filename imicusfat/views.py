@@ -656,12 +656,15 @@ def stats_alliance(request, allianceid, year=None, month=None):
 
 
 @login_required()
-def links(request):
+def links(request, year=None):
     """
     fatlinks view
     :param request:
     :return:
     """
+
+    if year is None:
+        year = datetime.now().year
 
     msg = None
 
@@ -669,7 +672,7 @@ def links(request):
         msg = request.session.pop("msg")
 
     fatlinks = (
-        IFatLink.objects.all()
+        IFatLink.objects.filter(ifattime__year=year)
         .order_by("-ifattime")
         .annotate(number_of_fats=Count("ifat", filter=Q(ifat__deleted_at__isnull=True)))
     )
@@ -677,7 +680,15 @@ def links(request):
     # get users permissions
     permissions = get_user_permissions(request.user)
 
-    context = {"links": fatlinks, "msg": msg, "permissions": permissions}
+    context = {
+        "links": fatlinks,
+        "msg": msg,
+        "year": year,
+        "year_current": datetime.now().year,
+        "year_prev": int(year) - 1,
+        "year_next": int(year) + 1,
+        "permissions": permissions,
+    }
 
     logger.info("FAT link list called by %s", request.user)
 
