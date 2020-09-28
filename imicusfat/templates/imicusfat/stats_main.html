@@ -11,7 +11,18 @@
         <br>
         {% include "imicusfat/menu.html" %}
 
-        <h2>{% trans "Statistics" %}</h2>
+        <h2>{% trans "Statistics" %}
+
+        <h4>
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_prev %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+
+            {{ year }}
+
+            {% if year_next <= year_current %}
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_next %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+            {% endif %}
+        </h4>
 
         {% if msg %}
             <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
