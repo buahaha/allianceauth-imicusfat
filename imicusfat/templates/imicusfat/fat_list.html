@@ -62,7 +62,7 @@
                             {% endif %}
 
                             {% if link.is_esilink %}
-                                <i>[via ESI]</i>
+                                <span class="label label-success ifat-label ifat-label-via-esi">via ESI</span>
                             {% endif %}
                         </td>
 
@@ -130,6 +130,8 @@
 
 {% block extra_css %}
     {% include 'bundles/datatables-css.html' %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'imicusfat/css/imicusfat.min.css' %}">
 {% endblock %}
 
 {% block extra_script %}
