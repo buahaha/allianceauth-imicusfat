@@ -154,7 +154,9 @@ def stats(request, year=None):
         "data": data,
         "charstats": months,
         "year": year,
-        "current_year": datetime.now().year,
+        "year_current": datetime.now().year,
+        "year_prev": int(year) - 1,
+        "year_next": int(year) + 1,
         "permissions": permissions,
     }
 
@@ -164,7 +166,7 @@ def stats(request, year=None):
 
 
 @login_required()
-def stats_char(request, charid, month=None, year=None):
+def stats_char(request, charid, year=None, month=None):
     """
     character statistics view
     :param request:
@@ -266,7 +268,7 @@ def stats_char(request, charid, month=None, year=None):
 
 @login_required()
 @permissions_required(("imicusfat.stats_corp_own", "imicusfat.stats_corp_other"))
-def stats_corp(request, corpid, month=None, year=None):
+def stats_corp(request, corpid, year=None, month=None):
     """
     corp statistics view
     :param request:
@@ -278,6 +280,9 @@ def stats_corp(request, corpid, month=None, year=None):
 
     # get users permissions
     permissions = get_user_permissions(request.user)
+
+    if not year:
+        year = datetime.now().year
 
     # Check character has permission to view other corp stats
     if int(request.user.profile.main_character.corporation_id) != int(corpid):
@@ -292,8 +297,7 @@ def stats_corp(request, corpid, month=None, year=None):
     corp = EveCorporationInfo.objects.get(corporation_id=corpid)
     corp_name = corp.corporation_name
 
-    if not month and not year:
-        year = datetime.now().year
+    if not month:
         months = []
 
         for i in range(1, 13):
@@ -311,6 +315,9 @@ def stats_corp(request, corpid, month=None, year=None):
             "months": months,
             "corpid": corpid,
             "year": year,
+            "year_current": datetime.now().year,
+            "year_prev": int(year) - 1,
+            "year_next": int(year) + 1,
             "type": 0,
             "permissions": permissions,
         }
@@ -434,7 +441,7 @@ def stats_corp(request, corpid, month=None, year=None):
 
 @login_required()
 @permission_required("imicusfat.stats_corp_other")
-def stats_alliance(request, allianceid, month=None, year=None):
+def stats_alliance(request, allianceid, year=None, month=None):
     """
     fatlinks view
     :param request:
@@ -447,6 +454,9 @@ def stats_alliance(request, allianceid, month=None, year=None):
     # get users permissions
     permissions = get_user_permissions(request.user)
 
+    if not year:
+        year = datetime.now().year
+
     if allianceid == "000":
         allianceid = None
 
@@ -457,8 +467,7 @@ def stats_alliance(request, allianceid, month=None, year=None):
         ally = None
         alliance_name = "No Alliance"
 
-    if not month and not year:
-        year = datetime.now().year
+    if not month:
         months = []
 
         for i in range(1, 13):
@@ -476,6 +485,9 @@ def stats_alliance(request, allianceid, month=None, year=None):
             "months": months,
             "corpid": allianceid,
             "year": year,
+            "year_current": datetime.now().year,
+            "year_prev": int(year) - 1,
+            "year_next": int(year) + 1,
             "type": 1,
             "permissions": permissions,
         }
@@ -654,12 +666,15 @@ def stats_alliance(request, allianceid, month=None, year=None):
 
 
 @login_required()
-def links(request):
+def links(request, year=None):
     """
     fatlinks view
     :param request:
     :return:
     """
+
+    if year is None:
+        year = datetime.now().year
 
     msg = None
 
@@ -667,7 +682,7 @@ def links(request):
         msg = request.session.pop("msg")
 
     fatlinks = (
-        IFatLink.objects.all()
+        IFatLink.objects.filter(ifattime__year=year)
         .order_by("-ifattime")
         .annotate(number_of_fats=Count("ifat", filter=Q(ifat__deleted_at__isnull=True)))
     )
@@ -675,7 +690,15 @@ def links(request):
     # get users permissions
     permissions = get_user_permissions(request.user)
 
-    context = {"links": fatlinks, "msg": msg, "permissions": permissions}
+    context = {
+        "links": fatlinks,
+        "msg": msg,
+        "year": year,
+        "year_current": datetime.now().year,
+        "year_prev": int(year) - 1,
+        "year_next": int(year) + 1,
+        "permissions": permissions,
+    }
 
     logger.info("FAT link list called by %s", request.user)
 

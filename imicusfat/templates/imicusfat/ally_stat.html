@@ -16,20 +16,20 @@
         <h2>{{ alliance }} {% trans "Statistics" %}</h2>
         <h4>
             {% if month == '1' %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_ally' ally.alliance_id 12 year_prev %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_ally' ally.alliance_id year_prev 12 %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
             {% else %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_ally' ally.alliance_id month_prev year %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_ally' ally.alliance_id year month_prev %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
             {% endif %}
 
             {{ month|month }} {{ year }}
 
             {% if month_next > month_current and year_next > year_current %}
             {% elif month == '12' %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_ally' ally.alliance_id 1 year_next %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_ally' ally.alliance_id month_current year_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_ally' ally.alliance_id year_next 1 %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_ally' ally.alliance_id year_current month_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
             {% else %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_ally' ally.alliance_id month_next year %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_ally' ally.alliance_id month_current year_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_ally' ally.alliance_id year month_next %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_ally' ally.alliance_id year_current month_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
             {% endif %}
         </h4>
 
@@ -178,7 +178,7 @@
                                     <td>{{ value.1 }}</td>
                                     <td>{{ value.2 }}</td>
                                     <td>
-                                        <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' value.0  month year %}">
+                                        <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' value.0 year month %}">
                                             <span class="glyphicon glyphicon-eye-open"></span>
                                         </a>
                                     </td>

@@ -12,6 +12,17 @@
 
         <h2>{% trans "All FAT Links" %}</h2>
 
+        <h4>
+            <a class="btn btn-primary" href="{% url 'imicusfat:links' year_prev %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+
+            {{ year }}
+
+            {% if year_next <= year_current %}
+                <a class="btn btn-primary" href="{% url 'imicusfat:links' year_next %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:links' year_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+            {% endif %}
+        </h4>
+
         {% if msg %}
         <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="close">
@@ -51,7 +62,7 @@
                             {% endif %}
 
                             {% if link.is_esilink %}
-                                <i>[via ESI]</i>
+                                <span class="label label-success ifat-label ifat-label-via-esi">via ESI</span>
                             {% endif %}
                         </td>
 
@@ -119,6 +130,8 @@
 
 {% block extra_css %}
     {% include 'bundles/datatables-css.html' %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'imicusfat/css/imicusfat.min.css' %}">
 {% endblock %}
 
 {% block extra_script %}

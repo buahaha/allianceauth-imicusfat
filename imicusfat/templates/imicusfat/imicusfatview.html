@@ -1,6 +1,7 @@
 {% extends 'allianceauth/base.html' %}
 
 {% load evelinks %}
+{% load static %}
 {% load i18n %}
 
 {% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
@@ -79,7 +80,7 @@
                                                             {% endif %}
 
                                                             {% if ifat.ifatlink.is_esilink %}
-                                                                <i>[via ESI]</i>
+                                                                <span class="label label-success ifat-label ifat-label-via-esi">via ESI</span>
                                                             {% endif %}
                                                         </td>
                                                         <td>
@@ -131,7 +132,7 @@
                                         {% endif %}
 
                                         {% if link.is_esilink %}
-                                            <i>[via ESI]</i>
+                                            <span class="label label-success ifat-label ifat-label-via-esi">via ESI</span>
                                         {% endif %}
                                     </td>
                                     <td>{{ link.creator.profile.main_character.character_name }}</td>
@@ -186,6 +187,10 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'imicusfat/css/imicusfat.min.css' %}">
 {% endblock %}
 
 {% block extra_script %}
