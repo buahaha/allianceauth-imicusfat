@@ -1070,6 +1070,7 @@ def edit_link(request, hash=None):
             shiptype = manual_fat_form.cleaned_data["shiptype"]
             creator = request.user
             character = get_or_create_char(name=character_name)
+            created_at = timezone.now()
 
             if character is not None:
                 IFat(
@@ -1080,7 +1081,10 @@ def edit_link(request, hash=None):
                 ).save()
 
                 ManualIFat(
-                    ifatlink_id=link.pk, creator=creator, character=character
+                    ifatlink_id=link.pk,
+                    creator=creator,
+                    character=character,
+                    created_at=created_at,
                 ).save()
 
                 request.session["{}-task-code".format(hash)] = 3

@@ -6,10 +6,10 @@ admin pages configuration
 
 from django.contrib import admin
 
-from .models import IFat, IFatLink, IFatLinkType
+from imicusfat.models import IFat, IFatLink, IFatLinkType, ManualIFat
 
 
-def custom_filter_title(title):
+def custom_filter(title):
     class Wrapper(admin.FieldListFilter):
         def __new__(cls, *args, **kwargs):
             instance = admin.FieldListFilter.create(*args, **kwargs)
@@ -39,7 +39,7 @@ class IFatLinkAdmin(admin.ModelAdmin):
 
     list_filter = (
         "is_esilink",
-        ("link_type__name", custom_filter_title("fleet type")),
+        ("link_type__name", custom_filter(title="fleet type")),
     )
 
     ordering = ("-ifattime",)
@@ -142,3 +142,34 @@ class IFatLinkTypeAdmin(admin.ModelAdmin):
         )
 
     mark_as_inactive.short_description = "Deactivate selected fleet type(s)"
+
+
+@admin.register(ManualIFat)
+class ManualIFatAdmin(admin.ModelAdmin):
+    list_display = ("creator", "_character", "_ifatlink", "created_at")
+
+    exclude = ("creator", "character", "ifatlink", "created_at")
+
+    readonly_fields = ("creator", "character", "ifatlink", "created_at")
+
+    ordering = ("-created_at",)
+
+    list_filter = (
+        ("creator", admin.RelatedOnlyFieldListFilter),
+        ("character", admin.RelatedOnlyFieldListFilter),
+        ("ifatlink", admin.RelatedOnlyFieldListFilter),
+    )
+
+    def _ifatlink(self, obj):
+        return "Fleet: {fleet_name} (FAT link hash: {hash})".format(
+            fleet_name=obj.ifatlink.fleet, hash=obj.ifatlink.hash
+        )
+
+    _ifatlink.short_description = "FAT Link"
+    _ifatlink.admin_order_field = "afatlink"
+
+    def _character(self, obj):
+        return obj.character
+
+    _character.short_description = "Pilot added"
+    _character.admin_order_field = "character"
