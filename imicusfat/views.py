@@ -19,6 +19,21 @@ from django.utils.crypto import get_random_string
 from esi.decorators import token_required
 from esi.models import Token
 
+from imicusfat import __title__
+from imicusfat.forms import FatLinkForm, ManualFatForm, ClickFatForm, FatLinkEditForm
+from imicusfat.models import (
+    IFat,
+    ClickIFatDuration,
+    IFatLink,
+    ManualIFat,
+    DelLog,
+    IFatLinkType,
+)
+from imicusfat.permissions import get_user_permissions
+from imicusfat.providers import esi
+from imicusfat.tasks import get_or_create_char, process_fats
+from imicusfat.utils import LoggerAddTag
+
 from allianceauth.authentication.decorators import permissions_required
 from allianceauth.authentication.models import CharacterOwnership
 from allianceauth.eveonline.models import (
@@ -28,14 +43,6 @@ from allianceauth.eveonline.models import (
 )
 from allianceauth.eveonline.providers import provider
 from allianceauth.services.hooks import get_extension_logger
-
-from . import __title__
-from .forms import FatLinkForm, ManualFatForm, ClickFatForm, FatLinkEditForm
-from .models import IFat, ClickIFatDuration, IFatLink, ManualIFat, DelLog, IFatLinkType
-from .permissions import get_user_permissions
-from .providers import esi
-from .tasks import get_or_create_char, process_fats
-from .utils import LoggerAddTag
 
 
 logger = LoggerAddTag(get_extension_logger(__name__), __title__)

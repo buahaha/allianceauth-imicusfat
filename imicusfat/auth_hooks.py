@@ -6,10 +6,10 @@ auth hooks
 
 from django.utils.translation import ugettext_lazy as _
 
+from imicusfat import urls
+
 from allianceauth import hooks
 from allianceauth.services.hooks import MenuItemHook, UrlHook
-
-from . import urls
 
 
 @hooks.register("menu_item_hook")
