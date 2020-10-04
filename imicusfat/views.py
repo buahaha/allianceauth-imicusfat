@@ -1217,7 +1217,7 @@ def del_fat(request, hash, fat):
 
     fat.delete()
 
-    DelLog(remover=request.user, deltype=1, string=fat.__str__())
+    DelLog(remover=request.user, deltype=1, string=fat.__str__()).save()
     request.session["msg"] = [
         "success",
         "The FAT from link {0} has been successfully deleted.".format(hash),
