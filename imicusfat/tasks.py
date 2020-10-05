@@ -6,17 +6,17 @@ tasks
 
 from celery import shared_task
 
+from imicusfat import __title__
+from imicusfat.models import IFat, IFatLink
+from imicusfat.providers import esi
+from imicusfat.utils import LoggerAddTag
+
 from allianceauth.eveonline.models import (
     EveAllianceInfo,
     EveCharacter,
     EveCorporationInfo,
 )
 from allianceauth.services.hooks import get_extension_logger
-
-from . import __title__
-from .models import IFat, IFatLink
-from .providers import esi
-from .utils import LoggerAddTag
 
 
 logger = LoggerAddTag(get_extension_logger(__name__), __title__)

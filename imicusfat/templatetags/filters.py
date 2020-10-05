@@ -1,5 +1,8 @@
-from django.template.defaulttags import register
+# coding=utf-8
+
 import calendar
+
+from django.template.defaulttags import register
 
 
 @register.filter

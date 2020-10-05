@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
+
+"""
+imicusfat settings
+"""
+
+import os
+
 from imicusfat import __version__
 
 from setuptools import setup, find_packages
-
-import os
 
 # read the contents of your README file
 this_directory = os.path.abspath(os.path.dirname(__file__))

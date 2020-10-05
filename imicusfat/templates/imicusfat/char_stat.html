@@ -15,20 +15,20 @@
         <h2>{{ character.character_name }} {% trans "Statistics" %}</h2>
         <h4>
             {% if month == '1' %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id 12 year_prev %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_prev 12 %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
             {% else %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id month_prev year %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year month_prev %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
             {% endif %}
 
             {{ month|month }} {{ year }}
 
             {% if month_next > month_current and year_next > year_current %}
             {% elif month == '12' %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id 1 year_next %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id month_current year_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_next 1 %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_current month_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
             {% else %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id month_next year %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id month_current year_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year month_next %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_current month_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
             {% endif %}
         </h4>
 
@@ -109,7 +109,7 @@
                                     {% endif %}
 
                                     {% if fat.ifatlink.is_esilink %}
-                                        <i>[via ESI]</i>
+                                        <span class="label label-success ifat-label ifat-label-via-esi">via ESI</span>
                                     {% endif %}
                                 </td>
                                 <td>
@@ -137,6 +137,8 @@
 
 {% block extra_css %}
     {% include 'bundles/datatables-css.html' %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'imicusfat/css/imicusfat.min.css' %}">
 {% endblock %}
 
 {% block extra_script %}
