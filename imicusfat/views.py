@@ -50,6 +50,7 @@ logger = LoggerAddTag(get_extension_logger(__name__), __title__)
 
 # Create your views here.
 @login_required()
+@permission_required("imicusfat.basic_access")
 def imicusfat_view(request):
     """
     imicusfat_view
@@ -98,6 +99,7 @@ def imicusfat_view(request):
 
 
 @login_required()
+@permission_required("imicusfat.basic_access")
 def stats(request, year=None):
     """
     statistics main view
@@ -173,6 +175,7 @@ def stats(request, year=None):
 
 
 @login_required()
+@permission_required("imicusfat.basic_access")
 def stats_char(request, charid, year=None, month=None):
     """
     character statistics view
@@ -673,6 +676,7 @@ def stats_alliance(request, allianceid, year=None, month=None):
 
 
 @login_required()
+@permission_required("imicusfat.basic_access")
 def links(request, year=None):
     """
     fatlinks view
@@ -908,6 +912,7 @@ def create_esi_fat(request):
 
 
 @login_required()
+@permission_required("imicusfat.basic_access")
 @token_required(
     scopes=["esi-location.read_location.v1", "esi-location.read_ship_type.v1"]
 )
