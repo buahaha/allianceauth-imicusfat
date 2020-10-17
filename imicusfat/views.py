@@ -75,11 +75,12 @@ def imicusfat_view(request):
 
         char_1 = [char.character.character_name]
 
-        for f in fat:
-            char_1.append(f)
+        if fat.count() > 0:
+            for f in fat:
+                char_1.append(f)
 
-        char_1.append(char.character.character_id)
-        fats.append(char_1)
+            char_1.append(char.character.character_id)
+            fats.append(char_1)
 
     fatlinks = IFatLink.objects.order_by("ifattime").reverse()[:10]
 
