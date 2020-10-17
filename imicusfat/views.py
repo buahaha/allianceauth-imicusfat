@@ -145,12 +145,14 @@ def stats(request, year=None):
         char_stats = {}
 
         for i in range(1, 13):
-            char_fat = char_fats.filter(ifatlink__ifattime__month=i).filter(
-                character__id=char.character.id
+            char_fat_count = (
+                char_fats.filter(ifatlink__ifattime__month=i)
+                .filter(character__id=char.character.id)
+                .count()
             )
 
-            if len(char_fat) is not 0:
-                char_stats[str(i)] = char_fat.count()
+            if char_fat_count > 0:
+                char_stats[str(i)] = char_fat_count
 
         char_l.append(char_stats)
         char_l.append(char.character.character_id)
@@ -319,7 +321,7 @@ def stats_corp(request, corpid, year=None, month=None):
 
             avg_fats = corp_fats / corp.member_count
 
-            if corp_fats is not 0:
+            if corp_fats > 0:
                 months.append((i, corp_fats, round(avg_fats, 2)))
 
         context = {
@@ -489,7 +491,7 @@ def stats_alliance(request, allianceid, year=None, month=None):
                 ifatlink__ifattime__year=year,
             ).count()
 
-            if ally_fats is not 0:
+            if ally_fats > 0:
                 months.append((i, ally_fats))
 
         context = {
