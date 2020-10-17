@@ -29,6 +29,20 @@ def get_sentinel_user():
     return User.objects.get_or_create(username="deleted")[0]
 
 
+class AaImicusFAT(models.Model):
+    """Meta model for app permissions"""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """AaImicusFAT :: Meta"""
+
+        managed = False
+        permissions = (
+            ("basic_access", "Can access the Alliance Auth ImicusFAT module"),
+        )
+        default_permissions = ()
+        verbose_name = "Alliance Auth ImicusFAT"
+
+
 # Abstract model to allow for soft deletion
 class SoftDeletionManager(models.Manager):
     """
