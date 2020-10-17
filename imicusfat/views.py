@@ -916,7 +916,11 @@ def create_esi_fat(request):
 @login_required()
 @permission_required("imicusfat.basic_access")
 @token_required(
-    scopes=["esi-location.read_location.v1", "esi-location.read_ship_type.v1"]
+    scopes=[
+        "esi-location.read_location.v1",
+        "esi-location.read_ship_type.v1",
+        "esi-location.read_online.v1",
+    ]
 )
 def click_link(request, token, hash=None):
     """
@@ -960,62 +964,83 @@ def click_link(request, token, hash=None):
             required_scopes = [
                 "esi-location.read_location.v1",
                 "esi-location.read_ship_type.v1",
+                "esi-location.read_online.v1",
             ]
             esi_token = Token.get_token(token.character_id, required_scopes)
 
-            # character location
-            location = esi.client.Location.get_characters_character_id_location(
+            # check if character is online
+            character_online = esi.client.Location.get_characters_character_id_online(
                 character_id=token.character_id, token=esi_token.valid_access_token()
             ).result()
 
-            # current ship
-            ship = esi.client.Location.get_characters_character_id_ship(
-                character_id=token.character_id, token=esi_token.valid_access_token()
-            ).result()
+            if character_online["online"] is True:
+                # character location
+                location = esi.client.Location.get_characters_character_id_location(
+                    character_id=token.character_id,
+                    token=esi_token.valid_access_token(),
+                ).result()
 
-            # system information
-            system = esi.client.Universe.get_universe_systems_system_id(
-                system_id=location["solar_system_id"]
-            ).result()["name"]
+                # current ship
+                ship = esi.client.Location.get_characters_character_id_ship(
+                    character_id=token.character_id,
+                    token=esi_token.valid_access_token(),
+                ).result()
 
-            ship_name = provider.get_itemtype(ship["ship_type_id"]).name
+                # system information
+                system = esi.client.Universe.get_universe_systems_system_id(
+                    system_id=location["solar_system_id"]
+                ).result()["name"]
 
-            try:
-                fat = IFat(
-                    ifatlink=fleet,
-                    character=character,
-                    system=system,
-                    shiptype=ship_name,
-                )
-                fat.save()
+                ship_name = provider.get_itemtype(ship["ship_type_id"]).name
 
-                if fleet.fleet is not None:
-                    name = fleet.fleet
-                else:
-                    name = fleet.hash
+                try:
+                    fat = IFat(
+                        ifatlink=fleet,
+                        character=character,
+                        system=system,
+                        shiptype=ship_name,
+                    )
+                    fat.save()
 
-                request.session["msg"] = [
-                    "success",
-                    (
-                        "FAT registered for {} at {}".format(
-                            character.character_name, name
-                        )
-                    ),
-                ]
+                    if fleet.fleet is not None:
+                        name = fleet.fleet
+                    else:
+                        name = fleet.hash
 
-                logger.info(
-                    "Fleetparticipation for fleet %s registered for pilot %s",
-                    name,
-                    character.character_name,
-                )
+                    request.session["msg"] = [
+                        "success",
+                        (
+                            "FAT registered for {} at {}".format(
+                                character.character_name, name
+                            )
+                        ),
+                    ]
 
-                return redirect("imicusfat:imicusfat_view")
-            except Exception:
+                    logger.info(
+                        "Fleetparticipation for fleet %s registered for pilot %s",
+                        name,
+                        character.character_name,
+                    )
+
+                    return redirect("imicusfat:imicusfat_view")
+                except Exception:
+                    request.session["msg"] = [
+                        "warning",
+                        (
+                            "A FAT already exists for the selected character ({}) and fleet"
+                            " combination.".format(character.character_name)
+                        ),
+                    ]
+
+                    return redirect("imicusfat:imicusfat_view")
+            else:
                 request.session["msg"] = [
                     "warning",
                     (
-                        "A FAT already exists for the selected character ({}) and fleet"
-                        " combination.".format(character.character_name)
+                        "Cannot register the fleet participation for {character}. "
+                        "The character needs to be online.".format(
+                            character=character.character_name
+                        )
                     ),
                 ]
 
