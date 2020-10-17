@@ -27,6 +27,9 @@
             <thead>
                 <th>{% trans "Month" %}</th>
                 <th>{% trans "FATs" %}</th>
+                {% if type == 0 %}
+                    <th>{% trans "Avg FATs" %}</th>
+                {% endif %}
                 <th></th>
             </thead>
 
@@ -35,6 +38,9 @@
                     <tr>
                         <td>{{ month.0|month }}</td>
                         <td>{{ month.1 }}</td>
+                        {% if type == 0 %}
+                            <td>{{ month.2 }}</td>
+                        {% endif %}
                         <td>
                             {% if corporation != 'No Alliance' %}
                             <a href="{% url 'imicusfat:stats' %}{% if type == 0 %}corporation{% elif type == 1 %}alliance{% endif %}/{{ corpid }}/{{ year }}/{{ month.0 }}/" class="btn btn-primary">
