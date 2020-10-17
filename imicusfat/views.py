@@ -220,8 +220,8 @@ def stats_char(request, charid, year=None, month=None):
     for fat in fats:
         if fat.shiptype in data_ship_type.keys():
             continue
-        else:
-            data_ship_type[fat.shiptype] = fats.filter(shiptype=fat.shiptype).count()
+
+        data_ship_type[fat.shiptype] = fats.filter(shiptype=fat.shiptype).count()
 
     colors = []
 
@@ -353,16 +353,16 @@ def stats_corp(request, corpid, year=None, month=None):
     for fat in fats:
         if fat.shiptype in data.keys():
             continue
-        else:
-            data[fat.shiptype] = {}
+
+        data[fat.shiptype] = {}
 
     chars = []
 
     for fat in fats:
         if fat.character.character_name in chars:
             continue
-        else:
-            chars.append(fat.character.character_name)
+
+        chars.append(fat.character.character_name)
 
     for key, ship_type in data.items():
         for char in chars:
@@ -527,8 +527,8 @@ def stats_alliance(request, allianceid, year=None, month=None):
     for fat in fats:
         if fat.shiptype in data_ship_type.keys():
             continue
-        else:
-            data_ship_type[fat.shiptype] = fats.filter(shiptype=fat.shiptype).count()
+
+        data_ship_type[fat.shiptype] = fats.filter(shiptype=fat.shiptype).count()
 
     colors = []
 
@@ -551,16 +551,16 @@ def stats_alliance(request, allianceid, year=None, month=None):
     for fat in fats:
         if fat.shiptype in data.keys():
             continue
-        else:
-            data[fat.shiptype] = {}
+
+        data[fat.shiptype] = {}
 
     corps = []
 
     for fat in fats:
         if fat.character.corporation_name in corps:
             continue
-        else:
-            corps.append(fat.character.corporation_name)
+
+        corps.append(fat.character.corporation_name)
 
     for key, ship_type in data.items():
         for corp in corps:
@@ -792,25 +792,26 @@ def link_create_click(request):
             )
 
             return redirect("imicusfat:link_edit", hash=fatlinkhash)
-        else:
-            request.session["msg"] = [
-                "danger",
-                (
-                    "Something went wrong when attempting to submit your"
-                    " clickable FAT Link."
-                ),
-            ]
-            return redirect("imicusfat:imicusfat_view")
-    else:
+
         request.session["msg"] = [
-            "warning",
+            "danger",
             (
-                'You must fill out the form on the "Add FAT Link" '
-                "page to create a clickable FAT Link"
+                "Something went wrong when attempting to submit your"
+                " clickable FAT Link."
             ),
         ]
 
         return redirect("imicusfat:imicusfat_view")
+
+    request.session["msg"] = [
+        "warning",
+        (
+            'You must fill out the form on the "Add FAT Link" '
+            "page to create a clickable FAT Link"
+        ),
+    ]
+
+    return redirect("imicusfat:imicusfat_view")
 
 
 @login_required()
@@ -914,13 +915,13 @@ def create_esi_fat(request):
         request.session["fatlink_form__type"] = fatlink_form.cleaned_data["type_esi"]
 
         return redirect("imicusfat:link_create_esi", hash=fat_link_hash)
-    else:
-        request.session["msg"] = [
-            "danger",
-            "Something went wrong when attempting to submit your ESI FAT Link.",
-        ]
 
-        return redirect("imicusfat:imicusfat_view")
+    request.session["msg"] = [
+        "danger",
+        "Something went wrong when attempting to submit your ESI FAT Link.",
+    ]
+
+    return redirect("imicusfat:imicusfat_view")
 
 
 @login_required()
