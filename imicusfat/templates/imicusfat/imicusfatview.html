@@ -41,69 +41,77 @@
                 <div class="panel-body">
                     <h4>{% trans "Your Most Recent FATs" %}</h4>
 
-                    <ul class="nav nav-pills">
-                        {% for char in fats %}
-                            {% if forloop.first %}
-                                <li class="active"><a data-toggle="tab" href="#{{ char|last }}"><img class="img-circle" src="{{ char|last|character_portrait_url:32 }}"/>  {{ char.0 }}</a></li>
-                            {% else %}
-                                <li><a data-toggle="tab" href="#{{ char|last }}"><img class="img-circle" src="{{ char|last|character_portrait_url:32 }}"/>  {{ char.0 }}</a></li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
+                    <p>{% trans "Only charaters that have recent FATs are shown." %}</p>
 
-                    <div class="tab-content">
-                        {% for char in fats %}
-                            {% if forloop.first %}
-                            <div id="{{ char|last }}" class="tab-pane fade in active panel-default">
-                            {% else %}
-                            <div id="{{ char|last }}" class="tab-pane fade panel-default">
-                            {% endif %}
+                    {% if fats %}
+                        <ul class="nav nav-pills">
+                            {% for char in fats %}
+                                {% if forloop.first %}
+                                    <li class="active"><a data-toggle="tab" href="#{{ char|last }}"><img class="img-circle" src="{{ char|last|character_portrait_url:32 }}"/>  {{ char.0 }}</a></li>
+                                {% else %}
+                                    <li><a data-toggle="tab" href="#{{ char|last }}"><img class="img-circle" src="{{ char|last|character_portrait_url:32 }}"/>  {{ char.0 }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
 
-                                <div class="panel-body">
-                                    {% if char|slice:"1:-1"|length > 0 %}
-                                        <table class="table">
-                                            <thead>
-                                                <th>Fleet Name</th>
-                                                <th>Fleet Type</th>
-                                                <th>Location</th>
-                                                <th>Ship</th>
-                                                <th>EVE Time</th>
-                                            </thead>
-                                            <tbody>
-                                                {% for ifat in char|slice:"1:" %}
-                                                    <tr>
-                                                        <td>
-                                                            {% if ifat.ifatlink.fleet %}
-                                                                {{ ifat.ifatlink.fleet }}
-                                                            {% else %}
-                                                                {{ ifat.ifatlink.hash }}
-                                                            {% endif %}
+                        <div class="tab-content">
+                            {% for char in fats %}
+                                {% if forloop.first %}
+                                <div id="{{ char|last }}" class="tab-pane fade in active panel-default">
+                                {% else %}
+                                <div id="{{ char|last }}" class="tab-pane fade panel-default">
+                                {% endif %}
 
-                                                            {% if ifat.ifatlink.is_esilink %}
-                                                                <span class="label label-success ifat-label ifat-label-via-esi">via ESI</span>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>
-                                                            {% if ifat.ifatlink.link_type %}
-                                                                {{ ifat.ifatlink.link_type.name }}
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>{{ ifat.system }}</td>
-                                                        <td>{{ ifat.shiptype }}</td>
-                                                        <td>{{ ifat.ifatlink.ifattime|date:"Y-M-d, H:i" }}</td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    {% else %}
-                                        <div class="alert alert-warning" role="alert">
-                                            <p>{% trans "No FATs for" %} {{ char.0 }}</p>
-                                        </div>
-                                    {% endif %}
+                                    <div class="panel-body">
+                                        {% if char|slice:"1:-1"|length > 0 %}
+                                            <table class="table">
+                                                <thead>
+                                                    <th>Fleet Name</th>
+                                                    <th>Fleet Type</th>
+                                                    <th>Location</th>
+                                                    <th>Ship</th>
+                                                    <th>EVE Time</th>
+                                                </thead>
+                                                <tbody>
+                                                    {% for ifat in char|slice:"1:" %}
+                                                        <tr>
+                                                            <td>
+                                                                {% if ifat.ifatlink.fleet %}
+                                                                    {{ ifat.ifatlink.fleet }}
+                                                                {% else %}
+                                                                    {{ ifat.ifatlink.hash }}
+                                                                {% endif %}
+
+                                                                {% if ifat.ifatlink.is_esilink %}
+                                                                    <span class="label label-success ifat-label ifat-label-via-esi">via ESI</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                {% if ifat.ifatlink.link_type %}
+                                                                    {{ ifat.ifatlink.link_type.name }}
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>{{ ifat.system }}</td>
+                                                            <td>{{ ifat.shiptype }}</td>
+                                                            <td>{{ ifat.ifatlink.ifattime|date:"Y-M-d, H:i" }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        {% else %}
+                                            <div class="alert alert-warning" role="alert">
+                                                <p>{% trans "No FATs for" %} {{ char.0 }}</p>
+                                            </div>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                            </div>
-                        {% endfor %}
-                    </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>
+                            {% trans "No recent FAT activity registered for any of your characters." %}
+                        </p>
+                    {% endif %}
                 </div>
             </div>
 

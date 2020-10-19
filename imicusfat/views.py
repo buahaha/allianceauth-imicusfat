@@ -50,6 +50,7 @@ logger = LoggerAddTag(get_extension_logger(__name__), __title__)
 
 # Create your views here.
 @login_required()
+@permission_required("imicusfat.basic_access")
 def imicusfat_view(request):
     """
     imicusfat_view
@@ -74,11 +75,12 @@ def imicusfat_view(request):
 
         char_1 = [char.character.character_name]
 
-        for f in fat:
-            char_1.append(f)
+        if fat.count() > 0:
+            for f in fat:
+                char_1.append(f)
 
-        char_1.append(char.character.character_id)
-        fats.append(char_1)
+            char_1.append(char.character.character_id)
+            fats.append(char_1)
 
     fatlinks = IFatLink.objects.order_by("ifattime").reverse()[:10]
 
@@ -98,6 +100,7 @@ def imicusfat_view(request):
 
 
 @login_required()
+@permission_required("imicusfat.basic_access")
 def stats(request, year=None):
     """
     statistics main view
@@ -143,12 +146,14 @@ def stats(request, year=None):
         char_stats = {}
 
         for i in range(1, 13):
-            char_fat = char_fats.filter(ifatlink__ifattime__month=i).filter(
-                character__id=char.character.id
+            char_fat_count = (
+                char_fats.filter(ifatlink__ifattime__month=i)
+                .filter(character__id=char.character.id)
+                .count()
             )
 
-            if len(char_fat) is not 0:
-                char_stats[str(i)] = char_fat.count()
+            if char_fat_count > 0:
+                char_stats[str(i)] = char_fat_count
 
         char_l.append(char_stats)
         char_l.append(char.character.character_id)
@@ -173,6 +178,7 @@ def stats(request, year=None):
 
 
 @login_required()
+@permission_required("imicusfat.basic_access")
 def stats_char(request, charid, year=None, month=None):
     """
     character statistics view
@@ -215,8 +221,8 @@ def stats_char(request, charid, year=None, month=None):
     for fat in fats:
         if fat.shiptype in data_ship_type.keys():
             continue
-        else:
-            data_ship_type[fat.shiptype] = fats.filter(shiptype=fat.shiptype).count()
+
+        data_ship_type[fat.shiptype] = fats.filter(shiptype=fat.shiptype).count()
 
     colors = []
 
@@ -314,8 +320,10 @@ def stats_corp(request, corpid, year=None, month=None):
                 ifatlink__ifattime__year=year,
             ).count()
 
-            if corp_fats is not 0:
-                months.append((i, corp_fats))
+            avg_fats = corp_fats / corp.member_count
+
+            if corp_fats > 0:
+                months.append((i, corp_fats, round(avg_fats, 2)))
 
         context = {
             "corporation": corp.corporation_name,
@@ -346,16 +354,16 @@ def stats_corp(request, corpid, year=None, month=None):
     for fat in fats:
         if fat.shiptype in data.keys():
             continue
-        else:
-            data[fat.shiptype] = {}
+
+        data[fat.shiptype] = {}
 
     chars = []
 
     for fat in fats:
         if fat.character.character_name in chars:
             continue
-        else:
-            chars.append(fat.character.character_name)
+
+        chars.append(fat.character.character_name)
 
     for key, ship_type in data.items():
         for char in chars:
@@ -484,7 +492,7 @@ def stats_alliance(request, allianceid, year=None, month=None):
                 ifatlink__ifattime__year=year,
             ).count()
 
-            if ally_fats is not 0:
+            if ally_fats > 0:
                 months.append((i, ally_fats))
 
         context = {
@@ -520,8 +528,8 @@ def stats_alliance(request, allianceid, year=None, month=None):
     for fat in fats:
         if fat.shiptype in data_ship_type.keys():
             continue
-        else:
-            data_ship_type[fat.shiptype] = fats.filter(shiptype=fat.shiptype).count()
+
+        data_ship_type[fat.shiptype] = fats.filter(shiptype=fat.shiptype).count()
 
     colors = []
 
@@ -544,16 +552,16 @@ def stats_alliance(request, allianceid, year=None, month=None):
     for fat in fats:
         if fat.shiptype in data.keys():
             continue
-        else:
-            data[fat.shiptype] = {}
+
+        data[fat.shiptype] = {}
 
     corps = []
 
     for fat in fats:
         if fat.character.corporation_name in corps:
             continue
-        else:
-            corps.append(fat.character.corporation_name)
+
+        corps.append(fat.character.corporation_name)
 
     for key, ship_type in data.items():
         for corp in corps:
@@ -673,6 +681,7 @@ def stats_alliance(request, allianceid, year=None, month=None):
 
 
 @login_required()
+@permission_required("imicusfat.basic_access")
 def links(request, year=None):
     """
     fatlinks view
@@ -784,25 +793,26 @@ def link_create_click(request):
             )
 
             return redirect("imicusfat:link_edit", hash=fatlinkhash)
-        else:
-            request.session["msg"] = [
-                "danger",
-                (
-                    "Something went wrong when attempting to submit your"
-                    " clickable FAT Link."
-                ),
-            ]
-            return redirect("imicusfat:imicusfat_view")
-    else:
+
         request.session["msg"] = [
-            "warning",
+            "danger",
             (
-                'You must fill out the form on the "Add FAT Link" '
-                "page to create a clickable FAT Link"
+                "Something went wrong when attempting to submit your"
+                " clickable FAT Link."
             ),
         ]
 
         return redirect("imicusfat:imicusfat_view")
+
+    request.session["msg"] = [
+        "warning",
+        (
+            'You must fill out the form on the "Add FAT Link" '
+            "page to create a clickable FAT Link"
+        ),
+    ]
+
+    return redirect("imicusfat:imicusfat_view")
 
 
 @login_required()
@@ -825,34 +835,6 @@ def link_create_esi(request, token, hash):
         fleet_from_esi = esi.client.Fleets.get_characters_character_id_fleet(
             character_id=token.character_id, token=esi_token.valid_access_token()
         ).result()
-
-        try:
-            esi_fleet_member = esi.client.Fleets.get_fleets_fleet_id_members(
-                fleet_id=fleet_from_esi["fleet_id"],
-                token=esi_token.valid_access_token(),
-            ).result()
-
-            process_fats.delay(esi_fleet_member, "eve", hash)
-
-            request.session["{}-creation-code".format(hash)] = 200
-
-            logger.info("ESI FAT link %s created by %s", hash, request.user)
-
-            return redirect("imicusfat:link_edit", hash=hash)
-        except Exception:
-            request.session["msg"] = [
-                "warning",
-                "Not Fleet Boss! Only the fleet boss can utilize the ESI function. "
-                "You can create a clickable FAT link and share it, if you like.",
-            ]
-
-            # since the FAT link has already been created, we need to remove it again
-            link = IFatLink.objects.get(hash=hash)
-            IFat.objects.filter(ifatlink_id=link.pk).delete()
-            link.delete()
-
-            # return to "Add FAT Link" view
-            return redirect("imicusfat:link_add")
     except Exception:
         # Not in fleet
         request.session["msg"] = [
@@ -861,13 +843,60 @@ def link_create_esi(request, token, hash):
             "You can create a clickable FAT link and share it, if you like.",
         ]
 
-        # since the FAT link has already been created, we need to remove it again
-        link = IFatLink.objects.get(hash=hash)
-        IFat.objects.filter(ifatlink_id=link.pk).delete()
-        link.delete()
+        # return to "Add FAT Link" view
+        return redirect("imicusfat:link_add")
+
+    # Check if we deal with the fleet boss here
+    try:
+        esi_fleet_member = esi.client.Fleets.get_fleets_fleet_id_members(
+            fleet_id=fleet_from_esi["fleet_id"],
+            token=esi_token.valid_access_token(),
+        ).result()
+    except Exception:
+        request.session["msg"] = [
+            "warning",
+            "Not Fleet Boss! Only the fleet boss can utilize the ESI function. "
+            "You can create a clickable FAT link and share it, if you like.",
+        ]
 
         # return to "Add FAT Link" view
         return redirect("imicusfat:link_add")
+
+    # create the fatlink
+    fatlink = IFatLink(
+        fleet=request.session["fatlink_form__name"],
+        creator=request.user,
+        hash=hash,
+    )
+
+    # add fleet type if there is any
+    if (
+        request.session["fatlink_form__type"] is not None
+        and request.session["fatlink_form__type"] != -1
+    ):
+        fatlink.link_type = IFatLinkType.objects.get(
+            id=request.session["fatlink_form__type"]
+        )
+
+    # it's en ESI fatlink
+    fatlink.is_esilink = True
+
+    # save it
+    fatlink.save()
+
+    # clear session
+    # request.session["fatlink_form__name"] = None
+    # request.session["fatlink_form__type"] = None
+    del request.session["fatlink_form__name"]
+    del request.session["fatlink_form__type"]
+
+    process_fats.delay(esi_fleet_member, "eve", hash)
+
+    request.session["{}-creation-code".format(hash)] = 200
+
+    logger.info("ESI FAT link %s created by %s", hash, request.user)
+
+    return redirect("imicusfat:link_edit", hash=hash)
 
 
 @login_required()
@@ -878,38 +907,32 @@ def create_esi_fat(request):
     :return:
     """
 
-    form = FatLinkForm(request.POST)
-    fat_link_hash = get_random_string(length=30)
+    fatlink_form = FatLinkForm(request.POST)
 
-    if form.is_valid():
-        link = IFatLink(
-            fleet=form.cleaned_data["name_esi"],
-            creator=request.user,
-            hash=fat_link_hash,
-        )
+    if fatlink_form.is_valid():
+        fat_link_hash = get_random_string(length=30)
 
-        if (
-            form.cleaned_data["type_esi"] is not None
-            and form.cleaned_data["type_esi"] != -1
-        ):
-            link.link_type = IFatLinkType.objects.get(id=form.cleaned_data["type_esi"])
-
-        link.is_esilink = True
-        link.save()
+        request.session["fatlink_form__name"] = fatlink_form.cleaned_data["name_esi"]
+        request.session["fatlink_form__type"] = fatlink_form.cleaned_data["type_esi"]
 
         return redirect("imicusfat:link_create_esi", hash=fat_link_hash)
-    else:
-        request.session["msg"] = [
-            "danger",
-            "Something went wrong when attempting to submit your ESI FAT Link.",
-        ]
 
-        return redirect("imicusfat:imicusfat_view")
+    request.session["msg"] = [
+        "danger",
+        "Something went wrong when attempting to submit your ESI FAT Link.",
+    ]
+
+    return redirect("imicusfat:imicusfat_view")
 
 
 @login_required()
+@permission_required("imicusfat.basic_access")
 @token_required(
-    scopes=["esi-location.read_location.v1", "esi-location.read_ship_type.v1"]
+    scopes=[
+        "esi-location.read_location.v1",
+        "esi-location.read_ship_type.v1",
+        "esi-location.read_online.v1",
+    ]
 )
 def click_link(request, token, hash=None):
     """
@@ -953,62 +976,83 @@ def click_link(request, token, hash=None):
             required_scopes = [
                 "esi-location.read_location.v1",
                 "esi-location.read_ship_type.v1",
+                "esi-location.read_online.v1",
             ]
             esi_token = Token.get_token(token.character_id, required_scopes)
 
-            # character location
-            location = esi.client.Location.get_characters_character_id_location(
+            # check if character is online
+            character_online = esi.client.Location.get_characters_character_id_online(
                 character_id=token.character_id, token=esi_token.valid_access_token()
             ).result()
 
-            # current ship
-            ship = esi.client.Location.get_characters_character_id_ship(
-                character_id=token.character_id, token=esi_token.valid_access_token()
-            ).result()
+            if character_online["online"] is True:
+                # character location
+                location = esi.client.Location.get_characters_character_id_location(
+                    character_id=token.character_id,
+                    token=esi_token.valid_access_token(),
+                ).result()
 
-            # system information
-            system = esi.client.Universe.get_universe_systems_system_id(
-                system_id=location["solar_system_id"]
-            ).result()["name"]
+                # current ship
+                ship = esi.client.Location.get_characters_character_id_ship(
+                    character_id=token.character_id,
+                    token=esi_token.valid_access_token(),
+                ).result()
 
-            ship_name = provider.get_itemtype(ship["ship_type_id"]).name
+                # system information
+                system = esi.client.Universe.get_universe_systems_system_id(
+                    system_id=location["solar_system_id"]
+                ).result()["name"]
 
-            try:
-                fat = IFat(
-                    ifatlink=fleet,
-                    character=character,
-                    system=system,
-                    shiptype=ship_name,
-                )
-                fat.save()
+                ship_name = provider.get_itemtype(ship["ship_type_id"]).name
 
-                if fleet.fleet is not None:
-                    name = fleet.fleet
-                else:
-                    name = fleet.hash
+                try:
+                    fat = IFat(
+                        ifatlink=fleet,
+                        character=character,
+                        system=system,
+                        shiptype=ship_name,
+                    )
+                    fat.save()
 
-                request.session["msg"] = [
-                    "success",
-                    (
-                        "FAT registered for {} at {}".format(
-                            character.character_name, name
-                        )
-                    ),
-                ]
+                    if fleet.fleet is not None:
+                        name = fleet.fleet
+                    else:
+                        name = fleet.hash
 
-                logger.info(
-                    "Fleetparticipation for fleet %s registered for pilot %s",
-                    name,
-                    character.character_name,
-                )
+                    request.session["msg"] = [
+                        "success",
+                        (
+                            "FAT registered for {} at {}".format(
+                                character.character_name, name
+                            )
+                        ),
+                    ]
 
-                return redirect("imicusfat:imicusfat_view")
-            except Exception:
+                    logger.info(
+                        "Fleetparticipation for fleet %s registered for pilot %s",
+                        name,
+                        character.character_name,
+                    )
+
+                    return redirect("imicusfat:imicusfat_view")
+                except Exception:
+                    request.session["msg"] = [
+                        "warning",
+                        (
+                            "A FAT already exists for the selected character ({}) and fleet"
+                            " combination.".format(character.character_name)
+                        ),
+                    ]
+
+                    return redirect("imicusfat:imicusfat_view")
+            else:
                 request.session["msg"] = [
                     "warning",
                     (
-                        "A FAT already exists for the selected character ({}) and fleet"
-                        " combination.".format(character.character_name)
+                        "Cannot register the fleet participation for {character}. "
+                        "The character needs to be online.".format(
+                            character=character.character_name
+                        )
                     ),
                 ]
 
