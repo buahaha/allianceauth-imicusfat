@@ -79,51 +79,14 @@ Only do this once and ONLY BEFORE you are using ImicusFAT.
 
 ### Import from AA-FAT
 
-To import your old FAT data from Alliance Auth's own FAT, you have to disable foreign key checks temporarily.
-
-
-```
-INSERT INTO imicusfat_ifat (id, `system`, shiptype, character_id, ifatlink_id)
-SELECT id,`system`,shiptype,character_id,fatlink_id
-FROM fleetactivitytracking_fat;
-
-INSERT INTO imicusfat_ifatlink (id, ifattime, fleet, `hash`, creator_id)
-SELECT id,fatdatetime,fleet,hash,creator_id 
-FROM fleetactivitytracking_fatlink;
+```bash
+python myauth/manage.py imicusfat_import_from_allianceauth_fat
 ```
 
-### Migrating from bFAT
+### Import from bFAT
 
-Before installation, temporarily comment out `bfat` in your AA settings (`local.py`) by doing:
-
-- Modify `'bfat',` to `#'bfat',` under `INSTALLED_APPS`
-
-And then continue installation as normal. You may undo this after successful installation.
-
-#### Import from bFAT
-To import your old FAT data from bFAT, you have to disable foreign key checks temporarily.
-
-
-```
-INSERT INTO imicusfat_clickifatduration (id, duration, fleet_id)
-SELECT id, duration, fleet_id
-FROM bfat_clickfatduration;
-
-INSERT INTO imicusfat_dellog (id, deltype, string, remover_id)
-SELECT id, deltype, string, remover_id
-FROM bfat_dellog;
-
-INSERT INTO imicusfat_ifat (id, `system`, shiptype, character_id, ifatlink_id)
-SELECT id,`system`,shiptype,character_id,fatlink_id
-FROM bfat_fat;
-
-INSERT INTO imicusfat_ifatlink (id, ifattime, fleet, `hash`, creator_id)
-SELECT id,fattime,fleet,hash,creator_id 
-FROM bfat_fatlink;
-
-INSERT INTO imicusfat_manualifat (id, character_id, creator_id, ifatlink_id)
-SELECT id, character_id, creator_id, fatlink_id
-FROM bfat_manualfat;
+```bash
+python myauth/manage.py imicusfat_import_from_bfat
 ```
 
 ## Credits
