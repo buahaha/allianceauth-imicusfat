@@ -26,7 +26,7 @@ from imicusfat.models import (
     ClickIFatDuration,
     IFatLink,
     ManualIFat,
-    DelLog,
+    IFatDelLog,
     IFatLinkType,
 )
 from imicusfat.permissions import get_user_permissions
@@ -1225,7 +1225,7 @@ def del_link(request, hash=None):
 
     link.delete()
 
-    DelLog(remover=request.user, deltype=0, string=link.__str__()).save()
+    IFatDelLog(remover=request.user, deltype=0, string=link.__str__()).save()
 
     request.session["msg"] = [
         "success",
@@ -1272,7 +1272,7 @@ def del_fat(request, hash, fat):
 
     fat.delete()
 
-    DelLog(remover=request.user, deltype=1, string=fat.__str__()).save()
+    IFatDelLog(remover=request.user, deltype=1, string=fat.__str__()).save()
     request.session["msg"] = [
         "success",
         "The FAT from link {0} has been successfully deleted.".format(hash),

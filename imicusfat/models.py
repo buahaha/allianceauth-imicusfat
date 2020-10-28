@@ -328,10 +328,10 @@ class ManualIFat(models.Model):
         verbose_name_plural = "Manual FAT Logs"
 
 
-# DelLog Model
-class DelLog(models.Model):
+# IFatDelLog Model
+class IFatDelLog(models.Model):
     """
-    DelLog
+    IFatDelLog
     """
 
     # 0 for FatLink, 1 for Fat
