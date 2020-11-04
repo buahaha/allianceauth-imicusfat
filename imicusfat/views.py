@@ -12,7 +12,9 @@ from datetime import datetime, timedelta
 
 from django.db.models import Count, Q
 from django.contrib.auth.decorators import login_required, permission_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 
@@ -697,17 +699,10 @@ def links(request, year=None):
     if "msg" in request.session:
         msg = request.session.pop("msg")
 
-    fatlinks = (
-        IFatLink.objects.filter(ifattime__year=year)
-        .order_by("-ifattime")
-        .annotate(number_of_fats=Count("ifat", filter=Q(ifat__deleted_at__isnull=True)))
-    )
-
     # get users permissions
     permissions = get_user_permissions(request.user)
 
     context = {
-        "links": fatlinks,
         "msg": msg,
         "year": year,
         "year_current": datetime.now().year,
@@ -719,6 +714,91 @@ def links(request, year=None):
     logger.info("FAT link list called by %s", request.user)
 
     return render(request, "imicusfat/fat_list.html", context)
+
+
+@login_required()
+@permission_required("imicusfat.basic_access")
+def links_data(request, year: int = None) -> JsonResponse:
+    """
+    fatlinks view
+    :param year:
+    :param request:
+    :return:
+    """
+
+    data = list()
+
+    # get users permissions
+    permissions = get_user_permissions(request.user)
+
+    if year is None:
+        year = datetime.now().year
+
+    fatlinks = (
+        IFatLink.objects.filter(ifattime__year=year)
+        .order_by("-ifattime")
+        .annotate(number_of_fats=Count("ifat", filter=Q(ifat__deleted_at__isnull=True)))
+    )
+
+    for fatlink in fatlinks:
+        fatlink_fleet = fatlink.hash
+
+        if fatlink.fleet:
+            fatlink_fleet = fatlink.fleet
+
+        esi_fleet_marker = ""
+        via_esi = "No"
+        if fatlink.is_esilink:
+            esi_fleet_marker += '<span class="label label-success ifat-label ifat-label-via-esi">via ESI</span>'
+            via_esi = "Yes"
+
+        fatlink_type = ""
+        if fatlink.link_type:
+            fatlink_type = fatlink.link_type.name
+
+        creator = fatlink.creator.profile.main_character.character_name
+        time = fatlink.ifattime
+        fats_number = fatlink.number_of_fats
+
+        actions = ""
+        if permissions["fatlinks"]["manipulate"]:
+            if permissions["fatlinks"]["change"]:
+                button_edit_url = reverse("imicusfat:link_edit", args=[fatlink.hash])
+
+                actions += (
+                    '<a class="btn btn-ifat-action btn-info btn-sm" href="'
+                    + button_edit_url
+                    + '">'
+                    '<span class="glyphicon glyphicon-pencil"></span>'
+                    "</a>"
+                )
+
+            if permissions["fatlinks"]["delete"]:
+                button_delete_url = reverse(
+                    "imicusfat:link_delete", args=[fatlink.hash]
+                )
+
+                actions += (
+                    '<a class="btn btn-ifat-action btn-danger btn-sm" data-toggle="modal" '
+                    'data-target="#deleteModal" data-url="' + button_delete_url + '" '
+                    'data-name="' + fatlink_fleet + '">'
+                    '<span class="glyphicon glyphicon-trash"></span>'
+                    "</a>"
+                )
+
+        data.append(
+            {
+                "fatlink_fleet": fatlink_fleet + esi_fleet_marker,
+                "link_type": fatlink_type,
+                "creator": creator,
+                "time": time,
+                "fats_number": fats_number,
+                "actions": actions,
+                "via_esi": via_esi,
+            }
+        )
+
+    return JsonResponse(data, safe=False)
 
 
 @login_required()

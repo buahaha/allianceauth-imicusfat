@@ -51,53 +51,7 @@
                 {% endif %}
             </thead>
 
-            <tbody>
-                {% for link in links %}
-                    <tr>
-                        <td>
-                            {% if link.fleet %}
-                                {{ link.fleet }}
-                            {% else %}
-                                {{ link.hash }}
-                            {% endif %}
-
-                            {% if link.is_esilink %}
-                                <span class="label label-success ifat-label ifat-label-via-esi">via ESI</span>
-                            {% endif %}
-                        </td>
-
-                        <td>
-                            {% if link.link_type %}
-                                {{ link.link_type.name }}
-                            {% endif %}
-                        </td>
-
-                        <td>{{ link.creator.profile.main_character.character_name }}</td>
-                        <td data-sort='{{ link.ifattime|date:"Y-m-d H:i" }}'>{{ link.ifattime|date:"Y-M-d, H:i" }}</td>
-                        <td>{{ link.number_of_fats }}</td>
-
-                        {% if permissions.fatlinks.manipulate %}
-                        <td class="no-sort">
-                            {% if permissions.fatlinks.change %}
-                                <a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}">
-                                    <span class="glyphicon glyphicon-pencil"></span>
-                                </a>
-                            {% endif %}
-
-                            {% if permissions.fatlinks.delete %}
-                                <a class="btn btn-danger"
-                                    data-toggle="modal"
-                                    data-target="#deleteModal"
-                                    data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_delete' link.hash %}"
-                                    data-name="{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}">
-                                    <span class="glyphicon glyphicon-trash"></span>
-                                </a>
-                            {% endif %}
-                        </td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 
@@ -126,6 +80,10 @@
 {% block extra_javascript %}
     {% include 'bundles/datatables-js.html' %}
     {% include 'bundles/moment-js.html' %}
+
+    <script type="application/javascript" src="{% static 'imicusfat/libs/datatables/plugins/dataTables.rowGroup.min.js' %}"></script>
+    <script type="application/javascript" src="{% static 'imicusfat/libs/datatables/plugins/datetime.min.js' %}"></script>
+    <script type="application/javascript" src="{% static 'js/filterDropDown/filterDropDown.min.js' %}"></script>
 {% endblock %}
 
 {% block extra_css %}
@@ -135,34 +93,71 @@
 {% endblock %}
 
 {% block extra_script %}
-    $.fn.dataTable.moment = function(format, locale) {
-        var types = $.fn.dataTable.ext.type;
+    $(document).ready(function() {
+        const DATETIME_FORMAT = 'YYYY-MMM-DD, HH:mm';
 
-        // Add type detection
-        types.detect.unshift(function(d) {
-            return moment(d, format, locale, true).isValid() ?
-                'moment-'+format :
-                null;
-        } );
+        {% if permissions.fatlinks.manipulate %}
+            var esi_column = 6;
+        {% else %}
+            var esi_column = 5;
+        {% endif %}
 
-        // Add sorting method - use an integer for the sorting
-        types.order[ 'moment-'+format+'-pre' ] = function(d) {
-            return moment(d, format, locale, true).unix();
-        };
-    };
-
-    $(document).ready(function(){
-        $.fn.dataTable.moment('YYYY-MMM-D, HH:mm');
 
         $('#link-list').DataTable({
-            "order": [[ 3, "desc" ]],
-            {% if permissions.fatlinks.manipulate %}
-            "columnDefs": [{
-                "targets": 5,
-                "orderable": false,
-                "order": []
-            }]
-            {% endif %}
+            ajax: {
+                url: "{% url 'imicusfat:links_data' year %}",
+                dataSrc: '',
+                cache: false
+            },
+            columns: [
+                {data: 'fatlink_fleet'},
+                {data: 'link_type'},
+                {data: 'creator'},
+                {
+                    data: 'time',
+                    render: $.fn.dataTable.render.moment( moment.ISO_8601, DATETIME_FORMAT )
+                },
+                {data: 'fats_number'},
+
+                {% if permissions.fatlinks.manipulate %}
+                    {data: 'actions'},
+                {% endif %}
+
+                // hidden column
+                {data: 'via_esi'},
+            ],
+
+            columnDefs: [
+                {
+                    orderable: false,
+                    targets: [5]
+                },
+                {
+                    visible: false,
+                    targets: [esi_column]
+                }
+            ],
+
+            order: [
+                [3, "desc"]
+            ],
+
+            filterDropDown: {
+                columns: [
+                    {
+                        idx: 1,
+                    },
+//                    {
+//                        idx: 2,
+//                    },
+                    {
+                        idx: esi_column,
+                        title: "{% trans 'via ESI' %}"
+                    },
+                ],
+                autoSize: false,
+                bootstrap: true
+            },
         });
     });
 
