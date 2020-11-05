@@ -7,4 +7,4 @@ app config
 default_app_config: str = "imicusfat.apps.ImicusfatConfig"
 
 __title__ = "ImicusFAT"
-__version__ = "1.2.0"
+__version__ = "1.3.0"
