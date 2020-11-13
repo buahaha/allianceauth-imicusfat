@@ -262,8 +262,7 @@
 
 {% block extra_javascript %}
     {% include 'bundles/datatables-js.html' %}
-
-    <script type="application/javascript" src="{% static 'imicusfat/javascript/clipboard-js/clipboard.min.js' %}"></script>
+    {% include 'bundles/clipboard-js.html' %}
 {% endblock %}
 
 {% block extra_css %}
