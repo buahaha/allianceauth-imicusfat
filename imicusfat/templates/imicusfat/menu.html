@@ -6,26 +6,26 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">{% trans "Toggle navigation" %}</span>
+                <span class="sr-only">{% translate "Toggle navigation" %}</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
 
-            <a class="navbar-brand" href="{% url 'imicusfat:imicusfat_view' %}">{% trans "ImicusFAT" %}</a>
+            <a class="navbar-brand" href="{% url 'imicusfat:imicusfat_view' %}">{% translate "ImicusFAT" %}</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class="{% navactive request 'imicusfat_stats imicusfat_corp_stats imicusfat_char_stats imicusfat_ally_stats' %}">
-                    <a href="{% url 'imicusfat:stats' %}">{% trans "Statistics" %}</a>
+                    <a href="{% url 'imicusfat:stats' %}">{% translate "Statistics" %}</a>
                 </li>
                 <li class="{% navactive request 'imicusfat:links imicusfat:link_edit' %}">
-                    <a href="{% url 'imicusfat:links' %}">{% trans "FAT Links" %}</a>
+                    <a href="{% url 'imicusfat:links' %}">{% translate "FAT Links" %}</a>
                 </li>
                 {% if permissions.fatlinks.manage or permissions.fatlinks.add %}
                     <li class="{% navactive request 'imicusfat:link_add' %}">
-                        <a href="{% url 'imicusfat:link_add' %}">{% trans "Add FAT Link" %}</a>
+                        <a href="{% url 'imicusfat:link_add' %}">{% translate "Add FAT Link" %}</a>
                     </li>
                 {% endif %}
             </ul>

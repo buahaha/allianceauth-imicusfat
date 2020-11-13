@@ -3,32 +3,32 @@
 {% load i18n %}
 {% load filters %}
 
-{% block page_title %}{{ corporation }} {% trans "Fleet Activity" %}{% endblock %}
+{% block page_title %}{{ corporation }} {% translate "Fleet Activity" %}{% endblock %}
 
 {% block content %}
     <div class="col-lg-12">
         <br>
         {% include "imicusfat/menu.html" %}
 
-        <h2>{{ corporation }} {% trans "Fleet Activity" %}</h2>
+        <h2>{{ corporation }} {% translate "Fleet Activity" %}</h2>
 
         <h4>
-            <a class="btn btn-primary" href="{% url 'imicusfat:stats' %}{% if type == 0 %}corporation{% elif type == 1 %}alliance{% endif %}/{{ corpid }}/{{ year_prev }}/" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats' %}{% if type == 0 %}corporation{% elif type == 1 %}alliance{% endif %}/{{ corpid }}/{{ year_prev }}/" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
 
             {{ year }}
 
             {% if year_next <= year_current %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats' %}{% if type == 0 %}corporation{% elif type == 1 %}alliance{% endif %}/{{ corpid }}/{{ year_next }}/" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats' %}{% if type == 0 %}corporation{% elif type == 1 %}alliance{% endif %}/{{ corpid }}/{{ year_current }}/" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats' %}{% if type == 0 %}corporation{% elif type == 1 %}alliance{% endif %}/{{ corpid }}/{{ year_next }}/" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats' %}{% if type == 0 %}corporation{% elif type == 1 %}alliance{% endif %}/{{ corpid }}/{{ year_current }}/" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
             {% endif %}
         </h4>
 
         <table class="table">
             <thead>
-                <th>{% trans "Month" %}</th>
-                <th>{% trans "FATs" %}</th>
+                <th>{% translate "Month" %}</th>
+                <th>{% translate "FATs" %}</th>
                 {% if type == 0 %}
-                    <th>{% trans "Avg FATs" %}</th>
+                    <th>{% translate "Avg FATs" %}</th>
                 {% endif %}
                 <th></th>
             </thead>

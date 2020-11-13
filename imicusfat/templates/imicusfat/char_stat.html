@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block page_title %}{{ character.character_name }} {% trans "Statistics" %}{% endblock %}
+{% block page_title %}{{ character.character_name }} {% translate "Statistics" %}{% endblock %}
 
 {% block content %}
     <script type="application/javascript" src="{% static 'imicusfat/javascript/chart-js/Chart.min.js' %}"></script>
@@ -12,36 +12,36 @@
         <br>
         {% include 'imicusfat/menu.html' %}
 
-        <h2>{{ character.character_name }} {% trans "Statistics" %}</h2>
+        <h2>{{ character.character_name }} {% translate "Statistics" %}</h2>
         <h4>
             {% if month == '1' %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_prev 12 %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_prev 12 %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
             {% else %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year month_prev %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year month_prev %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
             {% endif %}
 
             {{ month|month }} {{ year }}
 
             {% if month_next > month_current and year_next > year_current %}
             {% elif month == '12' %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_next 1 %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_current month_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_next 1 %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_current month_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
             {% else %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year month_next %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_current month_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year month_next %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_current month_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
             {% endif %}
         </h4>
 
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#graphs">{% trans "Graphs" %}</a></li>
-            <li><a data-toggle="tab" href="#rawdata">{% trans "Raw Data" %}</a></li>
+            <li class="active"><a data-toggle="tab" href="#graphs">{% translate "Graphs" %}</a></li>
+            <li><a data-toggle="tab" href="#rawdata">{% translate "Raw Data" %}</a></li>
         </ul>
 
         <div class="tab-content">
             <div id="graphs" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
                     <div class="col-md-4">
-                        <h4>{% trans "FATs by Ship Type" %}</h4>
+                        <h4>{% translate "FATs by Ship Type" %}</h4>
                         <canvas style="width: 400px; max-width: 100%; height: 400px;" id="pie-ship"></canvas>
 
                         <script>
@@ -62,7 +62,7 @@
                     </div>
 
                     <div class="col-md-8">
-                        <h4>{% trans "FATs by Time of Day" %}</h4>
+                        <h4>{% translate "FATs by Time of Day" %}</h4>
                         <canvas style="width: 100%; height: 400px;" id="line-time"></canvas>
 
                         <script>
@@ -87,15 +87,15 @@
 
             <div id="rawdata" class="tab-pane fade panel-default">
                 <div class="panel-body">
-                    <h4>{% trans "FATs for" %} {{ character.character_name }}</h4>
+                    <h4>{% translate "FATs for" %} {{ character.character_name }}</h4>
 
                     <table class="table" id="raw-data">
                         <thead>
-                            <th>{% trans "Name" %}</th>
-                            <th>{% trans "Fleet Type" %}</th>
-                            <th>{% trans "Location" %}</th>
-                            <th>{% trans "Ship" %}</th>
-                            <th>{% trans "EVE Time" %}</th>
+                            <th>{% translate "Name" %}</th>
+                            <th>{% translate "Fleet Type" %}</th>
+                            <th>{% translate "Location" %}</th>
+                            <th>{% translate "Ship" %}</th>
+                            <th>{% translate "EVE Time" %}</th>
                         </thead>
 
                         <tbody>

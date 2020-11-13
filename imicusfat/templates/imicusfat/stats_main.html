@@ -4,23 +4,23 @@
 {% load filters %}
 {% load i18n %}
 
-{% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
+{% block page_title %}{% translate 'Fleet Activity' %}{% endblock %}
 
 {% block content %}
     <div class="col-lg-12">
         <br>
         {% include "imicusfat/menu.html" %}
 
-        <h2>{% trans "Statistics" %}
+        <h2>{% translate "Statistics" %}
 
         <h4>
-            <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_prev %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_prev %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
 
             {{ year }}
 
             {% if year_next <= year_current %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_next %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_next %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
             {% endif %}
         </h4>
 
@@ -31,9 +31,9 @@
                 </button>
                 <h4>
                     {% if msg.0 == 'danger' %}
-                        {% trans "Oh No!" %}
+                        {% translate "Oh No!" %}
                     {% elif msg.0 == 'success' %}
-                        {% trans "Success!" %}
+                        {% translate "Success!" %}
                     {% endif %}
                 </h4>
                 <p>{{ msg.1 }}</p>
@@ -41,18 +41,18 @@
         {% endif %}
 
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#mine">{% trans "My Stats" %}</a></li>
+            <li class="active"><a data-toggle="tab" href="#mine">{% translate "My Stats" %}</a></li>
             {% if permissions.stats.corp.view_own or permissions.stats.corp.view_other %}
-                <li><a data-toggle="tab" href="#corps">{% trans "Corps" %}</a></li>
+                <li><a data-toggle="tab" href="#corps">{% translate "Corps" %}</a></li>
             {% endif %}
         </ul>
 
         <div class="tab-content">
             <div id="mine" class="tab-pane fade in active panel-default">
                 <div class="panel-body">
-                    <h4>{% trans "Your monthly stats" %}</h4>
+                    <h4>{% translate "Your monthly stats" %}</h4>
 
-                    <p>{% trans "Only months with FAT data of the current year are shown." %}</p>
+                    <p>{% translate "Only months with FAT data of the current year are shown." %}</p>
 
                     <ul class="nav nav-pills">
                         {% for char in charstats %}
@@ -75,8 +75,8 @@
                                 {% if char.1|length > 0 %}
                                     <table class="table">
                                         <thead>
-                                            <th>{% trans "Month" %}</th>
-                                            <th>{% trans "FAT Count" %}</th>
+                                            <th>{% translate "Month" %}</th>
+                                            <th>{% translate "FAT Count" %}</th>
                                             <th></th>
                                         </thead>
 
@@ -96,7 +96,7 @@
                                     </table>
                                 {% else %}
                                     <div class="alert alert-warning" role="alert">
-                                        <p>{% trans "No FATs for" %} {{ char.0 }}</p>
+                                        <p>{% translate "No FATs for" %} {{ char.0 }}</p>
                                     </div>
                                 {% endif %}
                                 </div>
@@ -109,7 +109,7 @@
             {% if permissions.stats.corp.view_own or permissions.stats.corp.view_other %}
             <div id="corps" class="tab-pane fade panel-default">
                 <div class="panel-body">
-                    <h4>{% trans "Corporations (Click Alliance Name to See Corps)" %}</h4>
+                    <h4>{% translate "Corporations (Click Alliance Name to See Corps)" %}</h4>
                     {% if permissions.stats.corp.view_other %}
                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                             {% for key, value in data.items %}

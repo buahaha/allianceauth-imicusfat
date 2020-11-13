@@ -3,23 +3,23 @@
 {% load i18n %}
 {% load static %}
 
-{% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
+{% block page_title %}{% translate 'Fleet Activity' %}{% endblock %}
 
 {% block content %}
     <div class="col-lg-12">
         <br>
         {% include "imicusfat/menu.html" %}
 
-        <h2>{% trans "All FAT Links" %}</h2>
+        <h2>{% translate "All FAT Links" %}</h2>
 
         <h4>
-            <a class="btn btn-primary" href="{% url 'imicusfat:links' year_prev %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+            <a class="btn btn-primary" href="{% url 'imicusfat:links' year_prev %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
 
             {{ year }}
 
             {% if year_next <= year_current %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:links' year_next %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:links' year_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:links' year_next %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
+                <a class="btn btn-primary" href="{% url 'imicusfat:links' year_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
             {% endif %}
         </h4>
 
@@ -30,9 +30,9 @@
             </button>
             <h4>
                 {% if msg.0 == 'danger' %}
-                    {% trans "Oh No!" %}
+                    {% translate "Oh No!" %}
                 {% elif msg.0 == 'success' %}
-                    {% trans "Success!" %}
+                    {% translate "Success!" %}
                 {% endif %}
             </h4>
             <p>{{ msg.1 }}</p>
@@ -41,13 +41,13 @@
 
         <table class="table" id="link-list">
             <thead>
-                <th>{% trans "Fleet Name" %}</th>
-                <th>{% trans "Fleet Type" %}</th>
-                <th>{% trans "Creator" %}</th>
-                <th>{% trans "EVE Time" %}</th>
-                <th>{% trans "# of FATs" %}</th>
+                <th>{% translate "Fleet Name" %}</th>
+                <th>{% translate "Fleet Type" %}</th>
+                <th>{% translate "Creator" %}</th>
+                <th>{% translate "EVE Time" %}</th>
+                <th>{% translate "# of FATs" %}</th>
                 {% if permissions.fatlinks.manipulate %}
-                    <th>{% trans "Actions" %}</th>
+                    <th>{% translate "Actions" %}</th>
                 {% endif %}
             </thead>
 
@@ -60,7 +60,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLongTitle">{% trans "Delete FAT Link" %}</h5>
+                    <h5 class="modal-title" id="modalLongTitle">{% translate "Delete FAT Link" %}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -69,8 +69,8 @@
                 <div class="modal-body"></div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
-                    <a id="fat-link" class="btn btn-danger" role="button" href="">{% trans "Delete" %}</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate "Cancel" %}</button>
+                    <a id="fat-link" class="btn btn-danger" role="button" href="">{% translate "Delete" %}</a>
                 </div>
             </div>
         </div>
@@ -152,7 +152,7 @@
 //                    },
                     {
                         idx: esi_column,
-                        title: "{% trans 'via ESI' %}"
+                        title: "{% translate 'via ESI' %}"
                     },
                 ],
                 autoSize: false,
@@ -168,6 +168,6 @@
 
         var modal = $(this)
         modal.find('#fat-link').attr("href", url)
-        modal.find('.modal-body').text('{% trans "Are you sure you want to delete" %} ' + name + '?');
+        modal.find('.modal-body').text('{% translate "Are you sure you want to delete" %} ' + name + '?');
     });
 {% endblock %}

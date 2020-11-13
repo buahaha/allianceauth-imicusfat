@@ -4,7 +4,7 @@
 {% load bootstrap %}
 {% load static %}
 
-{% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
+{% block page_title %}{% translate 'Fleet Activity' %}{% endblock %}
 
 {% block content %}
         <div class="col-lg-12">
@@ -17,10 +17,10 @@
                         <span aria-hidden="true">&times</span>
                     </button>
 
-                    <h4>{% trans "Success!" %}</h4>
+                    <h4>{% translate "Success!" %}</h4>
 
-                    <p>&#9642; {% trans "FAT Link Created!" %}</p>
-                    <p>&#9642; {% trans "FATs have been queued, they may take a few mins to show up." %}</p>
+                    <p>&#9642; {% translate "FAT Link Created!" %}</p>
+                    <p>&#9642; {% translate "FATs have been queued, they may take a few mins to show up." %}</p>
                 </div>
             {% elif msg_code == 0 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
@@ -28,9 +28,9 @@
                         <span aria-hidden="true">&times</span>
                     </button>
 
-                    <h4>{% trans "Oh No!" %}</h4>
+                    <h4>{% translate "Oh No!" %}</h4>
 
-                    <p>{% trans "Something went wrong!" %}</p>
+                    <p>{% translate "Something went wrong!" %}</p>
                 </div>
             {% elif msg_code == 202 %}
                 <div class="alert alert-success alert-dismissible" role="alert">
@@ -38,10 +38,10 @@
                         <span aria-hidden="true">&times</span>
                     </button>
 
-                    <h4>{% trans "Success!" %}</h4>
+                    <h4>{% translate "Success!" %}</h4>
 
-                    <p>&#9642; {% trans "Clickable FAT Link Created!" %}</p>
-                    <p>&#9642; {% trans "Make sure to give your fleet members the following link to click so that they get credit for this fleet." %}</p>
+                    <p>&#9642; {% translate "Clickable FAT Link Created!" %}</p>
+                    <p>&#9642; {% translate "Make sure to give your fleet members the following link to click so that they get credit for this fleet." %}</p>
                     {% if link_ongoing %}
                     <p>&#9642;
                         Link:
@@ -62,9 +62,9 @@
                         <span aria-hidden="true">&times</span>
                     </button>
 
-                    <h4>{% trans "Success!" %}</h4>
+                    <h4>{% translate "Success!" %}</h4>
 
-                    <p>{% trans "Fleet name successfully changed." %}</p>
+                    <p>{% translate "Fleet name successfully changed." %}</p>
                 </div>
             {% elif msg_code == 3 %}
                 <div class="alert alert-success alert-dismissible" role="alert">
@@ -72,9 +72,9 @@
                         <span aria-hidden="true">&times</span>
                     </button>
 
-                    <h4>{% trans "Success!" %}</h4>
+                    <h4>{% translate "Success!" %}</h4>
 
-                    <p>{% trans "Manual FAT processed." %}</p>
+                    <p>{% translate "Manual FAT processed." %}</p>
                 </div>
             {% elif msg_code == 4 %}
                 <div class="alert alert-danger alert-dismissible" role="alert">
@@ -82,9 +82,9 @@
                         <span aria-hidden="true">&times</span>
                     </button>
 
-                    <h4>{% trans "Oh No!" %}</h4>
+                    <h4>{% translate "Oh No!" %}</h4>
 
-                    <p>{% trans "Manual FAT processing failed! The character name you entered was not found." %}</p>
+                    <p>{% translate "Manual FAT processing failed! The character name you entered was not found." %}</p>
                 </div>
             {% elif msg_code == 999 %}
                 <div class="alert alert-{{ message.0 }} alert-dismissible" role="alert">
@@ -93,16 +93,16 @@
                     </button>
                     <h4>
                         {% if msg.0 == 'danger' %}
-                            {% trans "Oh No!" %}
+                            {% translate "Oh No!" %}
                         {% elif msg.0 == 'success' %}
-                            {% trans "Success!" %}
+                            {% translate "Success!" %}
                         {% endif %}
                     </h4>
                     <p>{{ message.1 }}</p>
                 </div>
             {% endif %}
 
-            <h2>{% trans "Edit FAT Link" %}</h2>
+            <h2>{% translate "Edit FAT Link" %}</h2>
             <div class="col-md-12">
                 <div class="row">
                     <form class="form" role="form" action="" method="POST">
@@ -110,10 +110,10 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder='{% trans "Fleet Name" %}' name="fleet" {% if link.fleet %}value="{{ link.fleet }}" {% endif %}>
+                                    <input type="text" class="form-control" placeholder='{% translate "Fleet Name" %}' name="fleet" {% if link.fleet %}value="{{ link.fleet }}" {% endif %}>
 
                                     <span class="input-group-btn">
-                                        <button class="btn btn-primary" type="submit" name="set_name">{% trans "Set Name" %}</button>
+                                        <button class="btn btn-primary" type="submit" name="set_name">{% translate "Set Name" %}</button>
                                     </span>
                                 </div>
                             </div>
@@ -122,8 +122,8 @@
 
                     <p>&nbsp;</p>
 
-                    <div class="col-md-2">{% trans "Creator:" %} {{ link.creator.profile.main_character.character_name }}</div>
-                    <div class="col-md-2 col-md-offset-8">{% trans "Time:" %} {{ link.ifattime }}</div>
+                    <div class="col-md-2">{% translate "Creator:" %} {{ link.creator.profile.main_character.character_name }}</div>
+                    <div class="col-md-2 col-md-offset-8">{% translate "Time:" %} {{ link.ifattime }}</div>
 
                     {% if link_ongoing %}
                     <div class="col-md-10">
@@ -133,8 +133,8 @@
                                 <a class="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
                             </i>
 
-                            <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title='{% trans "Copied!" %}' data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}" style="margin-left: 1rem;">
-                                {% trans "Copy me!" %}
+                            <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title='{% translate "Copied!" %}' data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}" style="margin-left: 1rem;">
+                                {% translate "Copy me!" %}
                             </button>
                         </p>
                     </div>
@@ -145,23 +145,23 @@
             <p>&nbsp;</p>
 
             <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" class="tab" href="#FATs">{% trans "FATs" %}</a></li>
-                <li>{% if permissions.fats.add %}<a data-toggle="tab" class="tab" href="#manualfat">{% trans "Manual FAT" %}</a>{% endif %}</li>
-                <li><a data-toggle="tab" class="tab" href="#flatlist">{% trans "Raw Data" %}</a></li>
+                <li class="active"><a data-toggle="tab" class="tab" href="#FATs">{% translate "FATs" %}</a></li>
+                <li>{% if permissions.fats.add %}<a data-toggle="tab" class="tab" href="#manualfat">{% translate "Manual FAT" %}</a>{% endif %}</li>
+                <li><a data-toggle="tab" class="tab" href="#flatlist">{% translate "Raw Data" %}</a></li>
             </ul>
 
             <div class="tab-content">
                 <div id="FATs" class="tab-pane fade in active panel-default">
                     <div class="panel-body">
-                         <h4>{% trans "FATs for this FAT Link" %}</h4>
+                         <h4>{% translate "FATs for this FAT Link" %}</h4>
 
                          <table class="table" id="fat-chars">
                              <thead>
-                                <th>{% trans "Character" %}</th>
-                                <th>{% trans "Location" %}</th>
-                                <th>{% trans "Ship Type" %}</th>
+                                <th>{% translate "Character" %}</th>
+                                <th>{% translate "Location" %}</th>
+                                <th>{% translate "Ship Type" %}</th>
                                 {% if permissions.fats.manage %}
-                                    <th>{% trans "Actions" %}</th>
+                                    <th>{% translate "Actions" %}</th>
                                 {% endif %}
                              </thead>
 
@@ -190,7 +190,7 @@
 
                 <div id="flatlist" class="tab-pane fade in panel-default">
                     <div class="panel-body">
-                        <h4>{% trans "FAT Link Raw Data" %}</h4>
+                        <h4>{% translate "FAT Link Raw Data" %}</h4>
                         <div class="form-group">
                             <textarea class="form-control" name="flatlist" rows="10" readonly>{% if flatlist %}{{ flatlist }}{% endif %}</textarea>
                         </div>
@@ -199,12 +199,12 @@
 
                 <div id="manualfat" class="tab-pane fade in panel-default">
                     <div class="panel-body">
-                        <h4>{% trans "Manual FAT" %}</h4>
+                        <h4>{% translate "Manual FAT" %}</h4>
 
                         <p>
-                            {% trans "Is someone missing from the list of FATs? Use this form to add them." %}
+                            {% translate "Is someone missing from the list of FATs? Use this form to add them." %}
                             <br />
-                            <strong>{% trans "Note:" %}</strong> {% trans "This action is logged!" %}
+                            <strong>{% translate "Note:" %}</strong> {% translate "This action is logged!" %}
                         </p>
 
                         <form class="form" role="form" action="" method="POST">
@@ -212,7 +212,7 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <input type="text" class="form-control" id="character_name" name="character" placeholder='{% trans "Character Name" %}' required>
+                                        <input type="text" class="form-control" id="character_name" name="character" placeholder='{% translate "Character Name" %}' required>
                                     </div>
                                 </div>
                             </div>
@@ -220,16 +220,16 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" id="location" name="system" placeholder='{% trans "System" %}'>
+                                        <input type="text" class="form-control" id="location" name="system" placeholder='{% translate "System" %}'>
                                     </div>
 
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" id="shiptype" name="shiptype" placeholder='{% trans "Ship Type" %}'>
+                                        <input type="text" class="form-control" id="shiptype" name="shiptype" placeholder='{% translate "Ship Type" %}'>
                                     </div>
                                 </div>
                             </div>
 
-                            <button class="btn btn-primary btn-block" type="submit" name="manual_fat">{% trans "Add Manual FAT" %}</button>
+                            <button class="btn btn-primary btn-block" type="submit" name="manual_fat">{% translate "Add Manual FAT" %}</button>
                         </form>
                     </div>
                 </div>
@@ -242,7 +242,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLongTitle">{% trans "Delete FAT" %}</h5>
+                    <h5 class="modal-title" id="modalLongTitle">{% translate "Delete FAT" %}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -251,9 +251,9 @@
                 <div class="modal-body"></div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate "Cancel" %}</button>
 
-                    <a id="fat-link" class="btn btn-danger" role="button" href="">{% trans "Delete" %}</a>
+                    <a id="fat-link" class="btn btn-danger" role="button" href="">{% translate "Delete" %}</a>
                 </div>
             </div>
         </div>
@@ -286,7 +286,7 @@
 
             var modal = $(this)
             modal.find('#fat-link').attr("href", url)
-            modal.find('.modal-body').text('{% trans "Are you sure you want to delete" %} ' + name + '?');
+            modal.find('.modal-body').text('{% translate "Are you sure you want to delete" %} ' + name + '?');
         });
     });
 {% endblock %}
