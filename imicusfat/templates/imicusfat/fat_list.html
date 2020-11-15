@@ -1,59 +1,59 @@
-{% extends 'allianceauth/base.html' %}
+{% extends 'imicusfat/base.html' %}
 
 {% load i18n %}
 {% load static %}
 
 {% block page_title %}{% translate 'Fleet Activity' %}{% endblock %}
 
-{% block content %}
-    <div class="col-lg-12">
-        <br>
-        {% include "imicusfat/menu.html" %}
+{% block imicusfat_header %}
+    <br>
+    {% include "imicusfat/menu.html" %}
 
-        <h2>{% translate "All FAT Links" %}</h2>
+    <h2>{% translate "All FAT Links" %}</h2>
+{% endblock %}
 
+{% block imicusfat_body %}
+    <h4>
+        <a class="btn btn-primary" href="{% url 'imicusfat:links' year_prev %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
+
+        {{ year }}
+
+        {% if year_next <= year_current %}
+            <a class="btn btn-primary" href="{% url 'imicusfat:links' year_next %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
+            <a class="btn btn-primary" href="{% url 'imicusfat:links' year_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+        {% endif %}
+    </h4>
+
+    {% if msg %}
+    <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="close">
+            <span aria-hidden="true">&times</span>
+        </button>
         <h4>
-            <a class="btn btn-primary" href="{% url 'imicusfat:links' year_prev %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
-
-            {{ year }}
-
-            {% if year_next <= year_current %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:links' year_next %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:links' year_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+            {% if msg.0 == 'danger' %}
+                {% translate "Oh No!" %}
+            {% elif msg.0 == 'success' %}
+                {% translate "Success!" %}
             {% endif %}
         </h4>
-
-        {% if msg %}
-        <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                <span aria-hidden="true">&times</span>
-            </button>
-            <h4>
-                {% if msg.0 == 'danger' %}
-                    {% translate "Oh No!" %}
-                {% elif msg.0 == 'success' %}
-                    {% translate "Success!" %}
-                {% endif %}
-            </h4>
-            <p>{{ msg.1 }}</p>
-        </div>
-        {% endif %}
-
-        <table class="table" id="link-list">
-            <thead>
-                <th>{% translate "Fleet Name" %}</th>
-                <th>{% translate "Fleet Type" %}</th>
-                <th>{% translate "Creator" %}</th>
-                <th>{% translate "EVE Time" %}</th>
-                <th>{% translate "# of FATs" %}</th>
-                {% if permissions.fatlinks.manipulate %}
-                    <th>{% translate "Actions" %}</th>
-                {% endif %}
-            </thead>
-
-            <tbody></tbody>
-        </table>
+        <p>{{ msg.1 }}</p>
     </div>
+    {% endif %}
+
+    <table class="table" id="link-list">
+        <thead>
+            <th>{% translate "Fleet Name" %}</th>
+            <th>{% translate "Fleet Type" %}</th>
+            <th>{% translate "Creator" %}</th>
+            <th>{% translate "EVE Time" %}</th>
+            <th>{% translate "# of FATs" %}</th>
+            {% if permissions.fatlinks.manipulate %}
+                <th>{% translate "Actions" %}</th>
+            {% endif %}
+        </thead>
+
+        <tbody></tbody>
+    </table>
 
     <!-- Delete FAT link Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
@@ -89,6 +89,7 @@
 {% block extra_css %}
     {% include 'bundles/datatables-css.html' %}
 
+    <link rel="stylesheet" type="text/css" href="{% static 'imicusfat/css/aa-bootstrap-fix.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'imicusfat/css/imicusfat.min.css' %}">
 {% endblock %}
 

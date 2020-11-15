@@ -1,15 +1,19 @@
-{% extends 'allianceauth/base.html' %}
+{% extends 'imicusfat/base.html' %}
+
 {% load i18n %}
+{% load static %}
+
 {% block page_title %}{% translate 'Fleet Activity' %}{% endblock %}
 
-{% block content %}
-    <div class="col-lg-12">
-        <br>
-        {% include "imicusfat/menu.html" %}
+{% block imicusfat_header %}
+    <br>
+    {% include "imicusfat/menu.html" %}
 
-        <h2>{% translate "Create a FAT Link" %}</h2>
+    <h2>{% translate "Create a FAT Link" %}</h2>
+{% endblock %}
 
-        {% if msg %}
+{% block imicusfat_body %}
+    {% if msg %}
         <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="close">
                 <span aria-hidden="true">&times</span>
@@ -23,105 +27,108 @@
             </h4>
             <p>{{ msg.1 }}</p>
         </div>
-        {% endif %}
+    {% endif %}
 
-        <div class="row">
-            <div class="col-md-6 mr-md-1">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">{% translate "Create link using ESI" %}</h3>
-                    </div>
-                    <div class="panel-body">
-                        <p>{% translate "This option will automatically register the entire fleet without member clicks. Use this if you <b>are</b> Fleet Boss, otherwise please use the clickable FATLink option." %}</p>
+    <div class="row">
+        <div class="col-md-6 mr-md-1">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{% translate "Create link using ESI" %}</h3>
+                </div>
+                <div class="panel-body">
+                    <p>{% translate "This option will automatically register the entire fleet without member clicks. Use this if you <b>are</b> Fleet Boss, otherwise please use the clickable FATLink option." %}</p>
 
-                        <form class="form" role="form" action="{% url 'imicusfat:create_esi_fat' %}" method="POST">
-                            {% csrf_token %}
+                    <form class="form" role="form" action="{% url 'imicusfat:create_esi_fat' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label style="width: 100%; font-weight: normal;">
+                                <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% translate "Fleet Name" %}</span>
+                                <input type="text" class="form-control" name="name_esi" placeholder='{% translate "Enter fleet name" %}' required>
+                            </label>
+                        </div>
+
+                        {% if link_types %}
                             <div class="form-group">
                                 <label style="width: 100%; font-weight: normal;">
-                                    <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% translate "Fleet Name" %}</span>
-                                    <input type="text" class="form-control" name="name_esi" placeholder='{% translate "Enter fleet name" %}' required>
+                                    <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% translate "Fleet Type (optional)" %}</span>
+                                    <select class="form-control" name="type_esi">
+                                        <option value="-1">{% translate "Please select a fleet type" %}</option>
+                                        {% for type in link_types %}
+                                            <option value="{{type.id}}">{{type.name}}</option>
+                                        {% endfor %}
+                                    </select>
                                 </label>
                             </div>
+                        {% endif %}
 
-                            {% if link_types %}
-                                <div class="form-group">
-                                    <label style="width: 100%; font-weight: normal;">
-                                        <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% translate "Fleet Type (optional)" %}</span>
-                                        <select class="form-control" name="type_esi">
-                                            <option value="-1">{% translate "Please select a fleet type" %}</option>
-                                            {% for type in link_types %}
-                                                <option value="{{type.id}}">{{type.name}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </label>
-                                </div>
-                            {% endif %}
-
-                            <div class="form-group text-right">
-                                <button class="btn btn-primary" type="submit" name="submit_click">
-                                    <span class="fa fa-plus fa-fw"></span>
-                                    {% translate "Add ESI Link" %}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="form-group text-right">
+                            <button class="btn btn-primary" type="submit" name="submit_click">
+                                <span class="fa fa-plus fa-fw"></span>
+                                {% translate "Add ESI Link" %}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
+        </div>
 
-            <div class="col-md-6 ml-md-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">{% translate "Create a clickable FAT Link" %}</h3>
-                    </div>
+        <div class="col-md-6 ml-md-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{% translate "Create a clickable FAT Link" %}</h3>
+                </div>
 
-                    <div class="panel-body">
-                        <p>{% translate "This option will create a clickable like just like that created by the standard FAT module." %}</p>
-                        <p>
-                            {{ form.errors }}
-                            {{ form.non_field_errors }}
-                        </p>
+                <div class="panel-body">
+                    <p>{% translate "This option will create a clickable like just like that created by the standard FAT module." %}</p>
+                    <p>
+                        {{ form.errors }}
+                        {{ form.non_field_errors }}
+                    </p>
 
-                        <!-- Form Goes Here -->
-                        <form class="form" role="form" action="{% url 'imicusfat:link_create_click' %}" method="POST">
-                            {% csrf_token %}
+                    <!-- Form Goes Here -->
+                    <form class="form" role="form" action="{% url 'imicusfat:link_create_click' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label style="width: 100%; font-weight: normal;">
+                                <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% translate "Fleet Name" %}</span>
+                                <input type="text" class="form-control" name="name" placeholder='{% translate "Enter fleet name" %}' required>
+                            </label>
+                        </div>
+
+                        {% if link_types %}
                             <div class="form-group">
                                 <label style="width: 100%; font-weight: normal;">
-                                    <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% translate "Fleet Name" %}</span>
-                                    <input type="text" class="form-control" name="name" placeholder='{% translate "Enter fleet name" %}' required>
+                                    <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% translate "Fleet Type (optional)" %}</span>
+                                    <select class="form-control" name="type">
+                                        <option value="-1">{% translate "Please select a fleet type" %}</option>
+                                        {% for type in link_types %}
+                                            <option value="{{type.id}}">{{type.name}}</option>
+                                        {% endfor %}
+                                    </select>
                                 </label>
                             </div>
+                        {% endif %}
 
-                            {% if link_types %}
-                                <div class="form-group">
-                                    <label style="width: 100%; font-weight: normal;">
-                                        <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% translate "Fleet Type (optional)" %}</span>
-                                        <select class="form-control" name="type">
-                                            <option value="-1">{% translate "Please select a fleet type" %}</option>
-                                            {% for type in link_types %}
-                                                <option value="{{type.id}}">{{type.name}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </label>
-                                </div>
-                            {% endif %}
+                        <div class="form-group">
+                            <label style="width: 100%; font-weight: normal;">
+                                <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% translate "FAT expiry in minutes" %}</span>
+                                <input type="number" class="form-control" name="duration" id="duration" value="30" placeholder='{% translate "Expiry Time in Minutes" %}' required>
+                            </label>
+                        </div>
 
-                            <div class="form-group">
-                                <label style="width: 100%; font-weight: normal;">
-                                    <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% translate "FAT expiry in minutes" %}</span>
-                                    <input type="number" class="form-control" name="duration" id="duration" value="30" placeholder='{% translate "Expiry Time in Minutes" %}' required>
-                                </label>
-                            </div>
-
-                            <div class="form-group text-right">
-                                <button class="btn btn-primary" type="submit" name="submit_click">
-                                    <span class="fa fa-plus fa-fw"></span>
-                                    {% translate "Create Link" %}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="form-group text-right">
+                            <button class="btn btn-primary" type="submit" name="submit_click">
+                                <span class="fa fa-plus fa-fw"></span>
+                                {% translate "Create Link" %}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'imicusfat/css/aa-bootstrap-fix.min.css' %}">
 {% endblock %}

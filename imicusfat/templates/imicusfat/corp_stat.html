@@ -1,167 +1,167 @@
-{% extends 'allianceauth/base.html' %}
+{% extends 'imicusfat/base.html' %}
 
 {% load i18n %}
 {% load static %}
 
 {% block page_title %}{{ corporation }} {% translate "Statistics" %}{% endblock %}
 
-{% block content %}
+{% block imicusfat_header %}
+    <br>
+    {% include 'imicusfat/menu.html' %}
+
+    <h2>{{ corp.corporation_name }} {% translate "Statistics" %}</h2>
+{% endblock %}
+
+{% block imicusfat_body %}
     <script type="application/javascript" src="{% static 'imicusfat/javascript/chart-js/Chart.min.js' %}"></script>
 
-    <div class="col-lg-12">
-        <br>
-        {% include 'imicusfat/menu.html' %}
+    <h4>
+        {% if month == '1' %}
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.corporation_id year_prev 12 %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
+        {% else %}
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.corporation_id year month_prev %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
+        {% endif %}
 
-        <h2>{{ corp.corporation_name }} {% translate "Statistics" %}</h2>
+        {{ month|month }} {{ year }}
 
-        <h4>
-            {% if month == '1' %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.corporation_id year_prev 12 %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
-            {% else %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.corporation_id year month_prev %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
-            {% endif %}
+        {% if month_next > month_current and year_next > year_current %}
+        {% elif month == '12' %}
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.corporation_id year_next 1 %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.corporation_id year_current month_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+        {% else %}
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.corporation_id year month_next %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.corporation_id year_current month_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+        {% endif %}
+    </h4>
 
-            {{ month|month }} {{ year }}
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#graphs">{% translate "Graphs" %}</a></li>
+        <li><a data-toggle="tab" href="#members">{% translate "Members" %}</a></li>
+    </ul>
 
-            {% if month_next > month_current and year_next > year_current %}
-            {% elif month == '12' %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.corporation_id year_next 1 %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.corporation_id year_current month_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
-            {% else %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.corporation_id year month_next %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.corporation_id year_current month_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
-            {% endif %}
-        </h4>
+    <div class="tab-content">
+        <div id="graphs" class="tab-pane fade in active panel-default">
+            <div class="panel-body">
+                <ul class="nav nav-pills">
+                    <li class="active"><a data-toggle="tab" href="#fatsbyship">{% translate "FATs By Ship Type" %}</a></li>
+                    <li><a data-toggle="tab" href="#fatsbytime">{% translate "FATs By Time" %}</a></li>
+                    <li><a data-toggle="tab" href="#fatsbyweek">{% translate "FATs By Weekday" %}</a></li>
+                </ul>
 
-        <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#graphs">{% translate "Graphs" %}</a></li>
-            <li><a data-toggle="tab" href="#members">{% translate "Members" %}</a></li>
-        </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade in active panel-default" id="fatsbyship">
+                        <div class="panel-body">
+                            <h3>{% translate "FATs By Ship Type" %}</h3>
 
-        <div class="tab-content">
-            <div id="graphs" class="tab-pane fade in active panel-default">
-                <div class="panel-body">
-                    <ul class="nav nav-pills">
-                        <li class="active"><a data-toggle="tab" href="#fatsbyship">{% translate "FATs By Ship Type" %}</a></li>
-                        <li><a data-toggle="tab" href="#fatsbytime">{% translate "FATs By Time" %}</a></li>
-                        <li><a data-toggle="tab" href="#fatsbyweek">{% translate "FATs By Weekday" %}</a></li>
-                    </ul>
+                            <canvas id="ship-bar-stacked" width="800" height="500"></canvas>
+                            <script>
+                            var corpShipTypeBarChart = new Chart(document.getElementById('ship-bar-stacked'), {
+                                type: "bar",
+                                data: {
+                                    datasets: [{% for set in data_stacked.1 %}
+                                            {
+                                              label: '{{ set.0|escapejs }}',
+                                              backgroundColor: '{{ set.1|safe }}',
+                                              data: {{ set.2 }}
+                                            },
+                                        {% endfor %}],
+                                    labels: {{ data_stacked.0|safe }}
+                                },
+                                options: {
+                                    responsive: false,
+                                    scales: {
+                                        xAxes: [{
+                                            stacked: true,
+                                            ticks: {
+                                                autoSkip: false
+                                            }
+                                        }],
+                                        yAxes: [{
+                                            stacked: true
+                                        }]
+                                    }
+                                }
+                            })
+                            </script>
+                        </div>
+                    </div>
 
-                    <div class="tab-content">
-                        <div class="tab-pane fade in active panel-default" id="fatsbyship">
-                            <div class="panel-body">
-                                <h3>{% translate "FATs By Ship Type" %}</h3>
+                    <div id="fatsbytime" class="tab-pane fade in panel-default">
+                        <div class="panel-body">
+                            <h3>{% translate "FATs By Time" %}</h3>
 
-                                <canvas id="ship-bar-stacked" width="800" height="500"></canvas>
-                                <script>
-                                var corpShipTypeBarChart = new Chart(document.getElementById('ship-bar-stacked'), {
-                                    type: "bar",
+                            <canvas id="time-line" width="800" height="500"></canvas>
+                            <script>
+                                var timeLineChart = new Chart(document.getElementById("time-line"), {
+                                    type: 'line',
                                     data: {
-                                        datasets: [{% for set in data_stacked.1 %}
-                                                {
-                                                  label: '{{ set.0|escapejs }}',
-                                                  backgroundColor: '{{ set.1|safe }}',
-                                                  data: {{ set.2 }}
-                                                },
-                                            {% endfor %}],
-                                        labels: {{ data_stacked.0|safe }}
+                                        datasets: [{
+                                            label: '# of FATs',
+                                            backgroundColor: {{ data_time.2|safe }},
+                                            data: {{ data_time.1 }}
+                                        }],
+                                        labels: {{ data_time.0|safe }}
                                     },
                                     options: {
-                                        responsive: false,
-                                        scales: {
-                                            xAxes: [{
-                                                stacked: true,
-                                                ticks: {
-                                                    autoSkip: false
-                                                }
-                                            }],
-                                            yAxes: [{
-                                                stacked: true
-                                            }]
-                                        }
+                                        responsive: false
                                     }
                                 })
-                                </script>
-                            </div>
+                            </script>
                         </div>
+                    </div>
 
-                        <div id="fatsbytime" class="tab-pane fade in panel-default">
-                            <div class="panel-body">
-                                <h3>{% translate "FATs By Time" %}</h3>
+                    <div class="tab-pane fade in panel-default" id="fatsbyweek">
+                        <div class="panel-body">
+                            <h3>{% translate "FATs By Weekday" %}</h3>
 
-                                <canvas id="time-line" width="800" height="500"></canvas>
-                                <script>
-                                    var timeLineChart = new Chart(document.getElementById("time-line"), {
-                                        type: 'line',
-                                        data: {
-                                            datasets: [{
-                                                label: '# of FATs',
-                                                backgroundColor: {{ data_time.2|safe }},
-                                                data: {{ data_time.1 }}
-                                            }],
-                                            labels: {{ data_time.0|safe }}
-                                        },
-                                        options: {
-                                            responsive: false
-                                        }
-                                    })
-                                </script>
-                            </div>
-                        </div>
-
-                        <div class="tab-pane fade in panel-default" id="fatsbyweek">
-                            <div class="panel-body">
-                                <h3>{% translate "FATs By Weekday" %}</h3>
-
-                                <canvas id="weekday-line" width="800" height="500"></canvas>
-                                <script>
-                                    var weekdayLineChart = new Chart(document.getElementById('weekday-line'), {
-                                        type: 'line',
-                                        data:{
-                                            datasets: [{
-                                                label: '# of FATs',
-                                                backgroundColor: {{ data_weekday.2|safe }},
-                                                data: {{ data_weekday.1 }}
-                                            }],
-                                            labels: {{ data_weekday.0|safe }}
-                                        },
-                                        options: {
-                                            responsive: false
-                                        }
-                                    })
-                                </script>
-                            </div>
+                            <canvas id="weekday-line" width="800" height="500"></canvas>
+                            <script>
+                                var weekdayLineChart = new Chart(document.getElementById('weekday-line'), {
+                                    type: 'line',
+                                    data:{
+                                        datasets: [{
+                                            label: '# of FATs',
+                                            backgroundColor: {{ data_weekday.2|safe }},
+                                            data: {{ data_weekday.1 }}
+                                        }],
+                                        labels: {{ data_weekday.0|safe }}
+                                    },
+                                    options: {
+                                        responsive: false
+                                    }
+                                })
+                            </script>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="tab-pane fade in panel-default" id="members">
-                <div class="panel-body">
-                    <h3>{{ corp.corporation_name }} {% translate "Members" %}</h3>
+        <div class="tab-pane fade in panel-default" id="members">
+            <div class="panel-body">
+                <h3>{{ corp.corporation_name }} {% translate "Members" %}</h3>
 
-                    <table class="table" id="corp-members">
-                        <thead>
-                            <th>{% translate "Character" %}</th>
-                            <th>{% translate "FATs" %}</th>
-                            <th>{% translate "Character Stats" %}</th>
-                        </thead>
+                <table class="table" id="corp-members">
+                    <thead>
+                        <th>{% translate "Character" %}</th>
+                        <th>{% translate "FATs" %}</th>
+                        <th>{% translate "Character Stats" %}</th>
+                    </thead>
 
-                        <tbody>
-                            {% for key, value in chars.items %}
-                                <tr>
-                                    <td>{{ key }}</td>
-                                    <td>{{ value.0 }}</td>
-                                    <td>
-                                        <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' value.1 year month %}">
-                                            <span class="glyphicon glyphicon-eye-open"></span>
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                    <tbody>
+                        {% for key, value in chars.items %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ value.0 }}</td>
+                                <td>
+                                    <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' value.1 year month %}">
+                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -174,6 +174,8 @@
 
 {% block extra_css %}
     {% include 'bundles/datatables-css.html' %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'imicusfat/css/aa-bootstrap-fix.min.css' %}">
 {% endblock %}
 
 {% block extra_script %}

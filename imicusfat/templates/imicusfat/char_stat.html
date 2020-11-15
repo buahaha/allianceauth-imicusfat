@@ -1,130 +1,131 @@
-{% extends "allianceauth/base.html" %}
+{% extends "imicusfat/base.html" %}
 
 {% load i18n %}
 {% load static %}
 
 {% block page_title %}{{ character.character_name }} {% translate "Statistics" %}{% endblock %}
 
-{% block content %}
+{% block imicusfat_header %}
+    <br>
+    {% include 'imicusfat/menu.html' %}
+
+    <h2>{{ character.character_name }} {% translate "Statistics" %}</h2>
+{% endblock %}
+
+{% block imicusfat_body %}
     <script type="application/javascript" src="{% static 'imicusfat/javascript/chart-js/Chart.min.js' %}"></script>
 
-    <div class="col-lg-12">
-        <br>
-        {% include 'imicusfat/menu.html' %}
+    <h4>
+        {% if month == '1' %}
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_prev 12 %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
+        {% else %}
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year month_prev %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
+        {% endif %}
 
-        <h2>{{ character.character_name }} {% translate "Statistics" %}</h2>
-        <h4>
-            {% if month == '1' %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_prev 12 %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
-            {% else %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year month_prev %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
-            {% endif %}
+        {{ month|month }} {{ year }}
 
-            {{ month|month }} {{ year }}
+        {% if month_next > month_current and year_next > year_current %}
+        {% elif month == '12' %}
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_next 1 %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_current month_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+        {% else %}
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year month_next %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_current month_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+        {% endif %}
+    </h4>
 
-            {% if month_next > month_current and year_next > year_current %}
-            {% elif month == '12' %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_next 1 %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_current month_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
-            {% else %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year month_next %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats_char' character.character_id year_current month_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
-            {% endif %}
-        </h4>
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#graphs">{% translate "Graphs" %}</a></li>
+        <li><a data-toggle="tab" href="#rawdata">{% translate "Raw Data" %}</a></li>
+    </ul>
 
-        <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#graphs">{% translate "Graphs" %}</a></li>
-            <li><a data-toggle="tab" href="#rawdata">{% translate "Raw Data" %}</a></li>
-        </ul>
+    <div class="tab-content">
+        <div id="graphs" class="tab-pane fade in active panel-default">
+            <div class="panel-body">
+                <div class="col-md-4">
+                    <h4>{% translate "FATs by Ship Type" %}</h4>
+                    <canvas style="width: 400px; max-width: 100%; height: 400px;" id="pie-ship"></canvas>
 
-        <div class="tab-content">
-            <div id="graphs" class="tab-pane fade in active panel-default">
-                <div class="panel-body">
-                    <div class="col-md-4">
-                        <h4>{% translate "FATs by Ship Type" %}</h4>
-                        <canvas style="width: 400px; max-width: 100%; height: 400px;" id="pie-ship"></canvas>
+                    <script>
+                        var shipPieChart = new Chart(document.getElementById("pie-ship"), {
+                            type: "pie",
+                            data: {
+                                datasets: [{
+                                    data: {{ data_ship_type.1|safe }},
+                                    backgroundColor: {{ data_ship_type.2|safe }}
+                                }],
+                                labels: {{ data_ship_type.0|safe }}
+                            },
+                            options: {
+                                responsive: false
+                            }
+                        })
+                    </script>
+                </div>
 
-                        <script>
-                            var shipPieChart = new Chart(document.getElementById("pie-ship"), {
-                                type: "pie",
-                                data: {
-                                    datasets: [{
-                                        data: {{ data_ship_type.1|safe }},
-                                        backgroundColor: {{ data_ship_type.2|safe }}
-                                    }],
-                                    labels: {{ data_ship_type.0|safe }}
-                                },
-                                options: {
-                                    responsive: false
-                                }
-                            })
-                        </script>
-                    </div>
+                <div class="col-md-8">
+                    <h4>{% translate "FATs by Time of Day" %}</h4>
+                    <canvas style="width: 100%; height: 400px;" id="line-time"></canvas>
 
-                    <div class="col-md-8">
-                        <h4>{% translate "FATs by Time of Day" %}</h4>
-                        <canvas style="width: 100%; height: 400px;" id="line-time"></canvas>
-
-                        <script>
-                            var FATLineChart = new Chart(document.getElementById("line-time"),{
-                                type: "line",
-                                data: {
-                                    datasets: [{
-                                        label: "# of FATs",
-                                        data: {{ data_time.1|safe }},
-                                        backgroundColor: {{ data_time.2|safe }}
-                                    }],
-                                    labels: {{ data_time.0|safe }}
-                                },
-                                options: {
-                                    responsive: false
-                                }
-                            })
-                        </script>
-                    </div>
+                    <script>
+                        var FATLineChart = new Chart(document.getElementById("line-time"),{
+                            type: "line",
+                            data: {
+                                datasets: [{
+                                    label: "# of FATs",
+                                    data: {{ data_time.1|safe }},
+                                    backgroundColor: {{ data_time.2|safe }}
+                                }],
+                                labels: {{ data_time.0|safe }}
+                            },
+                            options: {
+                                responsive: false
+                            }
+                        })
+                    </script>
                 </div>
             </div>
+        </div>
 
-            <div id="rawdata" class="tab-pane fade panel-default">
-                <div class="panel-body">
-                    <h4>{% translate "FATs for" %} {{ character.character_name }}</h4>
+        <div id="rawdata" class="tab-pane fade panel-default">
+            <div class="panel-body">
+                <h4>{% translate "FATs for" %} {{ character.character_name }}</h4>
 
-                    <table class="table" id="raw-data">
-                        <thead>
-                            <th>{% translate "Name" %}</th>
-                            <th>{% translate "Fleet Type" %}</th>
-                            <th>{% translate "Location" %}</th>
-                            <th>{% translate "Ship" %}</th>
-                            <th>{% translate "EVE Time" %}</th>
-                        </thead>
+                <table class="table" id="raw-data">
+                    <thead>
+                        <th>{% translate "Name" %}</th>
+                        <th>{% translate "Fleet Type" %}</th>
+                        <th>{% translate "Location" %}</th>
+                        <th>{% translate "Ship" %}</th>
+                        <th>{% translate "EVE Time" %}</th>
+                    </thead>
 
-                        <tbody>
-                        {% for fat in fats %}
-                            <tr>
-                                <td>
-                                    {% if fat.ifatlink.fleet %}
-                                        {{ fat.ifatlink.fleet }}
-                                    {% else %}
-                                        {{ fat.ifatlink.hash }}
-                                    {% endif %}
+                    <tbody>
+                    {% for fat in fats %}
+                        <tr>
+                            <td>
+                                {% if fat.ifatlink.fleet %}
+                                    {{ fat.ifatlink.fleet }}
+                                {% else %}
+                                    {{ fat.ifatlink.hash }}
+                                {% endif %}
 
-                                    {% if fat.ifatlink.is_esilink %}
-                                        <span class="label label-success ifat-label ifat-label-via-esi">via ESI</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if fat.ifatlink.link_type %}
-                                        {{ fat.ifatlink.link_type.name }}
-                                    {% endif %}
-                                </td>
-                                <td>{{ fat.system }}</td>
-                                <td>{{ fat.shiptype }}</td>
-                                <td data-sort='{{ fat.ifatlink.ifattime|date:"Y-m-d H:i" }}'>{{ fat.ifatlink.ifattime|date:"Y-M-d, H:i" }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                {% if fat.ifatlink.is_esilink %}
+                                    <span class="label label-success ifat-label ifat-label-via-esi">via ESI</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if fat.ifatlink.link_type %}
+                                    {{ fat.ifatlink.link_type.name }}
+                                {% endif %}
+                            </td>
+                            <td>{{ fat.system }}</td>
+                            <td>{{ fat.shiptype }}</td>
+                            <td data-sort='{{ fat.ifatlink.ifattime|date:"Y-m-d H:i" }}'>{{ fat.ifatlink.ifattime|date:"Y-M-d, H:i" }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -138,6 +139,7 @@
 {% block extra_css %}
     {% include 'bundles/datatables-css.html' %}
 
+    <link rel="stylesheet" type="text/css" href="{% static 'imicusfat/css/aa-bootstrap-fix.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'imicusfat/css/imicusfat.min.css' %}">
 {% endblock %}
 
