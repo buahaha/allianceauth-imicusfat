@@ -1,112 +1,66 @@
-{% extends 'allianceauth/base.html' %}
+{% extends 'imicusfat/base.html' %}
 
 {% load i18n %}
 {% load static %}
 
-{% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
+{% block page_title %}{% translate 'Fleet Activity' %}{% endblock %}
 
-{% block content %}
-    <div class="col-lg-12">
-        <br>
-        {% include "imicusfat/menu.html" %}
+{% block imicusfat_header %}
+    <br>
+    {% include "imicusfat/menu.html" %}
 
-        <h2>{% trans "All FAT Links" %}</h2>
+    <h2>{% translate "All FAT Links" %}</h2>
+{% endblock %}
 
+{% block imicusfat_body %}
+    <h4>
+        <a class="btn btn-primary" href="{% url 'imicusfat:links' year_prev %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
+
+        {{ year }}
+
+        {% if year_next <= year_current %}
+            <a class="btn btn-primary" href="{% url 'imicusfat:links' year_next %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
+            <a class="btn btn-primary" href="{% url 'imicusfat:links' year_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+        {% endif %}
+    </h4>
+
+    {% if msg %}
+    <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="close">
+            <span aria-hidden="true">&times</span>
+        </button>
         <h4>
-            <a class="btn btn-primary" href="{% url 'imicusfat:links' year_prev %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
-
-            {{ year }}
-
-            {% if year_next <= year_current %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:links' year_next %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:links' year_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
+            {% if msg.0 == 'danger' %}
+                {% translate "Oh No!" %}
+            {% elif msg.0 == 'success' %}
+                {% translate "Success!" %}
             {% endif %}
         </h4>
-
-        {% if msg %}
-        <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                <span aria-hidden="true">&times</span>
-            </button>
-            <h4>
-                {% if msg.0 == 'danger' %}
-                    {% trans "Oh No!" %}
-                {% elif msg.0 == 'success' %}
-                    {% trans "Success!" %}
-                {% endif %}
-            </h4>
-            <p>{{ msg.1 }}</p>
-        </div>
-        {% endif %}
-
-        <table class="table" id="link-list">
-            <thead>
-                <th>{% trans "Fleet Name" %}</th>
-                <th>{% trans "Fleet Type" %}</th>
-                <th>{% trans "Creator" %}</th>
-                <th>{% trans "EVE Time" %}</th>
-                <th>{% trans "# of FATs" %}</th>
-                {% if permissions.fatlinks.manipulate %}
-                    <th>{% trans "Actions" %}</th>
-                {% endif %}
-            </thead>
-
-            <tbody>
-                {% for link in links %}
-                    <tr>
-                        <td>
-                            {% if link.fleet %}
-                                {{ link.fleet }}
-                            {% else %}
-                                {{ link.hash }}
-                            {% endif %}
-
-                            {% if link.is_esilink %}
-                                <span class="label label-success ifat-label ifat-label-via-esi">via ESI</span>
-                            {% endif %}
-                        </td>
-
-                        <td>
-                            {% if link.link_type %}
-                                {{ link.link_type.name }}
-                            {% endif %}
-                        </td>
-
-                        <td>{{ link.creator.profile.main_character.character_name }}</td>
-                        <td data-sort='{{ link.ifattime|date:"Y-m-d H:i" }}'>{{ link.ifattime|date:"Y-M-d, H:i" }}</td>
-                        <td>{{ link.number_of_fats }}</td>
-
-                        {% if permissions.fatlinks.manipulate %}
-                        <td class="no-sort">
-                            {% if permissions.fatlinks.change %}
-                                <a class="btn btn-info" href="{% url 'imicusfat:link_edit' link.hash %}">
-                                    <span class="glyphicon glyphicon-pencil"></span>
-                                </a>
-                            {% endif %}
-
-                            {% if permissions.fatlinks.delete %}
-                                <a class="btn btn-danger"
-                                    data-toggle="modal"
-                                    data-target="#deleteModal"
-                                    data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_delete' link.hash %}"
-                                    data-name="{% if link.fleet %}{{ link.fleet }}{% else %}{{ link.hash }}{% endif %}">
-                                    <span class="glyphicon glyphicon-trash"></span>
-                                </a>
-                            {% endif %}
-                        </td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <p>{{ msg.1 }}</p>
     </div>
+    {% endif %}
+
+    <table class="table" id="link-list">
+        <thead>
+            <th>{% translate "Fleet Name" %}</th>
+            <th>{% translate "Fleet Type" %}</th>
+            <th>{% translate "Creator" %}</th>
+            <th>{% translate "EVE Time" %}</th>
+            <th>{% translate "# of FATs" %}</th>
+            {% if permissions.fatlinks.manipulate %}
+                <th>{% translate "Actions" %}</th>
+            {% endif %}
+        </thead>
+
+        <tbody></tbody>
+    </table>
 
     <!-- Delete FAT link Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLongTitle">{% trans "Delete FAT Link" %}</h5>
+                    <h5 class="modal-title" id="modalLongTitle">{% translate "Delete FAT Link" %}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -115,8 +69,8 @@
                 <div class="modal-body"></div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
-                    <a id="fat-link" class="btn btn-danger" role="button" href="">{% trans "Delete" %}</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate "Cancel" %}</button>
+                    <a id="fat-link" class="btn btn-danger" role="button" href="">{% translate "Delete" %}</a>
                 </div>
             </div>
         </div>
@@ -126,43 +80,85 @@
 {% block extra_javascript %}
     {% include 'bundles/datatables-js.html' %}
     {% include 'bundles/moment-js.html' %}
+
+    <script type="application/javascript" src="{% static 'imicusfat/libs/datatables/plugins/dataTables.rowGroup.min.js' %}"></script>
+    <script type="application/javascript" src="{% static 'imicusfat/libs/datatables/plugins/datetime.min.js' %}"></script>
+    <script type="application/javascript" src="{% static 'js/filterDropDown/filterDropDown.min.js' %}"></script>
 {% endblock %}
 
 {% block extra_css %}
     {% include 'bundles/datatables-css.html' %}
 
+    <link rel="stylesheet" type="text/css" href="{% static 'imicusfat/css/aa-bootstrap-fix.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'imicusfat/css/imicusfat.min.css' %}">
 {% endblock %}
 
 {% block extra_script %}
-    $.fn.dataTable.moment = function(format, locale) {
-        var types = $.fn.dataTable.ext.type;
+    $(document).ready(function() {
+        const DATETIME_FORMAT = 'YYYY-MMM-DD, HH:mm';
 
-        // Add type detection
-        types.detect.unshift(function(d) {
-            return moment(d, format, locale, true).isValid() ?
-                'moment-'+format :
-                null;
-        } );
+        {% if permissions.fatlinks.manipulate %}
+            var esi_column = 6;
+        {% else %}
+            var esi_column = 5;
+        {% endif %}
 
-        // Add sorting method - use an integer for the sorting
-        types.order[ 'moment-'+format+'-pre' ] = function(d) {
-            return moment(d, format, locale, true).unix();
-        };
-    };
-
-    $(document).ready(function(){
-        $.fn.dataTable.moment('YYYY-MMM-D, HH:mm');
 
         $('#link-list').DataTable({
-            "order": [[ 3, "desc" ]],
-            {% if permissions.fatlinks.manipulate %}
-            "columnDefs": [{
-                "targets": 5,
-                "orderable": false,
-                "order": []
-            }]
-            {% endif %}
+            ajax: {
+                url: "{% url 'imicusfat:links_data' year %}",
+                dataSrc: '',
+                cache: false
+            },
+            columns: [
+                {data: 'fatlink_fleet'},
+                {data: 'link_type'},
+                {data: 'creator'},
+                {
+                    data: 'time',
+                    render: $.fn.dataTable.render.moment( moment.ISO_8601, DATETIME_FORMAT )
+                },
+                {data: 'fats_number'},
+
+                {% if permissions.fatlinks.manipulate %}
+                    {data: 'actions'},
+                {% endif %}
+
+                // hidden column
+                {data: 'via_esi'},
+            ],
+
+            columnDefs: [
+                {
+                    orderable: false,
+                    targets: [5]
+                },
+                {
+                    visible: false,
+                    targets: [esi_column]
+                }
+            ],
+
+            order: [
+                [3, "desc"]
+            ],
+
+            filterDropDown: {
+                columns: [
+                    {
+                        idx: 1,
+                    },
+//                    {
+//                        idx: 2,
+//                    },
+                    {
+                        idx: esi_column,
+                        title: "{% translate 'via ESI' %}"
+                    },
+                ],
+                autoSize: false,
+                bootstrap: true
+            },
         });
     });
 
@@ -173,6 +169,6 @@
 
         var modal = $(this)
         modal.find('#fat-link').attr("href", url)
-        modal.find('.modal-body').text('{% trans "Are you sure you want to delete" %} ' + name + '?');
+        modal.find('.modal-body').text('{% translate "Are you sure you want to delete" %} ' + name + '?');
     });
 {% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'allianceauth/base.html' %}
+
+{% load i18n %}
+{% load static %}
+
+{% block page_title %}{% translate 'Fleet Activity' %}{% endblock %}
+
+{% block content %}
+    <div class="allianceauth-imicusfat">
+        <div class="allianceauth-imicusfat-header">
+            {% block imicusfat_header %}{% endblock %}
+        </div>
+
+        <div class="allianceauth-imicusfat-body">
+            {% block imicusfat_body %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}

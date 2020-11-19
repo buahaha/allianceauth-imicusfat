@@ -19,7 +19,7 @@ with open(os.path.join(this_directory, "README.md"), encoding="utf-8") as f:
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 install_requires = [
-    "allianceauth>=2.7.3",
+    "allianceauth>=2.8.0",
     "django-bootstrap-form",
 ]
 
@@ -39,7 +39,6 @@ setup(
     classifiers=[
         "Environment :: Web Environment",
         "Framework :: Django",
-        "Framework :: Django :: 2.2",
         "Framework :: Django :: 3.1",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",

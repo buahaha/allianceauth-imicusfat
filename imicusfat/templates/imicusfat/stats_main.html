@@ -1,181 +1,186 @@
-{% extends 'allianceauth/base.html' %}
+{% extends 'imicusfat/base.html' %}
 
 {% load evelinks %}
 {% load filters %}
 {% load i18n %}
+{% load static %}
 
-{% block page_title %}{% trans 'Fleet Activity' %}{% endblock %}
+{% block page_title %}{% translate 'Fleet Activity' %}{% endblock %}
 
-{% block content %}
-    <div class="col-lg-12">
-        <br>
-        {% include "imicusfat/menu.html" %}
+{% block imicusfat_header %}
+    <br>
+    {% include "imicusfat/menu.html" %}
 
-        <h2>{% trans "Statistics" %}
+    <h2>{% translate "Statistics" %}
+{% endblock %}
 
-        <h4>
-            <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_prev %}" title='{% trans "Previous Month" %}'><i class="fas fa-backward"></i></a>
+{% block imicusfat_body %}
+    <h4>
+        <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_prev %}" title='{% translate "Previous Month" %}'><i class="fas fa-backward"></i></a>
 
-            {{ year }}
+        {{ year }}
 
-            {% if year_next <= year_current %}
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_next %}" title='{% trans "Next Month" %}'><i class="fas fa-forward"></i></a>
-                <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_current %}" title='{% trans "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
-            {% endif %}
-        </h4>
-
-        {% if msg %}
-            <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                    <span aria-hidden="true">&times</span>
-                </button>
-                <h4>
-                    {% if msg.0 == 'danger' %}
-                        {% trans "Oh No!" %}
-                    {% elif msg.0 == 'success' %}
-                        {% trans "Success!" %}
-                    {% endif %}
-                </h4>
-                <p>{{ msg.1 }}</p>
-            </div>
+        {% if year_next <= year_current %}
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_next %}" title='{% translate "Next Month" %}'><i class="fas fa-forward"></i></a>
+            <a class="btn btn-primary" href="{% url 'imicusfat:stats' year_current %}" title='{% translate "Current Month" %}'><i class="fas fa-fast-forward"></i></a>
         {% endif %}
+    </h4>
 
-        <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#mine">{% trans "My Stats" %}</a></li>
-            {% if permissions.stats.corp.view_own or permissions.stats.corp.view_other %}
-                <li><a data-toggle="tab" href="#corps">{% trans "Corps" %}</a></li>
-            {% endif %}
-        </ul>
+    {% if msg %}
+        <div class="alert alert-{{ msg.0 }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                <span aria-hidden="true">&times</span>
+            </button>
+            <h4>
+                {% if msg.0 == 'danger' %}
+                    {% translate "Oh No!" %}
+                {% elif msg.0 == 'success' %}
+                    {% translate "Success!" %}
+                {% endif %}
+            </h4>
+            <p>{{ msg.1 }}</p>
+        </div>
+    {% endif %}
 
-        <div class="tab-content">
-            <div id="mine" class="tab-pane fade in active panel-default">
-                <div class="panel-body">
-                    <h4>{% trans "Your monthly stats" %}</h4>
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#mine">{% translate "My Stats" %}</a></li>
+        {% if permissions.stats.corp.view_own or permissions.stats.corp.view_other %}
+            <li><a data-toggle="tab" href="#corps">{% translate "Corps" %}</a></li>
+        {% endif %}
+    </ul>
 
-                    <p>{% trans "Only months with FAT data of the current year are shown." %}</p>
+    <div class="tab-content">
+        <div id="mine" class="tab-pane fade in active panel-default">
+            <div class="panel-body">
+                <h4>{% translate "Your monthly stats" %}</h4>
 
-                    <ul class="nav nav-pills">
-                        {% for char in charstats %}
-                            {% if forloop.first %}
-                                <li class="active"><a data-toggle="tab" href="#{{ char.2 }}"><img class="img-circle" src="{{ char.2|character_portrait_url:32 }}"/>  {{ char.0 }}</a></li>
+                <p>{% translate "Only months with FAT data of the current year are shown." %}</p>
+
+                <ul class="nav nav-pills">
+                    {% for char in charstats %}
+                        {% if forloop.first %}
+                            <li class="active"><a data-toggle="tab" href="#{{ char.2 }}"><img class="img-circle" src="{{ char.2|character_portrait_url:32 }}"/>  {{ char.0 }}</a></li>
+                        {% else %}
+                            <li><a data-toggle="tab" href="#{{ char.2 }}"><img class="img-circle" src="{{ char.2|character_portrait_url:32 }}"/>  {{ char.0 }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+
+                <div class="tab-content">
+                    {% for char in charstats %}
+                        {% if forloop.first %}
+                        <div id="{{ char.2 }}" class="tab-pane fade in active panel-default">
+                        {% else %}
+                        <div id="{{ char.2 }}" class="tab-pane fade panel-default">
+                        {% endif %}
+                            <div class="panel-body">
+                            {% if char.1|length > 0 %}
+                                <table class="table">
+                                    <thead>
+                                        <th>{% translate "Month" %}</th>
+                                        <th>{% translate "FAT Count" %}</th>
+                                        <th></th>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for key, value in char.1.items %}
+                                            <tr>
+                                                <td>{{ key|month }}</td>
+                                                <td>{{ value }}</td>
+                                                <td>
+                                                    <a href="{% url 'imicusfat:stats_char' char.2 year key %}" class="btn btn-primary">
+                                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
                             {% else %}
-                                <li><a data-toggle="tab" href="#{{ char.2 }}"><img class="img-circle" src="{{ char.2|character_portrait_url:32 }}"/>  {{ char.0 }}</a></li>
+                                <div class="alert alert-warning" role="alert">
+                                    <p>{% translate "No FATs for" %} {{ char.0 }}</p>
+                                </div>
                             {% endif %}
-                        {% endfor %}
-                    </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
 
-                    <div class="tab-content">
-                        {% for char in charstats %}
-                            {% if forloop.first %}
-                            <div id="{{ char.2 }}" class="tab-pane fade in active panel-default">
-                            {% else %}
-                            <div id="{{ char.2 }}" class="tab-pane fade panel-default">
-                            {% endif %}
-                                <div class="panel-body">
-                                {% if char.1|length > 0 %}
-                                    <table class="table">
-                                        <thead>
-                                            <th>{% trans "Month" %}</th>
-                                            <th>{% trans "FAT Count" %}</th>
-                                            <th></th>
-                                        </thead>
+        {% if permissions.stats.corp.view_own or permissions.stats.corp.view_other %}
+        <div id="corps" class="tab-pane fade panel-default">
+            <div class="panel-body">
+                <h4>{% translate "Corporations (Click Alliance Name to See Corps)" %}</h4>
+                {% if permissions.stats.corp.view_other %}
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        {% for key, value in data.items %}
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="heading{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
+                                    <h4 class="panel-title">
+                                        {% if key == 'No Alliance' %}
+                                            <img src="{{ 1|alliance_logo_url:32 }}" />
+                                        {% else %}
+                                            <img src="{{ value.0|alliance_logo_url:32 }}" />
+                                        {% endif %}
 
-                                        <tbody>
-                                            {% for key, value in char.1.items %}
+                                        <a role="button" class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}" aria-expanded="false" aria-controls="{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
+                                            {{ key }}
+                                        </a>
+
+                                        {% if key != 'No Alliance' %}
+                                        <a class="btn btn-primary btn-sm pull-right" href="{% url 'imicusfat:stats_ally' value.0 year %}" role="button">
+                                            <span class="glyphicon glyphicon-eye-open" style="color: white"></span>
+                                        </a>
+                                        {% endif %}
+                                    </h4>
+                                </div>
+
+                                <div id="{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
+                                    <div class="panel-body">
+                                        <table class="table">
+                                            <tbody>
+                                            {% for corp in value %}
+                                                {% if forloop.first %}
+                                                {% else %}
                                                 <tr>
-                                                    <td>{{ key|month }}</td>
-                                                    <td>{{ value }}</td>
+                                                    <td><img src="{{ corp.0|corporation_logo_url:32 }}" /></td>
+                                                    <td>{{ corp.1 }}</td>
                                                     <td>
-                                                        <a href="{% url 'imicusfat:stats_char' char.2 year key %}" class="btn btn-primary">
+                                                        <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.0 year %}">
                                                             <span class="glyphicon glyphicon-eye-open"></span>
                                                         </a>
                                                     </td>
                                                 </tr>
+                                                {% endif %}
                                             {% endfor %}
-                                        </tbody>
-                                    </table>
-                                {% else %}
-                                    <div class="alert alert-warning" role="alert">
-                                        <p>{% trans "No FATs for" %} {{ char.0 }}</p>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                {% endif %}
                                 </div>
                             </div>
-                        {% endfor %}
-                    </div>
-                </div>
+                    {% endfor %}
+                {% elif permissions.stats.corp.view_own %}
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><img src="{{ data.0.0|corporation_logo_url:32 }}" /> </td>
+                                <td>{{ data.0.1 }}</td>
+                                <td>
+                                    <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' data.0.0 year %}">
+                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {% endif %}
             </div>
-
-            {% if permissions.stats.corp.view_own or permissions.stats.corp.view_other %}
-            <div id="corps" class="tab-pane fade panel-default">
-                <div class="panel-body">
-                    <h4>{% trans "Corporations (Click Alliance Name to See Corps)" %}</h4>
-                    {% if permissions.stats.corp.view_other %}
-                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                            {% for key, value in data.items %}
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab" id="heading{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
-                                        <h4 class="panel-title">
-                                            {% if key == 'No Alliance' %}
-                                                <img src="{{ 1|alliance_logo_url:32 }}" />
-                                            {% else %}
-                                                <img src="{{ value.0|alliance_logo_url:32 }}" />
-                                            {% endif %}
-
-                                            <a role="button" class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}" aria-expanded="false" aria-controls="{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
-                                                {{ key }}
-                                            </a>
-
-                                            {% if key != 'No Alliance' %}
-                                            <a class="btn btn-primary btn-sm pull-right" href="{% url 'imicusfat:stats_ally' value.0 year %}" role="button">
-                                                <span class="glyphicon glyphicon-eye-open" style="color: white"></span>
-                                            </a>
-                                            {% endif %}
-                                        </h4>
-                                    </div>
-
-                                    <div id="{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
-                                        <div class="panel-body">
-                                            <table class="table">
-                                                <tbody>
-                                                {% for corp in value %}
-                                                    {% if forloop.first %}
-                                                    {% else %}
-                                                    <tr>
-                                                        <td><img src="{{ corp.0|corporation_logo_url:32 }}" /></td>
-                                                        <td>{{ corp.1 }}</td>
-                                                        <td>
-                                                            <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.0 year %}">
-                                                                <span class="glyphicon glyphicon-eye-open"></span>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    {% endif %}
-                                                {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                        {% endfor %}
-                    {% elif permissions.stats.corp.view_own %}
-                        <table class="table">
-                            <tbody>
-                                <tr>
-                                    <td><img src="{{ data.0.0|corporation_logo_url:32 }}" /> </td>
-                                    <td>{{ data.0.1 }}</td>
-                                    <td>
-                                        <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' data.0.0 year %}">
-                                            <span class="glyphicon glyphicon-eye-open"></span>
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
         </div>
+        {% endif %}
     </div>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'imicusfat/css/aa-bootstrap-fix.min.css' %}">
 {% endblock %}

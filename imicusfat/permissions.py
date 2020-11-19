@@ -42,7 +42,12 @@ def get_user_permissions(user):
         has_fatlink_permissions = True
         has_fat_permissions = True
         can_manipulate_fatlink = True
+        can_add_fatlink = True
+        can_change_fatlink = True
+        can_delete_fatlink = True
         can_manipulate_fat = True
+        can_add_fat = True
+        can_delete_fat = True
 
     # check if the user has any permissions to manipulate fats and fatlinks
     if (
@@ -63,7 +68,7 @@ def get_user_permissions(user):
         can_manipulate_fat = True
 
     ##
-    # Now let's check whic permisions he has
+    # Now let's check which permisions he has
     ##
 
     # can add fatlinks
