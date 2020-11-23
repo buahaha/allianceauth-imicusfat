@@ -55,6 +55,7 @@
                 <h4>{% translate "Your monthly stats" %}</h4>
 
                 <p>{% translate "Only months with FAT data of the current year are shown." %}</p>
+                <p>{% translate "Only charaters that have recent FATs are shown." %}</p>
 
                 <ul class="nav nav-pills">
                     {% for char in charstats %}
@@ -67,43 +68,49 @@
                 </ul>
 
                 <div class="tab-content">
-                    {% for char in charstats %}
-                        {% if forloop.first %}
-                        <div id="{{ char.2 }}" class="tab-pane fade in active panel-default">
-                        {% else %}
-                        <div id="{{ char.2 }}" class="tab-pane fade panel-default">
-                        {% endif %}
-                            <div class="panel-body">
-                            {% if char.1|length > 0 %}
-                                <table class="table">
-                                    <thead>
-                                        <th>{% translate "Month" %}</th>
-                                        <th>{% translate "FAT Count" %}</th>
-                                        <th></th>
-                                    </thead>
-
-                                    <tbody>
-                                        {% for key, value in char.1.items %}
-                                            <tr>
-                                                <td>{{ key|month }}</td>
-                                                <td>{{ value }}</td>
-                                                <td>
-                                                    <a href="{% url 'imicusfat:stats_char' char.2 year key %}" class="btn btn-primary">
-                                                        <span class="glyphicon glyphicon-eye-open"></span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                    {% if charstats %}
+                        {% for char in charstats %}
+                            {% if forloop.first %}
+                            <div id="{{ char.2 }}" class="tab-pane fade in active panel-default">
                             {% else %}
-                                <div class="alert alert-warning" role="alert">
-                                    <p>{% translate "No FATs for" %} {{ char.0 }}</p>
-                                </div>
+                            <div id="{{ char.2 }}" class="tab-pane fade panel-default">
                             {% endif %}
+                                <div class="panel-body">
+                                {% if char.1|length > 0 %}
+                                    <table class="table">
+                                        <thead>
+                                            <th>{% translate "Month" %}</th>
+                                            <th>{% translate "FAT Count" %}</th>
+                                            <th></th>
+                                        </thead>
+
+                                        <tbody>
+                                            {% for key, value in char.1.items %}
+                                                <tr>
+                                                    <td>{{ key|month }}</td>
+                                                    <td>{{ value }}</td>
+                                                    <td>
+                                                        <a href="{% url 'imicusfat:stats_char' char.2 year key %}" class="btn btn-primary">
+                                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <div class="alert alert-warning" role="alert">
+                                        <p>{% translate "No FATs for" %} {{ char.0 }}</p>
+                                    </div>
+                                {% endif %}
+                                </div>
                             </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-warning" role="alert">
+                            <p>{% translate "No FATs for any of your character." %}</p>
                         </div>
-                    {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </div>
