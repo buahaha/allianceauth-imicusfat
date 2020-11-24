@@ -1,5 +1,6 @@
 {% extends 'imicusfat/base.html' %}
 
+{% load filters %}
 {% load evelinks %}
 {% load i18n %}
 {% load static %}
@@ -56,7 +57,8 @@
                             <h3>{% translate "FATs By Ship Type" %}</h3>
 
                             <canvas id="ship-pie" width="800" height="500"></canvas>
-                            <script>
+
+                            <script type="application/javascript">
                                 var shipPieChart = new Chart(document.getElementById("ship-pie"), {
                                     type: "pie",
                                     data: {
@@ -69,7 +71,7 @@
                                     options: {
                                         responsive: true
                                     }
-                                })
+                                });
                             </script>
                         </div>
                     </div>
@@ -79,7 +81,8 @@
                             <h3>{% translate "FATs By Time" %}</h3>
 
                             <canvas id="time-line" width="800" height="500"></canvas>
-                            <script>
+
+                            <script type="application/javascript">
                                 var timeLineChart = new Chart(document.getElementById("time-line"), {
                                     type: 'line',
                                     data: {
@@ -93,7 +96,7 @@
                                     options: {
                                         responsive: false
                                     }
-                                })
+                                });
                             </script>
                         </div>
                     </div>
@@ -103,7 +106,8 @@
                             <h3>{% translate "FATs By Weekday" %}</h3>
 
                             <canvas id="weekday-line" width="800" height="500"></canvas>
-                            <script>
+
+                            <script type="application/javascript">
                                 var weekdayLineChart = new Chart(document.getElementById('weekday-line'), {
                                     type: 'line',
                                     data:{
@@ -117,7 +121,7 @@
                                     options: {
                                         responsive: false
                                     }
-                                })
+                                });
                             </script>
                         </div>
                     </div>
@@ -127,7 +131,8 @@
                             <h3>{% translate "Average FATs By Corporation" %}</h3>
 
                             <canvas id="avgs" width="1000" height="700"></canvas>
-                            <script>
+
+                            <script type="application/javascript">
                                 var averagesHorizontalBarChart = new Chart(document.getElementById('avgs'), {
                                     type: 'horizontalBar',
                                     data:{
@@ -153,7 +158,7 @@
                                             }]
                                         }
                                     }
-                                })
+                                });
                             </script>
                         </div>
                     </div>
@@ -167,16 +172,18 @@
 
                 <table class="table" id="member-corps" style="width: 100%;">
                     <thead>
-                        <th>{% translate "Corporation" %}</th>
-                        <th>{% translate "FATs" %}</th>
-                        <th>{% translate "Avg FATs" %}</th>
-                        <th>{% translate "Corporation Stats" %}</th>
+                        <tr>
+                            <th>{% translate "Corporation" %}</th>
+                            <th>{% translate "FATs" %}</th>
+                            <th>{% translate "Avg FATs" %}</th>
+                            <th>{% translate "Corporation Stats" %}</th>
+                        </tr>
                     </thead>
 
                     <tbody>
                         {% for key, value in corps.items %}
                             <tr>
-                                <td><img src="{{ value.0|corporation_logo_url:32 }}" style="margin-right: 1rem;" />{{ key }}</td>
+                                <td><img src="{{ value.0|corporation_logo_url:32 }}" style="margin-right: 1rem;" alt="{{ key }}" />{{ key }}</td>
                                 <td>{{ value.1 }}</td>
                                 <td>{{ value.2 }}</td>
                                 <td>
@@ -213,7 +220,7 @@
             return moment(d, format, locale, true).isValid() ?
                 'moment-'+format :
                 null;
-        } );
+        });
 
         // Add sorting method - use an integer for the sorting
         types.order[ 'moment-'+format+'-pre' ] = function(d) {

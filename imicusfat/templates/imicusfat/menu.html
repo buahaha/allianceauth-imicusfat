@@ -20,9 +20,11 @@
                 <li class="{% navactive request 'imicusfat_stats imicusfat_corp_stats imicusfat_char_stats imicusfat_ally_stats' %}">
                     <a href="{% url 'imicusfat:stats' %}">{% translate "Statistics" %}</a>
                 </li>
+
                 <li class="{% navactive request 'imicusfat:links imicusfat:link_edit' %}">
                     <a href="{% url 'imicusfat:links' %}">{% translate "FAT Links" %}</a>
                 </li>
+
                 {% if permissions.fatlinks.manage or permissions.fatlinks.add %}
                     <li class="{% navactive request 'imicusfat:link_add' %}">
                         <a href="{% url 'imicusfat:link_add' %}">{% translate "Add FAT Link" %}</a>

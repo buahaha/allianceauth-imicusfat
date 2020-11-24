@@ -46,17 +46,17 @@
             <p>&#9642; {% translate "Clickable FAT Link Created!" %}</p>
             <p>&#9642; {% translate "Make sure to give your fleet members the following link to click so that they get credit for this fleet." %}</p>
             {% if link_ongoing %}
-            <p>&#9642;
-                Link:
-                <i>
-                    {{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}
-                    <a class="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
-                </i>
+                <p>&#9642;
+                    Link:
+                    <i>
+                        {{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}
+                        <a class="label label-success copy-link" href="{% url 'imicusfat:link_click' link.hash %}"></a>
+                    </i>
 
-                <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title="Copied!" data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}" style="margin-left: 1rem; background-color: rgba(255,255,255,0.3);">
-                    Copy me!
-                </button>
-            </p>
+                    <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title="Copied!" data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}" style="margin-left: 1rem; background-color: rgba(255,255,255,0.3);">
+                        Copy me!
+                    </button>
+                </p>
             {% endif %}
         </div>
     {% elif msg_code == 1 %}
@@ -132,7 +132,7 @@
                 <p>Link:
                     <i>
                         {{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}
-                        <a class="copy-link" href="{% url 'imicusfat:link_click' link.hash %}" class="label label-success"></a>
+                        <a class="label label-success copy-link" href="{% url 'imicusfat:link_click' link.hash %}"></a>
                     </i>
 
                     <button class="copy-btn btn btn-success btn-sm" data-toggle="tooltip" data-html="true" title='{% translate "Copied!" %}' data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'imicusfat:link_click' link.hash %}" style="margin-left: 1rem;">
@@ -159,12 +159,14 @@
 
                  <table class="table" id="fat-chars" style="width: 100%;">
                      <thead>
-                        <th>{% translate "Character" %}</th>
-                        <th>{% translate "Location" %}</th>
-                        <th>{% translate "Ship Type" %}</th>
-                        {% if permissions.fats.manage %}
-                            <th>{% translate "Actions" %}</th>
-                        {% endif %}
+                        <tr>
+                            <th>{% translate "Character" %}</th>
+                            <th>{% translate "Location" %}</th>
+                            <th>{% translate "Ship Type" %}</th>
+                            {% if permissions.fats.manage %}
+                                <th>{% translate "Actions" %}</th>
+                            {% endif %}
+                        </tr>
                      </thead>
 
                      <tbody>

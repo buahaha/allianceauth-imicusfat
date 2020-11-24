@@ -1,5 +1,6 @@
 {% extends "imicusfat/base.html" %}
 
+{% load filters %}
 {% load i18n %}
 {% load static %}
 
@@ -44,9 +45,10 @@
             <div class="panel-body">
                 <div class="col-md-4">
                     <h4>{% translate "FATs by Ship Type" %}</h4>
+
                     <canvas style="width: 400px; max-width: 100%; height: 400px;" id="pie-ship"></canvas>
 
-                    <script>
+                    <script type="application/javascript">
                         var shipPieChart = new Chart(document.getElementById("pie-ship"), {
                             type: "pie",
                             data: {
@@ -59,15 +61,16 @@
                             options: {
                                 responsive: false
                             }
-                        })
+                        });
                     </script>
                 </div>
 
                 <div class="col-md-8">
                     <h4>{% translate "FATs by Time of Day" %}</h4>
+
                     <canvas style="width: 100%; height: 400px;" id="line-time"></canvas>
 
-                    <script>
+                    <script type="application/javascript">
                         var FATLineChart = new Chart(document.getElementById("line-time"),{
                             type: "line",
                             data: {
@@ -81,7 +84,7 @@
                             options: {
                                 responsive: false
                             }
-                        })
+                        });
                     </script>
                 </div>
             </div>
@@ -93,11 +96,13 @@
 
                 <table class="table" id="raw-data" style="width: 100%;">
                     <thead>
-                        <th>{% translate "Name" %}</th>
-                        <th>{% translate "Fleet Type" %}</th>
-                        <th>{% translate "Location" %}</th>
-                        <th>{% translate "Ship" %}</th>
-                        <th>{% translate "EVE Time" %}</th>
+                        <tr>
+                            <th>{% translate "Name" %}</th>
+                            <th>{% translate "Fleet Type" %}</th>
+                            <th>{% translate "Location" %}</th>
+                            <th>{% translate "Ship" %}</th>
+                            <th>{% translate "EVE Time" %}</th>
+                        </tr>
                     </thead>
 
                     <tbody>
@@ -152,7 +157,7 @@
             return moment(d, format, locale, true).isValid() ?
                 'moment-'+format :
                 null;
-        } );
+        });
 
         // Add sorting method - use an integer for the sorting
         types.order[ 'moment-'+format+'-pre' ] = function(d) {

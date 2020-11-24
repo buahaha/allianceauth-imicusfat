@@ -42,14 +42,16 @@
 
     <table class="table" id="link-list" style="width: 100%;">
         <thead>
-            <th>{% translate "Fleet Name" %}</th>
-            <th>{% translate "Fleet Type" %}</th>
-            <th>{% translate "Creator" %}</th>
-            <th>{% translate "EVE Time" %}</th>
-            <th>{% translate "# of FATs" %}</th>
-            {% if permissions.fatlinks.manipulate %}
-                <th>{% translate "Actions" %}</th>
-            {% endif %}
+            <tr>
+                <th>{% translate "Fleet Name" %}</th>
+                <th>{% translate "Fleet Type" %}</th>
+                <th>{% translate "Creator" %}</th>
+                <th>{% translate "EVE Time" %}</th>
+                <th>{% translate "# of FATs" %}</th>
+                {% if permissions.fatlinks.manipulate %}
+                    <th>{% translate "Actions" %}</th>
+                {% endif %}
+            </tr>
         </thead>
 
         <tbody></tbody>
@@ -148,9 +150,6 @@
                     {
                         idx: 1,
                     },
-//                    {
-//                        idx: 2,
-//                    },
                     {
                         idx: esi_column,
                         title: "{% translate 'via ESI' %}"
