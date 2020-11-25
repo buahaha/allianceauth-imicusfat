@@ -64,7 +64,7 @@
                     {% for char in charstats %}
                         <li class="ifat-stats-character-tab{% if forloop.first %} active{% endif %}">
                             <a data-toggle="tab" href="#{{ char.2 }}">
-                                <img class="img-circle" src="{{ char.2|character_portrait_url:32 }}" alt="{{ char.0 }}" />
+                                <img class="img-circle" src="{{ char.2|character_portrait_url:32 }}" alt="{{ char.0 }}">
                                 {{ char.0 }}
                             </a>
                         </li>
@@ -129,9 +129,9 @@
                                     <div class="panel-heading" role="tab" id="heading{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
                                         <h4 class="panel-title">
                                             {% if key == 'No Alliance' %}
-                                                <img src="{{ 1|alliance_logo_url:32 }}" alt="{% translate 'No Alliance' %}" />
+                                                <img src="{{ 1|alliance_logo_url:32 }}" alt="{% translate 'No Alliance' %}">
                                             {% else %}
-                                                <img src="{{ value.0|alliance_logo_url:32 }}" alt="{{ key }}" />
+                                                <img src="{{ value.0|alliance_logo_url:32 }}" alt="{{ key }}">
                                             {% endif %}
 
                                             <a role="button" class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}" aria-expanded="false" aria-controls="{% if key == 'No Alliance' %}0000{% else %}{{ value.0 }}{% endif %}">
@@ -154,7 +154,7 @@
                                                     {% if forloop.first %}
                                                     {% else %}
                                                     <tr>
-                                                        <td><img src="{{ corp.0|corporation_logo_url:32 }}" alt="{{ corp.1 }}" /></td>
+                                                        <td><img src="{{ corp.0|corporation_logo_url:32 }}" alt="{{ corp.1 }}"></td>
                                                         <td>{{ corp.1 }}</td>
                                                         <td>
                                                             <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' corp.0 year %}">
@@ -174,7 +174,7 @@
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <td><img src="{{ data.0.0|corporation_logo_url:32 }}" alt="{{ data.0.1 }}" /> </td>
+                                    <td><img src="{{ data.0.0|corporation_logo_url:32 }}" alt="{{ data.0.1 }}"></td>
                                     <td>{{ data.0.1 }}</td>
                                     <td>
                                         <a class="btn btn-primary" href="{% url 'imicusfat:stats_corp' data.0.0 year %}">

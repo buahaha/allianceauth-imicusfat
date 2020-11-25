@@ -49,7 +49,7 @@
                         {% for char in fats %}
                             <li class="imicusfat-character-tab{% if forloop.first %} active{% endif %}">
                                 <a data-toggle="tab" href="#{{ char|last }}">
-                                    <img class="img-circle" src="{{ char|last|character_portrait_url:32 }}" alt="{{ char.0 }}" />
+                                    <img class="img-circle" src="{{ char|last|character_portrait_url:32 }}" alt="{{ char.0 }}">
                                     {{ char.0 }}
                                 </a>
                             </li>
