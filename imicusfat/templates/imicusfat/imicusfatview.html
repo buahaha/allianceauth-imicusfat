@@ -107,9 +107,11 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p>
-                        {% translate "No recent FAT activity registered for any of your characters." %}
-                    </p>
+                    <div class="alert alert-warning" role="alert">
+                        <p>
+                            {% translate "No recent FAT activity registered for any of your characters." %}
+                        </p>
+                    </div>
                 {% endif %}
             </div>
         </div>
