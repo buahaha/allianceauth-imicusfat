@@ -47,31 +47,29 @@
                 {% if fats %}
                     <ul class="nav nav-pills">
                         {% for char in fats %}
-                            {% if forloop.first %}
-                                <li class="active"><a data-toggle="tab" href="#{{ char|last }}"><img class="img-circle" src="{{ char|last|character_portrait_url:32 }}"/>  {{ char.0 }}</a></li>
-                            {% else %}
-                                <li><a data-toggle="tab" href="#{{ char|last }}"><img class="img-circle" src="{{ char|last|character_portrait_url:32 }}"/>  {{ char.0 }}</a></li>
-                            {% endif %}
+                            <li class="imicusfat-character-tab{% if forloop.first %} active{% endif %}">
+                                <a data-toggle="tab" href="#{{ char|last }}">
+                                    <img class="img-circle" src="{{ char|last|character_portrait_url:32 }}" alt="{{ char.0 }}">
+                                    {{ char.0 }}
+                                </a>
+                            </li>
                         {% endfor %}
                     </ul>
 
                     <div class="tab-content">
                         {% for char in fats %}
-                            {% if forloop.first %}
-                            <div id="{{ char|last }}" class="tab-pane fade in active panel-default">
-                            {% else %}
-                            <div id="{{ char|last }}" class="tab-pane fade panel-default">
-                            {% endif %}
-
+                            <div id="{{ char|last }}" class="tab-pane fade in panel-default{% if forloop.first %} active{% endif %}">
                                 <div class="panel-body">
                                     {% if char|slice:"1:-1"|length > 0 %}
                                         <table class="table">
                                             <thead>
-                                                <th>Fleet Name</th>
-                                                <th>Fleet Type</th>
-                                                <th>Location</th>
-                                                <th>Ship</th>
-                                                <th>EVE Time</th>
+                                                <tr>
+                                                    <th>Fleet Name</th>
+                                                    <th>Fleet Type</th>
+                                                    <th>Location</th>
+                                                    <th>Ship</th>
+                                                    <th>EVE Time</th>
+                                                </tr>
                                             </thead>
                                             <tbody>
                                                 {% for ifat in char|slice:"1:" %}
@@ -109,9 +107,11 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p>
-                        {% translate "No recent FAT activity registered for any of your characters." %}
-                    </p>
+                    <div class="alert alert-warning" role="alert">
+                        <p>
+                            {% translate "No recent FAT activity registered for any of your characters." %}
+                        </p>
+                    </div>
                 {% endif %}
             </div>
         </div>
@@ -120,14 +120,16 @@
             <div class="panel-body">
                 <h4>{% translate "Most Recent FAT Links" %}</h4>
 
-                <table class="table">
+                <table class="table" style="width: 100%;">
                     <thead>
-                        <th>{% translate "Fleet Name" %}</th>
-                        <th>{% translate "Creator" %}</th>
-                        <th>{% translate "EVE Time" %}</th>
-                        {% if permissions.fatlinks.manipulate %}
-                            <th>{% translate "Actions" %}</th>
-                        {% endif %}
+                        <tr>
+                            <th>{% translate "Fleet Name" %}</th>
+                            <th>{% translate "Creator" %}</th>
+                            <th>{% translate "EVE Time" %}</th>
+                            {% if permissions.fatlinks.manipulate %}
+                                <th>{% translate "Actions" %}</th>
+                            {% endif %}
+                        </tr>
                     </thead>
 
                     <tbody>
@@ -185,9 +187,9 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
 
-                </div>
+                <div class="modal-body"></div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate "Cancel" %}</button>
                     <a id="fat-link" class="btn btn-danger" role="button" href="">{% translate "Delete" %}</a>

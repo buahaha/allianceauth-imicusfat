@@ -27,12 +27,14 @@
 
     <table class="table">
         <thead>
-            <th>{% translate "Month" %}</th>
-            <th>{% translate "FATs" %}</th>
-            {% if type == 0 %}
-                <th>{% translate "Avg FATs" %}</th>
-            {% endif %}
-            <th></th>
+            <tr>
+                <th>{% translate "Month" %}</th>
+                <th>{% translate "FATs" %}</th>
+                {% if type == 0 %}
+                    <th>{% translate "Avg FATs" %}</th>
+                {% endif %}
+                <th></th>
+            </tr>
         </thead>
 
         <tbody>
@@ -45,9 +47,9 @@
                     {% endif %}
                     <td>
                         {% if corporation != 'No Alliance' %}
-                        <a href="{% url 'imicusfat:stats' %}{% if type == 0 %}corporation{% elif type == 1 %}alliance{% endif %}/{{ corpid }}/{{ year }}/{{ month.0 }}/" class="btn btn-primary">
-                            <span class="glyphicon glyphicon-eye-open"></span>
-                        </a>
+                            <a href="{% url 'imicusfat:stats' %}{% if type == 0 %}corporation{% elif type == 1 %}alliance{% endif %}/{{ corpid }}/{{ year }}/{{ month.0 }}/" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                            </a>
                         {% endif %}
                     </td>
                 </tr>

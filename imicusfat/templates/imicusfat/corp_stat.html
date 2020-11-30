@@ -1,5 +1,6 @@
 {% extends 'imicusfat/base.html' %}
 
+{% load filters %}
 {% load i18n %}
 {% load static %}
 
@@ -54,34 +55,35 @@
                             <h3>{% translate "FATs By Ship Type" %}</h3>
 
                             <canvas id="ship-bar-stacked" width="800" height="500"></canvas>
-                            <script>
-                            var corpShipTypeBarChart = new Chart(document.getElementById('ship-bar-stacked'), {
-                                type: "bar",
-                                data: {
-                                    datasets: [{% for set in data_stacked.1 %}
-                                            {
-                                              label: '{{ set.0|escapejs }}',
-                                              backgroundColor: '{{ set.1|safe }}',
-                                              data: {{ set.2 }}
-                                            },
-                                        {% endfor %}],
-                                    labels: {{ data_stacked.0|safe }}
-                                },
-                                options: {
-                                    responsive: false,
-                                    scales: {
-                                        xAxes: [{
-                                            stacked: true,
-                                            ticks: {
-                                                autoSkip: false
-                                            }
-                                        }],
-                                        yAxes: [{
-                                            stacked: true
-                                        }]
+
+                            <script type="application/javascript">
+                                var corpShipTypeBarChart = new Chart(document.getElementById('ship-bar-stacked'), {
+                                    type: "bar",
+                                    data: {
+                                        datasets: [{% for set in data_stacked.1 %}
+                                                {
+                                                  label: '{{ set.0|escapejs }}',
+                                                  backgroundColor: '{{ set.1|safe }}',
+                                                  data: {{ set.2 }}
+                                                },
+                                            {% endfor %}],
+                                        labels: {{ data_stacked.0|safe }}
+                                    },
+                                    options: {
+                                        responsive: false,
+                                        scales: {
+                                            xAxes: [{
+                                                stacked: true,
+                                                ticks: {
+                                                    autoSkip: false
+                                                }
+                                            }],
+                                            yAxes: [{
+                                                stacked: true
+                                            }]
+                                        }
                                     }
-                                }
-                            })
+                                });
                             </script>
                         </div>
                     </div>
@@ -91,7 +93,8 @@
                             <h3>{% translate "FATs By Time" %}</h3>
 
                             <canvas id="time-line" width="800" height="500"></canvas>
-                            <script>
+
+                            <script type="application/javascript">
                                 var timeLineChart = new Chart(document.getElementById("time-line"), {
                                     type: 'line',
                                     data: {
@@ -105,7 +108,7 @@
                                     options: {
                                         responsive: false
                                     }
-                                })
+                                });
                             </script>
                         </div>
                     </div>
@@ -115,7 +118,8 @@
                             <h3>{% translate "FATs By Weekday" %}</h3>
 
                             <canvas id="weekday-line" width="800" height="500"></canvas>
-                            <script>
+
+                            <script type="application/javascript">
                                 var weekdayLineChart = new Chart(document.getElementById('weekday-line'), {
                                     type: 'line',
                                     data:{
@@ -129,7 +133,7 @@
                                     options: {
                                         responsive: false
                                     }
-                                })
+                                });
                             </script>
                         </div>
                     </div>
@@ -141,11 +145,13 @@
             <div class="panel-body">
                 <h3>{{ corp.corporation_name }} {% translate "Members" %}</h3>
 
-                <table class="table" id="corp-members">
+                <table class="table" id="corp-members" style="width: 100%;">
                     <thead>
-                        <th>{% translate "Character" %}</th>
-                        <th>{% translate "FATs" %}</th>
-                        <th>{% translate "Character Stats" %}</th>
+                        <tr>
+                            <th>{% translate "Character" %}</th>
+                            <th>{% translate "FATs" %}</th>
+                            <th>{% translate "Character Stats" %}</th>
+                        </tr>
                     </thead>
 
                     <tbody>
@@ -187,7 +193,7 @@
             return moment(d, format, locale, true).isValid() ?
                 'moment-'+format :
                 null;
-        } );
+        });
 
         // Add sorting method - use an integer for the sorting
         types.order[ 'moment-'+format+'-pre' ] = function(d) {
