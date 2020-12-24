@@ -825,10 +825,19 @@ def link_add(request):
         is_enabled=True,
     ).order_by("name")
 
+    has_open_esi_fleet = IFatLink.objects.filter(
+        creator=request.user, is_esilink=True, is_registered_on_esi=True
+    ).exists()
+
     # get users permissions
     permissions = get_user_permissions(request.user)
 
-    context = {"link_types": link_types, "msg": msg, "permissions": permissions}
+    context = {
+        "link_types": link_types,
+        "msg": msg,
+        "permissions": permissions,
+        "has_open_esi_fleet": has_open_esi_fleet,
+    }
 
     logger.info("Add FAT link view called by %s", request.user)
 
