@@ -76,7 +76,7 @@ ROOT_URLCONF = "allianceauth.urls"
 
 LOCALE_PATHS = (os.path.join(BASE_DIR, "locale/"),)
 
-ugettext = lambda s: s
+ugettext = lambda s: s  # noqa: E731
 LANGUAGES = (
     ("en", ugettext("English")),
     ("de", ugettext("German")),

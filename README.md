@@ -7,7 +7,7 @@
 [![django](https://img.shields.io/pypi/djversions/allianceauth-imicusfat?label=django)](https://pypi.org/project/allianceauth-imicusfat/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](http://black.readthedocs.io/en/latest/)
 
-An Improved FAT/PAP System for [Alliance Auth](https://gitlab.com/allianceauth/allianceauth). 
+An Improved FAT/PAP System for [Alliance Auth](https://gitlab.com/allianceauth/allianceauth).
 
 ### Feature Highlights/Differences
 - FATLink Creation and Population from ESI

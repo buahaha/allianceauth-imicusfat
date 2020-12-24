@@ -12,7 +12,7 @@ app_name: str = "imicusfat"
 
 urlpatterns = [
     url(r"^$", views.imicusfat_view, name="imicusfat_view"),
-    ## stats main page
+    # stats main page
     url(r"^statistic/$", views.stats, name="stats"),
     url(r"^statistic/(?P<year>[0-9]+)/$", views.stats, name="stats"),
     # stats corp
