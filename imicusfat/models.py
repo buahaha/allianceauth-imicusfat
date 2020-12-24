@@ -217,6 +217,13 @@ class IFatLink(SoftDeletionModel):
         help_text="Whether this fatlink was created via ESI or not",
     )
 
+    is_registered_on_esi = models.BooleanField(
+        default=False,
+        help_text="Whether this is an ESI fat link is registered on ESI",
+    )
+
+    esi_fleet_id = models.BigIntegerField(blank=True, null=True)
+
     def __str__(self):
         return self.hash[6:]
 

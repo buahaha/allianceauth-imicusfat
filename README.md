@@ -44,6 +44,15 @@ pip install allianceauth-imicusfat
 Configure your AA settings (`local.py`) as follows:
 
 - Add `'imicusfat',` to `INSTALLED_APPS`
+- Add the scheduled task so ESI links will be updated automagically
+
+```python
+# ImicusFAT - https://gitlab.com/evictus.iou/allianceauth-imicusfat
+CELERYBEAT_SCHEDULE["imicusfat_update_esi_fatlinks"] = {
+    "task": "imicusfat.tasks.update_esi_fatlinks",
+    "schedule": crontab(minute="*/1"),
+}
+```
 
 ### Step 3 - Finalize the installation
 
