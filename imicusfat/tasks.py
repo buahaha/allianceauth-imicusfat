@@ -231,6 +231,7 @@ def update_esi_fatlinks():
     required_scopes = ["esi-fleets.read_fleet.v1"]
 
     close_fleet = False
+    close_fleet_reason = ""
 
     try:
         esi_fatlinks = IFatLink.objects.filter(
@@ -266,31 +267,23 @@ def update_esi_fatlinks():
                             # process fleet members
                             process_fats.delay(esi_fleet_member, "eve", fatlink.hash)
                         except Exception:
-                            logger.info(
-                                "Closing ESI FAT with hash {fatlink_hash}. "
-                                "Reason: No fleet boss available".format(
-                                    fatlink_hash=fatlink.hash
-                                )
-                            )
+                            close_fleet_reason = "No fleet boss available"
                             close_fleet = True
 
                 except Exception:
-                    logger.info(
-                        "Closing ESI FAT with hash {fatlink_hash}. "
-                        "Reason: No fleet available".format(fatlink_hash=fatlink.hash)
-                    )
+                    close_fleet_reason = "No fleet available"
                     close_fleet = True
 
             else:
-                logger.info(
-                    "Closing ESI FAT with hash {fatlink_hash}. "
-                    "Reason: No fatlink creator available".format(
-                        fatlink_hash=fatlink.hash
-                    )
-                )
+                close_fleet_reason = "No fatlink creator available"
                 close_fleet = True
 
             if close_fleet is True:
+                logger.info(
+                    "Closing ESI FAT with hash {fatlink_hash}. Reason: {reason}".format(
+                        fatlink_hash=fatlink.hash, reason=close_fleet_reason
+                    )
+                )
                 fatlink.is_registered_on_esi = False
                 fatlink.save()
 
