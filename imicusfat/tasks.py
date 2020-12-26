@@ -4,6 +4,12 @@
 tasks
 """
 
+from bravado.exception import (
+    HTTPBadGateway,
+    HTTPGatewayTimeout,
+    HTTPServiceUnavailable,
+)
+
 from celery import shared_task
 
 from esi.models import Token
@@ -19,9 +25,35 @@ from allianceauth.eveonline.models import (
     EveCorporationInfo,
 )
 from allianceauth.services.hooks import get_extension_logger
+from allianceauth.services.tasks import QueueOnce
 
 
 logger = LoggerAddTag(get_extension_logger(__name__), __title__)
+
+
+DEFAULT_TASK_PRIORITY = 6
+ESI_ERROR_LIMIT = 50
+ESI_TIMEOUT_ONCE_ERROR_LIMIT_REACHED = 60
+
+# params for all tasks
+TASK_DEFAULT_KWARGS = {
+    "time_limit": 1200,  # stop after 20 minutes
+}
+
+# params for tasks that make ESI calls
+TASK_ESI_KWARGS = {
+    **TASK_DEFAULT_KWARGS,
+    **{
+        "autoretry_for": (
+            OSError,
+            HTTPBadGateway,
+            HTTPGatewayTimeout,
+            HTTPServiceUnavailable,
+        ),
+        "retry_kwargs": {"max_retries": 3},
+        "retry_backoff": True,
+    },
+}
 
 
 class NoDataError(Exception):
@@ -35,8 +67,10 @@ class NoDataError(Exception):
 
 def get_or_create_char(name: str = None, id: int = None):
     """
-    This function takes a name or id of a character and checks to see if the character already exists.
-    If the character does not already exist, it will create the character object, and if needed the corp/alliance
+    This function takes a name or id of a character and
+    checks to see if the character already exists.
+    If the character does not already exist, it will create the character object,
+    and if needed the corp/alliance
     objects as well.
     :param name: str (optional)
     :param id: int (optional)
@@ -90,7 +124,8 @@ def get_or_create_char(name: str = None, id: int = None):
 @shared_task
 def process_fats(list, type_, hash):
     """
-    Due to the large possible size of fatlists, this process will be scheduled in order to process flat_lists.
+    Due to the large possible size of fatlists,
+    this process will be scheduled in order to process flat_lists.
     :param list: the list of character info to be processed.
     :param type_: only "eve" for now
     :param hash: the hash from the fat link.
@@ -187,7 +222,7 @@ def process_character(char, hash):
         )
 
 
-@shared_task
+@shared_task(**{**TASK_ESI_KWARGS}, **{"base": QueueOnce})
 def update_esi_fatlinks():
     """
     checking ESI fat links for changes
@@ -258,9 +293,9 @@ def update_esi_fatlinks():
                 )
                 close_fleet = True
 
-        if close_fleet is True:
-            fatlink.is_registered_on_esi = False
-            fatlink.save()
+            if close_fleet is True:
+                fatlink.is_registered_on_esi = False
+                fatlink.save()
 
     except IFatLink.DoesNotExist:
         pass
