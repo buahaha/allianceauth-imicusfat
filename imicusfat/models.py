@@ -201,6 +201,14 @@ class IFatLink(SoftDeletionModel):
         help_text="Who created the fatlink?",
     )
 
+    character = models.ForeignKey(
+        EveCharacter,
+        on_delete=models.CASCADE,
+        default=None,
+        null=True,
+        help_text="Character this fatlink has been created with",
+    )
+
     deleted_at = models.DateTimeField(
         blank=True, null=True, help_text="Has been deleted or not"
     )

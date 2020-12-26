@@ -243,10 +243,7 @@ def update_esi_fatlinks():
             if fatlink.creator.profile.main_character is not None:
                 # Check if there is a fleet
                 try:
-                    fleet_commander_id = (
-                        fatlink.creator.profile.main_character.character_id
-                    )
-
+                    fleet_commander_id = fatlink.character.character_id
                     esi_token = Token.get_token(fleet_commander_id, required_scopes)
 
                     fleet_from_esi = (

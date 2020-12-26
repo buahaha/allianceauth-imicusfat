@@ -957,10 +957,13 @@ def link_create_esi(request, token, hash):
         # return to "Add FAT Link" view
         return redirect("imicusfat:link_add")
 
+    creator_character = EveCharacter.objects.get(character_id=token.character_id)
+
     # create the fatlink
     fatlink = IFatLink(
         fleet=request.session["fatlink_form__name"],
         creator=request.user,
+        character=creator_character,
         hash=hash,
         is_esilink=True,
         is_registered_on_esi=True,
