@@ -12,6 +12,8 @@ from bravado.exception import (
 
 from celery import shared_task
 
+from django.core.cache import cache
+
 from esi.models import Token
 
 from imicusfat import __title__
@@ -34,10 +36,14 @@ logger = LoggerAddTag(get_extension_logger(__name__), __title__)
 DEFAULT_TASK_PRIORITY = 6
 ESI_ERROR_LIMIT = 50
 ESI_TIMEOUT_ONCE_ERROR_LIMIT_REACHED = 60
+CACHE_KEY_NO_FLEET_ERROR = "ifat_task_update_esi_fatlinks_error_counter_no_fleet_"
+CACHE_KEY_NO_FLEETBOSS_ERROR = (
+    "ifat_task_update_esi_fatlinks_error_counter_no_fleetboss_"
+)
 
 # params for all tasks
 TASK_DEFAULT_KWARGS = {
-    "time_limit": 1200,  # stop after 20 minutes
+    "time_limit": 120,  # stop after 2 minutes
 }
 
 # params for tasks that make ESI calls
@@ -116,7 +122,7 @@ def get_or_create_char(name: str = None, id: int = None):
     else:
         character = eve_character[0]
 
-    logger.info("Processing information for character %s", character.pk)
+    logger.info("Processing information for {character}".format(character=character))
 
     return character
 
@@ -199,7 +205,7 @@ def process_character(char, hash):
         ship_name = ship["name"]
 
         logger.info(
-            "Adding {character_name} in {system_name} flying a {ship_name} "
+            "New Pilot: Adding {character_name} in {system_name} flying a {ship_name} "
             "to FAT link {fatlink_hash}".format(
                 character_name=character,
                 system_name=solar_system_name,
@@ -216,8 +222,8 @@ def process_character(char, hash):
         ).save()
     else:
         logger.info(
-            "No changes. No new pilots to add to FAT link {fatlink_hash}".format(
-                fatlink_hash=hash
+            "{character} is already registered with FAT link {fatlink_hash}".format(
+                character=character, fatlink_hash=hash
             )
         )
 
@@ -239,6 +245,12 @@ def update_esi_fatlinks():
         )
 
         for fatlink in esi_fatlinks:
+            if cache.get(CACHE_KEY_NO_FLEET_ERROR + fatlink.hash) is None:
+                cache.set(CACHE_KEY_NO_FLEET_ERROR + fatlink.hash, 0, 75)
+
+            if cache.get(CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash) is None:
+                cache.set(CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash, 0, 75)
+
             logger.info("Processing information for ESI FAT with hash %s", fatlink.hash)
 
             if fatlink.creator.profile.main_character is not None:
@@ -267,12 +279,59 @@ def update_esi_fatlinks():
                             # process fleet members
                             process_fats.delay(esi_fleet_member, "eve", fatlink.hash)
                         except Exception:
-                            close_fleet_reason = "No fleet boss available"
-                            close_fleet = True
+                            if (
+                                int(
+                                    cache.get(
+                                        CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash
+                                    )
+                                )
+                                < 3
+                            ):
+                                error_no_fleetboss_count = int(
+                                    cache.get(
+                                        CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash
+                                    )
+                                )
+
+                                error_no_fleetboss_count += 1
+
+                                logger.info(
+                                    "No fleet boss error count: {error_count}.".format(
+                                        error_count=error_no_fleetboss_count
+                                    )
+                                )
+
+                                cache.set(
+                                    CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash,
+                                    str(error_no_fleetboss_count),
+                                    75,
+                                )
+                            else:
+                                close_fleet_reason = "No fleet boss available"
+                                close_fleet = True
 
                 except Exception:
-                    close_fleet_reason = "No fleet available"
-                    close_fleet = True
+                    if int(cache.get(CACHE_KEY_NO_FLEET_ERROR + fatlink.hash)) < 3:
+                        error_no_fleet_count = int(
+                            cache.get(CACHE_KEY_NO_FLEET_ERROR + fatlink.hash)
+                        )
+
+                        error_no_fleet_count += 1
+
+                        logger.info(
+                            "No fleet error count: {error_count}.".format(
+                                error_count=error_no_fleet_count
+                            )
+                        )
+
+                        cache.set(
+                            CACHE_KEY_NO_FLEET_ERROR + fatlink.hash,
+                            str(error_no_fleet_count),
+                            75,
+                        )
+                    else:
+                        close_fleet_reason = "No fleet available"
+                        close_fleet = True
 
             else:
                 close_fleet_reason = "No fatlink creator available"
@@ -284,6 +343,7 @@ def update_esi_fatlinks():
                         fatlink_hash=fatlink.hash, reason=close_fleet_reason
                     )
                 )
+
                 fatlink.is_registered_on_esi = False
                 fatlink.save()
 
