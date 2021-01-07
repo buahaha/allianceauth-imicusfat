@@ -14,4 +14,4 @@ from allianceauth.services.hooks import get_extension_logger
 
 logger = LoggerAddTag(get_extension_logger(__name__), __title__)
 
-EsiClientProvider(spec_file=get_swagger_spec_path(), app_info_text=__user_agent__)
+esi = EsiClientProvider(spec_file=get_swagger_spec_path(), app_info_text=__user_agent__)
