@@ -761,8 +761,17 @@ def links_data(request, year: int = None) -> JsonResponse:
             fatlink_type = fatlink.link_type.name
 
         creator = fatlink.creator.username
-        if fatlink.creator.profile.main_character is not None:
-            creator = fatlink.creator.profile.main_character.character_name
+        user_has_no_profile = False
+
+        try:
+            creator_profile = fatlink.creator.profile
+        except Exception:
+            user_has_no_profile = True
+
+        if user_has_no_profile is False:
+            if creator_profile.main_character is not None:
+                creator = creator_profile.main_character.character_name
+
         time = fatlink.ifattime
         fats_number = fatlink.number_of_fats
 
