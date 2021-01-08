@@ -166,7 +166,7 @@ class ManualIFatAdmin(admin.ModelAdmin):
         )
 
     _ifatlink.short_description = "FAT Link"
-    _ifatlink.admin_order_field = "afatlink"
+    _ifatlink.admin_order_field = "ifatlink"
 
     def _character(self, obj):
         return obj.character

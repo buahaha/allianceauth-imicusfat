@@ -41,13 +41,22 @@
                 <div class="panel-body">
                     <p>{% translate "This option will automatically register the entire fleet without member clicks. Use this if you <b>are</b> Fleet Boss, otherwise please use the clickable FATLink option." %}</p>
 
+                    {% if has_open_esi_fleet %}
+                        <p class="alert alert-info">
+                            {% blocktranslate %}
+                                You already have an open ESI fleet, which means that all pilots who join your fleet will be automatically registered.
+                                If you just left the fleet and want to open a new one, wait 1 minute to give the system time to update and try again.
+                            {% endblocktranslate %}
+                        </p>
+                    {% endif %}
+
                     <form class="form" role="form" action="{% url 'imicusfat:create_esi_fat' %}" method="POST">
                         {% csrf_token %}
 
                         <div class="form-group">
                             <label style="width: 100%; font-weight: normal;">
                                 <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% translate "Fleet Name" %}</span>
-                                <input type="text" class="form-control" name="name_esi" placeholder='{% translate "Enter fleet name" %}' required>
+                                <input type="text" class="form-control" name="name_esi" placeholder='{% translate "Enter fleet name" %}' required{% if has_open_esi_fleet %} disabled{% endif %}>
                             </label>
                         </div>
 
@@ -58,7 +67,7 @@
                                         {% translate "Fleet Type (optional)" %}
                                     </span>
 
-                                    <select class="form-control" name="type_esi">
+                                    <select class="form-control" name="type_esi"{% if has_open_esi_fleet %} disabled{% endif %}>
                                         <option value="-1">{% translate "Please select a fleet type" %}</option>
 
                                         {% for type in link_types %}
@@ -70,7 +79,7 @@
                         {% endif %}
 
                         <div class="form-group text-right">
-                            <button class="btn btn-primary" type="submit" name="submit_click">
+                            <button class="btn btn-primary" type="submit" name="submit_click"{% if has_open_esi_fleet %} disabled{% endif %}>
                                 <span class="fa fa-plus fa-fw"></span>
 
                                 {% translate "Add ESI Link" %}

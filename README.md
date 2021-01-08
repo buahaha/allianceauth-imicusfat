@@ -7,7 +7,7 @@
 [![django](https://img.shields.io/pypi/djversions/allianceauth-imicusfat?label=django)](https://pypi.org/project/allianceauth-imicusfat/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](http://black.readthedocs.io/en/latest/)
 
-An Improved FAT/PAP System for [Alliance Auth](https://gitlab.com/allianceauth/allianceauth). 
+An Improved FAT/PAP System for [Alliance Auth](https://gitlab.com/allianceauth/allianceauth).
 
 ### Feature Highlights/Differences
 - FATLink Creation and Population from ESI
@@ -44,6 +44,15 @@ pip install allianceauth-imicusfat
 Configure your AA settings (`local.py`) as follows:
 
 - Add `'imicusfat',` to `INSTALLED_APPS`
+- Add the scheduled task so ESI links will be updated automagically
+
+```python
+# ImicusFAT - https://gitlab.com/evictus.iou/allianceauth-imicusfat
+CELERYBEAT_SCHEDULE["imicusfat_update_esi_fatlinks"] = {
+    "task": "imicusfat.tasks.update_esi_fatlinks",
+    "schedule": crontab(minute="*/1"),
+}
+```
 
 ### Step 3 - Finalize the installation
 
