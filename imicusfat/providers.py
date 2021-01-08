@@ -6,7 +6,7 @@ providers
 
 from esi.clients import EsiClientProvider
 
-from imicusfat import __title__
+from imicusfat import __title__, __user_agent__
 from imicusfat.utils import LoggerAddTag, get_swagger_spec_path
 
 from allianceauth.services.hooks import get_extension_logger
@@ -14,4 +14,4 @@ from allianceauth.services.hooks import get_extension_logger
 
 logger = LoggerAddTag(get_extension_logger(__name__), __title__)
 
-esi = EsiClientProvider(spec_file=get_swagger_spec_path())
+esi = EsiClientProvider(spec_file=get_swagger_spec_path(), app_info_text=__user_agent__)

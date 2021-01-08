@@ -825,10 +825,19 @@ def link_add(request):
         is_enabled=True,
     ).order_by("name")
 
+    has_open_esi_fleet = IFatLink.objects.filter(
+        creator=request.user, is_esilink=True, is_registered_on_esi=True
+    ).exists()
+
     # get users permissions
     permissions = get_user_permissions(request.user)
 
-    context = {"link_types": link_types, "msg": msg, "permissions": permissions}
+    context = {
+        "link_types": link_types,
+        "msg": msg,
+        "permissions": permissions,
+        "has_open_esi_fleet": has_open_esi_fleet,
+    }
 
     logger.info("Add FAT link view called by %s", request.user)
 
@@ -948,11 +957,17 @@ def link_create_esi(request, token, hash):
         # return to "Add FAT Link" view
         return redirect("imicusfat:link_add")
 
+    creator_character = EveCharacter.objects.get(character_id=token.character_id)
+
     # create the fatlink
     fatlink = IFatLink(
         fleet=request.session["fatlink_form__name"],
         creator=request.user,
+        character=creator_character,
         hash=hash,
+        is_esilink=True,
+        is_registered_on_esi=True,
+        esi_fleet_id=fleet_from_esi["fleet_id"],
     )
 
     # add fleet type if there is any
@@ -963,9 +978,6 @@ def link_create_esi(request, token, hash):
         fatlink.link_type = IFatLinkType.objects.get(
             id=request.session["fatlink_form__type"]
         )
-
-    # it's en ESI fatlink
-    fatlink.is_esilink = True
 
     # save it
     fatlink.save()
