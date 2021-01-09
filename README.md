@@ -20,10 +20,14 @@ ImicusFAT will work alongside the built-in AA-FAT System and bFAT*. However data
 ## Contents
 
 - [Installation](#installation)
+    - [Step 1 - Install app](#step-1---install-app)
+    - [Step 2 - Update your AA settings](#step-2---update-your-aa-settings)
+    - [Step 3 - Finalize the installation](#step-3---finalize-the-installation)
 - [Updating](#updating)
 - [Data Migration](#data-migration)
     - [Import from AA-FAT](#import-from-aa-fat)
     - [Import from bFAT](#import-from-bfat)
+- [Settings](#settings)
 - [Credits](#credits)
 
 ## Installation
@@ -97,6 +101,16 @@ python myauth/manage.py imicusfat_import_from_allianceauth_fat
 ```bash
 python myauth/manage.py imicusfat_import_from_bfat
 ```
+
+
+## Settings
+
+To customize the module, the following settings are available.
+
+| Name                                  | Description                                                     | Default Value |
+|:--------------------------------------|:----------------------------------------------------------------|--------------:|
+| IMICUSFAT_DEFAULT_FATLINK_EXPIRY_TIME | Sets the default expiry time in minutes for clickable FAT links | 60            |
+
 
 ## Credits
 • ImicusFAT • Developed and Maintained by @exiom with @Aproia and @ppfeufer • Based on [allianceauth-bfat](https://gitlab.com/colcrunch/allianceauth-bfat) by @colcrunch •

@@ -123,7 +123,7 @@
                                         <option value="-1">{% translate "Please select a fleet type" %}</option>
 
                                         {% for type in link_types %}
-                                            <option value="{{type.id}}">{{type.name}}</option>
+                                            <option value="{{ type.id }}">{{ type.name }}</option>
                                         {% endfor %}
                                     </select>
                                 </label>
@@ -133,7 +133,7 @@
                         <div class="form-group">
                             <label style="width: 100%; font-weight: normal;">
                                 <span style="display: inline-block; margin-bottom: 5px; font-weight: 700;">{% translate "FAT expiry in minutes" %}</span>
-                                <input type="number" class="form-control" name="duration" id="duration" value="30" placeholder='{% translate "Expiry Time in Minutes" %}' required>
+                                <input type="number" class="form-control" name="duration" id="duration" value="{{ default_expiry_time }}" placeholder='{% translate "Expiry Time in Minutes" %}' required>
                             </label>
                         </div>
 
