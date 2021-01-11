@@ -22,6 +22,7 @@ from esi.decorators import token_required
 from esi.models import Token
 
 from imicusfat import __title__
+from imicusfat.app_settings import IMICUSFAT_DEFAULT_FATLINK_EXPIRY_TIME
 from imicusfat.forms import FatLinkForm, ManualFatForm, ClickFatForm, FatLinkEditForm
 from imicusfat.models import (
     IFat,
@@ -846,6 +847,7 @@ def link_add(request):
         "msg": msg,
         "permissions": permissions,
         "has_open_esi_fleet": has_open_esi_fleet,
+        "default_expiry_time": IMICUSFAT_DEFAULT_FATLINK_EXPIRY_TIME,
     }
 
     logger.info("Add FAT link view called by %s", request.user)
