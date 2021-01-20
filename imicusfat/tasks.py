@@ -34,12 +34,19 @@ logger = LoggerAddTag(get_extension_logger(__name__), __title__)
 
 
 DEFAULT_TASK_PRIORITY = 6
+
 ESI_ERROR_LIMIT = 50
 ESI_TIMEOUT_ONCE_ERROR_LIMIT_REACHED = 60
+ESI_MAX_RETRIES = 3
+
+CACHE_KEY_FLEET_CHANGED_ERROR = (
+    "ifat_task_update_esi_fatlinks_error_counter_fleet_changed_"
+)
 CACHE_KEY_NO_FLEET_ERROR = "ifat_task_update_esi_fatlinks_error_counter_no_fleet_"
 CACHE_KEY_NO_FLEETBOSS_ERROR = (
     "ifat_task_update_esi_fatlinks_error_counter_no_fleetboss_"
 )
+CACHE_MAX_ERROR_COUNT = 3
 
 # params for all tasks
 TASK_DEFAULT_KWARGS = {
@@ -56,7 +63,7 @@ TASK_ESI_KWARGS = {
             HTTPGatewayTimeout,
             HTTPServiceUnavailable,
         ),
-        "retry_kwargs": {"max_retries": 3},
+        "retry_kwargs": {"max_retries": ESI_MAX_RETRIES},
         "retry_backoff": True,
     },
 }
@@ -245,11 +252,14 @@ def update_esi_fatlinks():
         )
 
         for fatlink in esi_fatlinks:
-            if cache.get(CACHE_KEY_NO_FLEET_ERROR + fatlink.hash) is None:
-                cache.set(CACHE_KEY_NO_FLEET_ERROR + fatlink.hash, 0, 75)
+            if cache.get(CACHE_KEY_FLEET_CHANGED_ERROR + fatlink.hash) is None:
+                cache.set(CACHE_KEY_FLEET_CHANGED_ERROR + fatlink.hash, "0", 75)
 
             if cache.get(CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash) is None:
-                cache.set(CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash, 0, 75)
+                cache.set(CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash, "0", 75)
+
+            if cache.get(CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash) is None:
+                cache.set(CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash, "0", 75)
 
             logger.info("Processing information for ESI FAT with hash %s", fatlink.hash)
 
@@ -285,7 +295,7 @@ def update_esi_fatlinks():
                                         CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash
                                     )
                                 )
-                                < 3
+                                < CACHE_MAX_ERROR_COUNT
                             ):
                                 error_no_fleetboss_count = int(
                                     cache.get(
@@ -296,7 +306,7 @@ def update_esi_fatlinks():
                                 error_no_fleetboss_count += 1
 
                                 logger.info(
-                                    "No fleet boss error count: {error_count}.".format(
+                                    "Not fleet boss error count: {error_count}.".format(
                                         error_count=error_no_fleetboss_count
                                     )
                                 )
@@ -307,11 +317,39 @@ def update_esi_fatlinks():
                                     75,
                                 )
                             else:
-                                close_fleet_reason = "No fleet boss available"
+                                close_fleet_reason = "FC is no longer the fleet boss"
                                 close_fleet = True
 
+                    else:
+                        if (
+                            int(cache.get(CACHE_KEY_FLEET_CHANGED_ERROR + fatlink.hash))
+                            < CACHE_MAX_ERROR_COUNT
+                        ):
+                            error_fleet_changed_count = int(
+                                cache.get(CACHE_KEY_FLEET_CHANGED_ERROR + fatlink.hash)
+                            )
+
+                            error_fleet_changed_count += 1
+
+                            logger.info(
+                                "Switched fleet error count: {error_count}.".format(
+                                    error_count=error_fleet_changed_count
+                                )
+                            )
+
+                            cache.set(
+                                CACHE_KEY_FLEET_CHANGED_ERROR + fatlink.hash,
+                                str(error_fleet_changed_count),
+                                75,
+                            )
+                        else:
+                            close_fleet_reason = "FC switched to another fleet"
+                            close_fleet = True
                 except Exception:
-                    if int(cache.get(CACHE_KEY_NO_FLEET_ERROR + fatlink.hash)) < 3:
+                    if (
+                        int(cache.get(CACHE_KEY_NO_FLEET_ERROR + fatlink.hash))
+                        < CACHE_MAX_ERROR_COUNT
+                    ):
                         error_no_fleet_count = int(
                             cache.get(CACHE_KEY_NO_FLEET_ERROR + fatlink.hash)
                         )
