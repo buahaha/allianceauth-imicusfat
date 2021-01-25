@@ -255,8 +255,8 @@ def update_esi_fatlinks():
             if cache.get(CACHE_KEY_FLEET_CHANGED_ERROR + fatlink.hash) is None:
                 cache.set(CACHE_KEY_FLEET_CHANGED_ERROR + fatlink.hash, "0", 75)
 
-            if cache.get(CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash) is None:
-                cache.set(CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash, "0", 75)
+            if cache.get(CACHE_KEY_NO_FLEET_ERROR + fatlink.hash) is None:
+                cache.set(CACHE_KEY_NO_FLEET_ERROR + fatlink.hash, "0", 75)
 
             if cache.get(CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash) is None:
                 cache.set(CACHE_KEY_NO_FLEETBOSS_ERROR + fatlink.hash, "0", 75)
