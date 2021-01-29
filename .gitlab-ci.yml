@@ -58,7 +58,9 @@ test-38-django31:
     - tox -e py38-django31
 
 test-39-django31:
-  extends: .test-p
+  extends: .test-py39
+  script:
+    - tox -e py39-django31
 
 build-package:
   stage: deploy
